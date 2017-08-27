@@ -1,0 +1,126 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+buildscript {
+    repositories { jcenter() }
+
+    dependencies {
+        classpath 'com.google.gms:google-services:3.1.0'
+    }
+}
+
+kapt { generateStubs = true }
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
+    defaultConfig {
+        applicationId "com.dbeginc.dbshopping"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding { enabled = true }
+
+    sourceSets {
+        test.java { srcDirs += 'src/test/kotlin' }
+
+        androidTest.java { srcDirs += 'src/androidTest/kotlin' }
+
+        main {
+            java { srcDirs += 'src/main/kotlin' }
+
+            res {
+                srcDirs += [
+                        'src/main/res/layouts/itemdetail',
+                        'src/main/res/layouts/listitems',
+                        'src/main/res/layouts/listdetail',
+                        'src/main/res/layouts/addlist',
+                        'src/main/res/layouts/userlist',
+                        'src/main/res/layouts/signup',
+                        'src/main/res/layouts/login',
+                        'src/main/res/layouts/home',
+                        'src/main/res/layouts/splash',
+                        'src/main/res/layouts/dialog',
+                        'src/main/res/layouts',
+                        'src/main/res'
+                ]
+            }
+        }
+    }
+
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(":data")
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+    /*********************** Support library ***********************/
+    compile "com.android.support:design:$supportLibraryVersion"
+    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
+    compile "com.android.support:cardview-v7:$supportLibraryVersion"
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+
+    /*********************** RxJava & RxAndroid ***********************/
+    compile "io.reactivex.rxjava2:rxjava:$rxJava"
+    compile "io.reactivex.rxjava2:rxandroid:$rxAndroid"
+
+    /********************************************** Firebase & Play Services **********************************************/
+    compile "com.google.android.gms:play-services-auth:$googleServices"
+    compile "com.google.firebase:firebase-database:$googleServices"
+    compile "com.google.firebase:firebase-storage:$googleServices"
+    compile "com.google.firebase:firebase-auth:$googleServices"
+
+    /*********************** Kotlin ***********************/
+    kapt "com.android.databinding:compiler:$androidPluginVersion"
+
+    /*********************** Glide ***********************/
+    compile "com.github.bumptech.glide:glide:$glideVersion"
+    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
+
+    /*********************** User Interfaces Libraries ***********************/
+    compile 'com.roughike:bottom-bar:2.3.1'
+    compile 'com.zhihu.android:matisse:0.5.0-alpha4'
+
+    /********************************************** Dagger **********************************************/
+    compile "com.google.dagger:dagger:$daggerVersion"
+    compile "com.google.dagger:dagger-android:$daggerVersion"
+    compile "com.google.dagger:dagger-android-support:$daggerVersion"
+
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
+
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    /********************************************************************************************/
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.2'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.2'
+
+    testCompile 'junit:junit:4.12'
+}
+repositories {
+    mavenCentral()
+    maven { url 'https://oss.jfrog.org/libs-snapshot' }
+    maven { url "https://maven.google.com" }
+}
+
+apply plugin: 'com.google.gms.google-services'

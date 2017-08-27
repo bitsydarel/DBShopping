@@ -1,0 +1,78 @@
+<resources>
+    <string name="app_name">DBShopping</string>
+    <!-- #################################################### Application Action #################################################### -->
+    <string name="action_create">Create</string>
+    <string name="action_open_help">Help</string>
+    <string name="action_send_comments">Send your comment</string>
+    <string name="action_recommend_us">Recommend us</string>
+    <string name="action_logout_user">Logout</string>
+    <string name="action_open_drawer">Open Drawer</string>
+    <string name="action_close_drawer">Close Drawer</string>
+    <string name="action_logout">Are you sure, you want to logout?</string>
+    <!-- #################################################### Application Error #################################################### -->
+    <string name="retryLimitError">Issue while uploading, please check network connection</string>
+    <string name="errorNotAuthenticated">Please authenticate before uploading!</string>
+    <string name="errorNotAuthorized">You don\'t have permission to upload here!</string>
+    <!-- #################################################### User #################################################### -->
+    <string name="userProfileTitle">Your profile</string>
+    <!-- #################################################### List Data #################################################### -->
+    <string name="listOwner">Created by: %1$s</string>
+    <string name="listName">List Name</string>
+    <string name="noListMessage">Create your first list\nClick on the button with the plus sign</string>
+    <string name="nameIncorrect">Name Incorrect, can\'t be empty!</string>
+    <string name="creatingListMessage">Creating list…</string>
+    <string name="updatingDataMessageList">Updating list…</string>
+    <string name="listEmpty">List is empty!</string>
+    <string name="action_edit_list_name">Edit list name</string>
+    <string name="action_remove_list">Delete list</string>
+    <string name="action_remove_message_list">Are you sure you want to remove this list ?</string>
+    <string name="action_change_list_name">Change list name</string>
+    <!-- #################################################### Item Data #################################################### -->
+    <string name="default_item_name">No name</string>
+    <string name="itemImageDescription">Shopping Item Image</string>
+    <string name="itemsCount">Items count: %1$d</string>
+    <string name="ItemWasBrought">Has been brought</string>
+    <string name="ItemWasNotBrought">Has not been brought</string>
+    <string name="LabelItemName">Item Name</string>
+    <string name="LabelItemCount">Count</string>
+    <string name="LabelItemPrice">Price</string>
+    <string name="addShoppingItem">Add shopping Item</string>
+    <string name="savingItemChanges">Updating list items…</string>
+    <string name="action_remove_item">Delete Item</string>
+    <string name="action_remove_message_item">Are you sure you want to remove this list ?</string>
+    <string name="action_open_item_comment">Item Comments</string>
+    <string name="updatingDataMessageItem">Updating list…</string>
+    <string name="itemBroughtBy">Brought by %1$s</string>
+    <!-- #################################################### Authentication screen #################################################### -->
+    <string name="NicknameHint">Nickname</string>
+    <string name="EmailHint">Email</string>
+    <string name="PasswordHint">Password</string>
+    <string name="alreadyHaveAccountToLogin">Already have an account ?</string>
+    <string name="needAccountToLogin">Need an account ?</string>
+    <string name="loggingUserProgress">Logging user…</string>
+    <string name="nicknameErrorMessage">minimum length 3 and no white spaces at the end!</string>
+    <string name="creatingUserProgress">Creating user Account…</string>
+    <string name="EmailErrorMessage">Email incorrect, please verify it!</string>
+    <string name="PasswordErrorMessage">Password should be at least 5 characters!</string>
+    <string name="errorWhileLoginWithGoogle">Error while trying to login with google!</string>
+    <string name="emailAlreadyTaken">There\'s already an account with the given email</string>
+    <string name="passwordWeak">Password is not strong enough, should be at least 5 length</string>
+    <string name="userDoesNotExist">The user does not exist</string>
+    <string name="passwordInvalid">The password is invalid</string>
+    <string name="userAlreadyExistGoToLogin">There\'s already an user with this email address</string>
+    <string name="userExistButWithDifferentAccount">We found an user with this email address but with an different login type!\nPlease use the correct login type.</string>
+    <string name="incorrectLoginType">Incorrect Login Type</string>
+    <!-- #####################################################################################################################-->
+    <!-- #################################################### Login #################################################### -->
+    <string name="loginLabel">Login</string>
+    <string name="loginForgotPassword">Forgot password?</string>
+    <string name="loginWithGoogleDescription">Login with Google account</string>
+    <string name="loginWithFacebookDescription">Login with Facebook account</string>
+    <string name="or">Or</string>
+    <!-- #####################################################################################################################-->
+    <!-- #################################################### Sign Up #################################################### -->
+    <string name="signUpLabel">Sign up</string>
+    <string name="signUpWithGoogleDescription">Sign up with Google account</string>
+    <string name="signUpWithFacebookDescription">Sign up with Facebook account</string>
+    <!-- #####################################################################################################################-->
+</resources>

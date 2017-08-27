@@ -1,0 +1,67 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorSecondary</item>
+        <item name="android:colorControlHighlight">@color/colorSecondaryLight</item>
+    </style>
+
+    <!-- #################################################### Splash #################################################### -->
+    <style name="AppTheme.Splash" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/splashColorPrimary</item>
+        <item name="colorPrimaryDark">@color/splashColorPrimaryDark</item>
+        <item name="colorAccent">@color/splashColorSecondary</item>
+        <item name="android:colorControlHighlight">@color/splashColorSecondaryLight</item>
+    </style>
+    <!-- #####################################################################################################################-->
+    <!-- #################################################### Login #################################################### -->
+    <style name="AppTheme.Login" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/loginColorPrimary</item>
+        <item name="colorPrimaryDark">@color/loginColorPrimaryDark</item>
+        <item name="colorAccent">@color/loginColorSecondary</item>
+        <item name="android:colorControlHighlight">@color/loginColorSecondaryLight</item>
+    </style>
+    <!-- #####################################################################################################################-->
+    <!-- #################################################### Sign Uo #################################################### -->
+    <style name="AppTheme.SignUp" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/SignUpColorPrimary</item>
+        <item name="colorPrimaryDark">@color/SignUpColorPrimaryDark</item>
+        <item name="colorAccent">@color/SignUpColorSecondary</item>
+        <item name="android:colorControlHighlight">@color/SignUpColorSecondaryLight</item>
+    </style>
+    <!-- #####################################################################################################################-->
+    <!-- #################################################### Add List #################################################### -->
+    <style name="AppTheme.AddList" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/addListColorPrimary</item>
+        <item name="colorPrimaryDark">@color/addListColorPrimaryDark</item>
+        <item name="colorAccent">@color/addListColorSecondary</item>
+        <item name="android:colorControlHighlight">@color/addListColorSecondaryLight</item>
+    </style>
+    <!-- #############################################################################################-->
+    <!-- #################################################### List Detail #################################################### -->
+    <style name="AppTheme.ListDetail" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/ListDetailColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ListDetailColorPrimaryDark</item>
+        <item name="colorAccent">@color/ListDetailColorSecondary</item>
+        <item name="android:colorControlHighlight">@color/ListDetailColorSecondaryLight</item>
+    </style>
+    <!-- #####################################################################################################################-->
+    <!-- #################################################### Item Detail #################################################### -->
+    <style name="AppTheme.ItemDetail" parent="AppTheme">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/ItemDetailColorPrimary</item>
+        <item name="colorPrimaryDark">@color/ItemDetailColorPrimaryDark</item>
+        <item name="colorAccent">@color/ItemDetailColorSecondary</item>
+        <item name="android:colorControlHighlight">@color/ItemDetailColorSecondaryLight</item>
+    </style>
+    <!-- #####################################################################################################################-->
+
+</resources>

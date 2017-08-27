@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#37474f</color>
+    <color name="colorPrimaryDark">#102027</color>
+    <color name="colorPrimaryLight">#62727b</color>
+    <color name="colorTextPrimary">#ffffff</color>
+    <color name="colorSecondary">#ffea00</color>
+    <color name="colorSecondaryDark">#c7b800</color>
+    <color name="colorSecondaryLight">#ffff56</color>
+    <color name="colorTextSecondary">#000000</color>
+
+    <!--########################################################################## Splash ##########################################################-->
+    <color name="splashColorPrimary">#fafafa</color>
+    <color name="splashColorPrimaryDark">#c7c7c7</color>
+    <color name="splashColorPrimaryLight">#ffffff</color>
+    <color name="splashColorTextPrimary">#000000</color>
+    <color name="splashColorSecondary">#00c853</color>
+    <color name="splashColorSecondaryDark">#009624</color>
+    <color name="splashColorSecondaryLight">#5efc82</color>
+    <color name="splashColorTextSecondary">#000000</color>
+    <!--####################################################################################################################################-->
+    <!--########################################################################## Login ##########################################################-->
+    <color name="loginColorPrimary">#fafafa</color>
+    <color name="loginColorPrimaryDark">#c7c7c7</color>
+    <color name="loginColorPrimaryLight">#ffffff</color>
+    <color name="loginColorTextPrimary">#000000</color>
+    <color name="loginColorSecondary">#00c853</color>
+    <color name="loginColorSecondaryDark">#009624</color>
+    <color name="loginColorSecondaryLight">#5efc82</color>
+    <color name="loginColorTextSecondary">#000000</color>
+    <color name="loginBackground">#836A92</color>
+    <!--####################################################################################################################################-->
+    <!--########################################################################## Sign up ##########################################################-->
+    <color name="SignUpColorPrimary">#ffffff</color>
+    <color name="SignUpColorPrimaryDark">#cccccc</color>
+    <color name="SignUpColorPrimaryLight">#ffffff</color>
+    <color name="SignUpColorTextPrimary">#000000</color>
+    <color name="SignUpColorSecondary">#f50057</color>
+    <color name="SignUpColorSecondaryDark">#bb002f</color>
+    <color name="SignUpColorSecondaryLight">#ff5983</color>
+    <color name="SignUpColorTextSecondary">#000000</color>
+    <!--####################################################################################################################################-->
+    <!--########################################################################## Add List ##########################################################-->
+    <color name="addListColorPrimary">#2196f3</color>
+    <color name="addListColorPrimaryDark">#0069c0</color>
+    <color name="addListColorPrimaryLight">#6ec6ff</color>
+    <color name="addListColorTextPrimary">#000000</color>
+    <color name="addListColorSecondary">#ff1744</color>
+    <color name="addListColorSecondaryDark">#c4001d</color>
+    <color name="addListColorSecondaryLight">#ff616f</color>
+    <color name="addListColorTextSecondary">#000000</color>
+    <!--####################################################################################################################################-->
+    <!--########################################################################## List Detail ##########################################################################-->
+    <color name="ListDetailColorPrimary">#9c27b0</color>
+    <color name="ListDetailColorPrimaryDark">#6a0080</color>
+    <color name="ListDetailColorPrimaryLight">#d05ce3</color>
+    <color name="ListDetailColorTextPrimary">#ffffff</color>
+    <color name="ListDetailColorSecondary">#18ffff</color>
+    <color name="ListDetailColorSecondaryDark">#00cbcc</color>
+    <color name="ListDetailColorSecondaryLight">#76ffff</color>
+    <color name="ListDetailColorTextSecondary">#000000</color>
+    <!--########################################################################## Item Detail ##########################################################################-->
+    <!--########################################################################## Item Detail ##########################################################################-->
+    <color name="ItemDetailColorPrimary">#bdbdbd</color>
+    <color name="ItemDetailColorPrimaryDark">#8d8d8d</color>
+    <color name="ItemDetailColorPrimaryLight">#efefef</color>
+    <color name="ItemDetailColorTextPrimary">#000000</color>
+    <color name="ItemDetailColorSecondary">#3cda6b</color>
+    <color name="ItemDetailColorSecondaryDark">#00a73d</color>
+    <color name="ItemDetailColorSecondaryLight">#7aff9b</color>
+    <color name="ItemDetailColorTextSecondary">#000000</color>
+    <!--########################################################################## Login ##########################################################-->
+</resources>

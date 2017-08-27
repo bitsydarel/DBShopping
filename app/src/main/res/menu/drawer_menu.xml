@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/userMenuGroup"
+        android:enabled="true">
+
+        <item android:id="@+id/action_open_profile"
+            android:checkable="false"
+            android:title="@string/userProfileTitle"
+            android:icon="@drawable/ic_person_black"
+            android:enabled="true" />
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/appMenuGroup"
+        android:enabled="true">
+
+        <item android:id="@+id/action_open_help"
+            android:title="@string/action_open_help"
+            android:icon="@drawable/ic_help_black"
+            android:checkable="false"
+            android:enabled="true"/>
+
+        <item android:id="@+id/action_send_comments"
+            android:title="@string/action_send_comments"
+            android:icon="@drawable/ic_send_comment_black"
+            android:checkable="false"
+            android:enabled="true"/>
+
+        <item android:id="@+id/action_recommend_us"
+            android:title="@string/action_recommend_us"
+            android:icon="@drawable/ic_recommend_us_black"
+            android:checkable="false"
+            android:enabled="true"/>
+    </group>
+
+    <item android:id="@+id/action_logout_user"
+        android:title="@string/action_logout_user"
+        android:icon="@drawable/ic_logout_black"
+        android:checkable="false"
+        android:enabled="true"/>
+
+</menu>

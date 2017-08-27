@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        id="@+id/list"
+        title="Shopping List"
+        icon="@drawable/ic_shopping_list"
+        activeColor="#ffffff"/>
+
+    <tab
+        id="@+id/timeline"
+        title="Timeline"/>
+</tabs>
