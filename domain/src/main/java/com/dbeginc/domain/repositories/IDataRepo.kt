@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.domain.repositories
 
 import com.dbeginc.domain.entities.data.ShoppingItem
@@ -43,38 +60,35 @@ interface IDataRepo : Cleanable{
 
     /**
      * Get list items
-     * @param listId of the list
+     * @param requestModel to request the shopping items
      * @return {@Link [Flowable] } of all the items of a list
      */
     fun getItems(requestModel: ItemRequestModel<Unit>) : Flowable<List<ShoppingItem>>
 
     /**
      * Get Shopping Item
-     * @param listId of the containing list
-     * @param itemId of the shopping item
+     * @param requestModel to request a specific item
      * @return {@Link [Flowable] } of shopping item
      */
     fun getItem(requestModel: ItemRequestModel<String>) : Flowable<ShoppingItem>
 
     /**
      * Add Shopping list
-     * @param list [ShoppingList] to be added
+     * @param requestModel [ListRequestModel] to be added
      * @return [Completable] that notify if the task is done
      */
     fun addList(requestModel: ListRequestModel<ShoppingList>) : Completable
 
     /**
      * Add Shopping item
-     * @param listId of container list
-     * @param item to be added
+     * @param requestModel [ItemRequestModel]
      * @return [Completable] that notify if the task is done
      */
     fun addItem(requestModel: ItemRequestModel<ShoppingItem>) : Completable
 
 
     /**
-     * @param listId of the list
-     * @param name of the list
+     * @param requestModel [ListRequestModel]
      * @return [Completable] that notify if the list name has been modified
      */
     fun changeListName(requestModel: ListRequestModel<String>): Completable
@@ -93,23 +107,25 @@ interface IDataRepo : Cleanable{
 
     /**
      * Upload shopping items images
-     * @param listId of the shopping list
-     * @param item with image
+     * @param requestModel [ItemRequestModel]
      * @return [Completable] that notify if the upload is done
      */
     fun uploadItemImage(requestModel: ItemRequestModel<ShoppingItem>) : Completable
 
+    fun addUserShopping(requestModel: ListRequestModel<String>) : Completable
+
+    fun removeUserShopping(requestModel: ListRequestModel<String>) : Completable
+
     /**
      * Delete a list from database and all his items
-     * @param listId to be removed
+     * @param requestModel [ListRequestModel]
      * @return [Completable] that notify about task completion
      */
     fun deleteList(requestModel: ListRequestModel<Unit>) : Completable
 
     /**
      * Delete a list from database and all his items
-     * @param listId
-     * @param itemId to be deleted
+     * @param requestModel [ItemRequestModel]
      * @return [Completable] that notify about task completion
      */
     fun deleteItem(requestModel: ItemRequestModel<String>) : Completable

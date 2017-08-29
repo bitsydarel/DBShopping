@@ -15,22 +15,16 @@
  *
  */
 
-package com.dbeginc.dbshopping.di.application.module
+package com.dbeginc.dbshopping.mapper.user
 
-import com.dbeginc.dbshopping.di.qualifiers.AppUserRepo
-import com.dbeginc.dbshopping.splash.SplashContract
-import com.dbeginc.dbshopping.splash.presenter.SplashPresenterImpl
-import com.dbeginc.domain.repositories.IUserRepo
-import dagger.Module
-import dagger.Provides
+import com.dbeginc.dbshopping.viewmodels.UserModel
+import com.dbeginc.domain.entities.user.User
 
 /**
- * Created by darel on 27.08.17.
+ * Created by darel on 29.08.17.
  *
- * Application Presentation Module
+ * User Mapper file
  */
-@Module
-class PresentationModule {
-    @Provides
-    internal fun provideSplashPresenter(@AppUserRepo userRepo: IUserRepo) : SplashContract.SplashPresenter = SplashPresenterImpl(userRepo)
-}
+fun UserModel.toUser() : User = User(id, name, email, joinedAt)
+
+fun User.toUserModel() : UserModel = UserModel(uuid, name, email, joinedAt)

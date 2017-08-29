@@ -15,22 +15,26 @@
  *
  */
 
-package com.dbeginc.dbshopping.di.application.module
+package com.dbeginc.data.proxies.local
 
-import com.dbeginc.dbshopping.di.qualifiers.AppUserRepo
-import com.dbeginc.dbshopping.splash.SplashContract
-import com.dbeginc.dbshopping.splash.presenter.SplashPresenterImpl
-import com.dbeginc.domain.repositories.IUserRepo
-import dagger.Module
-import dagger.Provides
+import io.realm.RealmModel
+import io.realm.annotations.RealmClass
 
 /**
- * Created by darel on 27.08.17.
+ * Created by darel on 29.08.17.
  *
- * Application Presentation Module
+ * Realm Implementation of string
+ * Since it's not supported by the api
  */
-@Module
-class PresentationModule {
-    @Provides
-    internal fun provideSplashPresenter(@AppUserRepo userRepo: IUserRepo) : SplashContract.SplashPresenter = SplashPresenterImpl(userRepo)
+@RealmClass
+open class RealmString(var value: String = "") : RealmModel {
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is RealmString) return false
+
+        return value == other.value
+    }
+
+    override fun hashCode(): Int = value.hashCode()
 }

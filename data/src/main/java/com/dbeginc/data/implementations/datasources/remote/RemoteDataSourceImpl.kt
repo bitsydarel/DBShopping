@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.data.implementations.datasources.remote
 
 import android.net.Uri
@@ -37,6 +54,28 @@ import io.reactivex.Single
  */
 class RemoteDataSourceImpl(private val remoteListTable: DatabaseReference, private val remoteItemsTable: DatabaseReference,
                            private val remoteStorage: StorageReference) : DataSource {
+
+    override fun addUserShopping(requestModel: ListRequestModel<String>): Completable {
+        return Completable.create { emitter -> remoteListTable.child(requestModel.listId)
+                .child(ConstantHolder.USER_SHOPPING)
+                .child(requestModel.arg)
+                .setValue(true)
+                .addOnCompleteListener {
+                    task -> if (task.isSuccessful) emitter.onComplete() else emitter.onError(task.exception!!)
+                }
+        }
+    }
+
+    override fun removeUserShopping(requestModel: ListRequestModel<String>): Completable {
+        return Completable.create { emitter -> remoteListTable.child(requestModel.listId)
+                .child(ConstantHolder.USER_SHOPPING)
+                .child(requestModel.arg)
+                .removeValue()
+                .addOnCompleteListener {
+                    task -> if (task.isSuccessful) emitter.onComplete() else emitter.onError(task.exception!!)
+                }
+        }
+    }
 
     override fun getList(requestModel: ListRequestModel<Unit>): Flowable<ShoppingList> {
         return Flowable.create<ShoppingList>({ emitter -> remoteListTable.child(requestModel.listId)
@@ -222,7 +261,7 @@ class RemoteDataSourceImpl(private val remoteListTable: DatabaseReference, priva
 
     private fun ShoppingItem.toProxy() : RemoteShoppingItem {
         return RemoteShoppingItem(uuid = uuid, name = name, itemOf = itemOf, count = count,
-                price = price, brought = brought, image = image.toProxy()
+                price = price, brought = bought, boughtBy = boughtBy, image = image.toProxy()
         )
     }
 

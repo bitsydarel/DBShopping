@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.data.implementations.repositories
 
 import android.util.Log
@@ -36,6 +53,20 @@ class DataRepoImpl(private val local: DataSource, private val remote: DataSource
                    private val workerThread: Scheduler) : IDataRepo {
 
     private val subscriptions = CompositeDisposable()
+
+    override fun addUserShopping(requestModel: ListRequestModel<String>): Completable {
+        return local.addUserShopping(requestModel)
+                .subscribeOn(workerThread)
+                .andThen(remote.addUserShopping(requestModel).subscribeOn(ioThread))
+                .observeOn(uiThread)
+    }
+
+    override fun removeUserShopping(requestModel: ListRequestModel<String>): Completable {
+        return remote.removeUserShopping(requestModel)
+                .subscribeOn(ioThread)
+                .andThen(local.removeUserShopping(requestModel).subscribeOn(workerThread))
+                .observeOn(uiThread)
+    }
 
     override fun getList(requestModel: ListRequestModel<Unit>): Flowable<ShoppingList> {
         return remote.getList(requestModel)

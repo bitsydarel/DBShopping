@@ -1,21 +1,34 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.dbshopping.di.user.module
 
 import android.content.res.Resources
 import com.dbeginc.data.datasource.DataSource
-import com.dbeginc.data.datasource.UserSource
 import com.dbeginc.data.implementations.datasources.local.LocalDataSourceImpl
 import com.dbeginc.data.implementations.datasources.remote.RemoteDataSourceImpl
 import com.dbeginc.data.implementations.repositories.DataRepoImpl
-import com.dbeginc.data.implementations.repositories.UserRepoImpl
 import com.dbeginc.dbshopping.di.qualifiers.*
 import com.dbeginc.dbshopping.di.scopes.UserScope
 import com.dbeginc.dbshopping.exception.IErrorManager
 import com.dbeginc.dbshopping.exception.implementation.StorageErrorHandlerImpl
 import com.dbeginc.dbshopping.helper.ConstantHolder
-import com.dbeginc.domain.entities.user.User
+import com.dbeginc.dbshopping.viewmodels.UserModel
 import com.dbeginc.domain.repositories.IDataRepo
-import com.dbeginc.domain.repositories.IUserRepo
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
@@ -26,12 +39,14 @@ import io.reactivex.Scheduler
 
 /**
  * Created by darel on 22.08.17.
+ *
+ * Application User Module
  */
-@Module class UserModule(val user: User) {
+@Module class UserModule(val user: UserModel) {
 
     @Provides
     @UserScope
-    internal fun provideUser() : User = user
+    internal fun provideUser() : UserModel = user
 
     @Provides
     @UserScope
@@ -42,7 +57,7 @@ import io.reactivex.Scheduler
     @RemoteListTable
     @UserScope
     internal fun provideShoppingListsTable(firebaseDatabase: FirebaseDatabase) : DatabaseReference {
-        val listTable = firebaseDatabase.reference.child(user.uuid).child(ConstantHolder.SHOPPING_LISTS)
+        val listTable = firebaseDatabase.reference.child(user.id).child(ConstantHolder.SHOPPING_LISTS)
         listTable.keepSynced(true)
         return listTable
     }
@@ -51,7 +66,7 @@ import io.reactivex.Scheduler
     @RemoteItemsTable
     @UserScope
     internal fun provideShoppingItemsTable(firebaseDatabase: FirebaseDatabase) : DatabaseReference {
-        val itemTable = firebaseDatabase.reference.child(user.uuid).child(ConstantHolder.SHOPPING_ITEMS)
+        val itemTable = firebaseDatabase.reference.child(user.id).child(ConstantHolder.SHOPPING_ITEMS)
         itemTable.keepSynced(true)
         return itemTable
     }
@@ -59,7 +74,7 @@ import io.reactivex.Scheduler
     @Provides
     @UserScope
     internal fun provideStorageReference(firebaseStorage: FirebaseStorage) : StorageReference =
-            firebaseStorage.reference.child(user.uuid).child(ConstantHolder.SHOPPING_LISTS)
+            firebaseStorage.reference.child(user.id).child(ConstantHolder.SHOPPING_LISTS)
 
     @Provides
     @UserScope

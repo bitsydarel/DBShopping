@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.data.implementations.datasources.local
 
 import android.util.Log
@@ -6,6 +23,7 @@ import com.dbeginc.data.datasource.DataSource
 import com.dbeginc.data.proxies.local.LocalItemImage
 import com.dbeginc.data.proxies.local.LocalShoppingItem
 import com.dbeginc.data.proxies.local.LocalShoppingList
+import com.dbeginc.data.proxies.local.RealmString
 import com.dbeginc.domain.entities.data.ItemImage
 import com.dbeginc.domain.entities.data.ShoppingItem
 import com.dbeginc.domain.entities.data.ShoppingList
@@ -38,6 +56,35 @@ import java.util.*
  * Created by darel on 21.08.17.
  */
 class LocalDataSourceImpl : DataSource {
+    override fun addUserShopping(requestModel: ListRequestModel<String>): Completable {
+        return Completable.fromAction {
+            Realm.getDefaultInstance().use {
+                realm -> realm.executeTransaction {
+                db -> val list = db.where(LocalShoppingList::class.java)
+                    .equalTo(ConstantHolder.UUID, requestModel.listId)
+                    .findFirst()
+
+                list.usersShopping.add(RealmString(requestModel.arg))
+
+                db.insertOrUpdate(list)
+            } }
+        }
+    }
+
+    override fun removeUserShopping(requestModel: ListRequestModel<String>): Completable {
+        return Completable.fromAction {
+            Realm.getDefaultInstance().use {
+                realm -> realm.executeTransaction {
+                db -> val list = db.where(LocalShoppingList::class.java)
+                    .equalTo(ConstantHolder.UUID, requestModel.listId)
+                    .findFirst()
+
+                list.usersShopping.remove(RealmString(requestModel.arg))
+
+                db.insertOrUpdate(list)
+            } }
+        }
+    }
 
     override fun getList(requestModel: ListRequestModel<Unit>): Flowable<ShoppingList> {
 
@@ -100,96 +147,84 @@ class LocalDataSourceImpl : DataSource {
         return requestModel.arg.isInDatabase()
                 .flatMapCompletable { wasFound ->
                     if (wasFound) throw Exception("You already have this list! (Change Me Darel!!!)")
-                    else Completable.create { emitter -> Realm.getDefaultInstance().use {
+                    else Completable.fromAction { Realm.getDefaultInstance().use {
                         realm -> realm.executeTransaction { db -> db.insertOrUpdate(requestModel.arg.toProxyList()) }
-                        emitter.onComplete()
                     } }
                 }
     }
 
     override fun addItem(requestModel: ItemRequestModel<ShoppingItem>): Completable {
-        return Completable.create { emitter -> Realm.getDefaultInstance().use {
+        return Completable.fromAction{ Realm.getDefaultInstance().use {
             realm -> realm.executeTransaction { db -> db.insertOrUpdate(requestModel.arg.toProxyItem()) }
-            emitter.onComplete()
         } }
     }
 
     override fun changeListName(requestModel: ListRequestModel<String>): Completable {
-        return Completable.create { emitter -> Realm.getDefaultInstance().use {
-            realm -> realm.executeTransaction { db -> val list = db.where(LocalShoppingList::class.java)
-                .equalTo(ConstantHolder.UUID, requestModel.listId)
-                .findFirst()
-
-            list.name = requestModel.arg
-            db.insertOrUpdate(list)
+        return Completable.fromAction {
+            Realm.getDefaultInstance().use {
+                realm -> realm.executeTransaction {
+                db -> val list = db.where(LocalShoppingList::class.java)
+                    .equalTo(ConstantHolder.UUID, requestModel.listId)
+                    .findFirst()
+                list.name = requestModel.arg
+                db.insertOrUpdate(list)
+            } }
         }
-            emitter.onComplete()
-        } }
     }
 
     override fun updateList(requestModel: ListRequestModel<ShoppingList>): Completable {
-        return Completable.create { emitter -> Realm.getDefaultInstance().use {
+        return Completable.fromAction { Realm.getDefaultInstance().use {
             realm -> realm.executeTransaction { db -> db.insertOrUpdate(requestModel.arg.toProxyList(true)) }
-            emitter.onComplete()
         } }
     }
 
     override fun updateItem(requestModel: ItemRequestModel<ShoppingItem>): Completable {
-        return Completable.create { emitter -> Realm.getDefaultInstance().use {
+        return Completable.fromAction { Realm.getDefaultInstance().use {
             realm -> realm.executeTransaction { db -> db.insertOrUpdate(requestModel.arg.toProxyItem(true)) }
-            emitter.onComplete()
         } }
     }
 
     override fun uploadItemImage(requestModel: ItemRequestModel<ShoppingItem>): Completable {
-        return Completable.create { emitter -> Realm.getDefaultInstance().use {
+        return Completable.fromAction { Realm.getDefaultInstance().use {
             realm -> realm.executeTransaction { db -> db.insertOrUpdate(requestModel.arg.toProxyItem(true)) }
-            emitter.onComplete()
         } }
     }
 
     override fun deleteList(requestModel: ListRequestModel<Unit>): Completable {
-        val removeList = Completable.create { emitter -> Realm.getDefaultInstance().use {
+        val removeList = Completable.fromAction { Realm.getDefaultInstance().use {
             realm -> realm.executeTransaction {
             db -> db.where(LocalShoppingList::class.java)
                 .equalTo(ConstantHolder.UUID, requestModel.listId)
                 .findAll()
                 .deleteAllFromRealm()
-        }
-            emitter.onComplete() }
-        }
+        }} }
 
-        val removeItems = Completable.create { emitter -> Realm.getDefaultInstance().use {
+        val removeItems = Completable.fromAction{ Realm.getDefaultInstance().use {
             realm -> realm.executeTransaction {
             db -> db.where(LocalShoppingItem::class.java)
                 .equalTo(ConstantHolder.ITEM_OF, requestModel.listId)
                 .findAll()
                 .deleteAllFromRealm()
 
-        }
-            emitter.onComplete() }
-        }
+        } } }
 
         return removeList.andThen(removeItems)
     }
 
     override fun deleteItem(requestModel: ItemRequestModel<String>): Completable {
-        return Completable.create { emitter -> Realm.getDefaultInstance().use {
+        return Completable.fromAction { Realm.getDefaultInstance().use {
             realm -> realm.executeTransaction {
             db -> db.where(LocalShoppingItem::class.java)
                 .equalTo(ConstantHolder.ITEM_OF, requestModel.listId)
                 .equalTo(ConstantHolder.UUID, requestModel.arg)
                 .findAll()
                 .deleteAllFromRealm()
-
-            emitter.onComplete()
         } } }
     }
 
     override fun deleteAll(requestModel: UserRequestModel<Unit>): Completable {
-        return Completable.create { emitter -> Realm.getDefaultInstance().use {
+        return Completable.fromAction { Realm.getDefaultInstance().use {
             realm -> realm.executeTransaction { db -> db.deleteAll() }
-            emitter.onComplete()
         } }
     }
 
@@ -230,7 +265,7 @@ class LocalDataSourceImpl : DataSource {
     private fun ShoppingItem.toProxyItem(wasSaveRemotely: Boolean = false) : LocalShoppingItem {
 
         return LocalShoppingItem(uuid = uuid, name = name, itemOf = itemOf, count = count,
-                price = price, brought = brought, savedInServer = wasSaveRemotely, image = image.toProxyImage())
+                price = price, bought = bought, boughtBy = boughtBy, savedInServer = wasSaveRemotely, image = image.toProxyImage())
     }
 
     private fun ItemImage.toProxyImage() : LocalItemImage = LocalItemImage(uri = uri)

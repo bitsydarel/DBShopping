@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.dbshopping.addlist.view
 
 import android.content.Intent
@@ -5,7 +22,6 @@ import android.databinding.DataBindingUtil
 import android.os.Bundle
 import com.dbeginc.dbshopping.R
 import com.dbeginc.dbshopping.addlist.AddListContract
-
 import com.dbeginc.dbshopping.base.BaseActivity
 import com.dbeginc.dbshopping.base.LoadingDialog
 import com.dbeginc.dbshopping.databinding.ActivityAddListBinding
@@ -15,7 +31,7 @@ import com.dbeginc.dbshopping.helper.Navigator
 import com.dbeginc.dbshopping.helper.extensions.snack
 import com.dbeginc.dbshopping.home.view.HomeActivity
 import com.dbeginc.dbshopping.viewmodels.ListModel
-import com.dbeginc.domain.entities.user.User
+import com.dbeginc.dbshopping.viewmodels.UserModel
 import java.util.*
 import javax.inject.Inject
 
@@ -36,7 +52,7 @@ import javax.inject.Inject
 
 class AddListActivity : BaseActivity(), AddListContract.AddListView {
     @Inject lateinit var presenter: AddListContract.AddListPresenter
-    @Inject lateinit var user: User
+    @Inject lateinit var user: UserModel
     private lateinit var binding: ActivityAddListBinding
     private lateinit var progressDialog : LoadingDialog
 
@@ -50,7 +66,7 @@ class AddListActivity : BaseActivity(), AddListContract.AddListView {
         progressDialog.setMessage(getString(R.string.creatingListMessage))
 
         if (savedState == null) {
-            binding.list = ListModel(id = UUID.randomUUID().toString(), name = "", owner = user.email, lastChange = "")
+            binding.list = ListModel(id = UUID.randomUUID().toString(), name = "", usersShopping = listOf(), owner = user.email, lastChange = "")
         } else {
             binding.list = savedState.getParcelable(ConstantHolder.LIST_DATA_KEY)
         }

@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.dbshopping.listitems.view
 
 import android.databinding.DataBindingUtil
@@ -19,7 +36,7 @@ import com.dbeginc.dbshopping.listitems.ListItemsContract
 import com.dbeginc.dbshopping.listitems.adapter.ItemsAdapter
 import com.dbeginc.dbshopping.listitems.presenter.ListItemsPresenterImpl
 import com.dbeginc.dbshopping.viewmodels.ItemModel
-import com.dbeginc.domain.entities.user.User
+import com.dbeginc.dbshopping.viewmodels.UserModel
 import javax.inject.Inject
 
 /**
@@ -39,9 +56,8 @@ import javax.inject.Inject
  * Created by darel on 24.08.17.
  */
 class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
-
     @Inject lateinit var presenter: ListItemsContract.ListItemPresenter
-    @Inject lateinit var user: User
+    @Inject lateinit var user: UserModel
     private lateinit var binding: ListItemsLayoutBinding
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var listId: String
@@ -67,11 +83,12 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
 
         if (savedState == null) {
             listId = arguments.getString(ConstantHolder.LIST_ID)
-            adapter = ItemsAdapter(items, user.name, (presenter as ListItemsPresenterImpl).itemUpdate)
+            adapter = ItemsAdapter(items, user.name, preferences, (presenter as ListItemsPresenterImpl).itemUpdate)
+
         } else {
             listId = savedState.getString(ConstantHolder.LIST_ID)
             items = savedState.getList(ConstantHolder.ITEM_DATA_KEY) ?: emptyList()
-            adapter = ItemsAdapter(items, user.name, (presenter as ListItemsPresenterImpl).itemUpdate)
+            adapter = ItemsAdapter(items, user.name, preferences, (presenter as ListItemsPresenterImpl).itemUpdate)
         }
 
         defaultName = getString(R.string.default_item_name)
@@ -109,6 +126,9 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
 
         binding.addItemBtn.setOnClickListener { presenter.addItem() }
         binding.listItemsSRL.setOnRefreshListener { presenter.loadItems() }
+
+        binding.listInShoppingModeStatus.isChecked = preferences.getBoolean(ConstantHolder.List_IN_SHOPPING_MODE, false)
+        binding.listInShoppingModeStatus.setOnCheckedChangeListener { _, isOn -> presenter.onShoppingStatusChange(isOn) }
 
         presenter.loadItems()
     }
@@ -148,6 +168,20 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
     }
 
     override fun displayErrorMessage(error: String) = binding.listItemsLayout.snack(error)
+
+    override fun enableShoppingMode() {
+        preferences.edit()
+                .putBoolean(ConstantHolder.List_IN_SHOPPING_MODE, true)
+                .apply()
+        binding.listItemsLayout.snack(getString(R.string.shoppingModeEnable))
+    }
+
+    override fun disableShoppingMode() {
+        preferences.edit()
+                .putBoolean(ConstantHolder.List_IN_SHOPPING_MODE, false)
+                .apply()
+        binding.listItemsLayout.snack(getString(R.string.shoppingModeDisable))
+    }
 
     private inner class SwipeToDeleteItem : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
