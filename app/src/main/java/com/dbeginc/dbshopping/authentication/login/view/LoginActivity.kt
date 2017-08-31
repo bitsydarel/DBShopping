@@ -147,7 +147,13 @@ class LoginActivity : BaseActivity() , LoginContract.LoginView {
     /********************************************************** Login View Part Method **********************************************************/
 
     override fun setupView() {
-        binding.loginButton.setOnClickListener { presenter.onUserLogin() }
+        binding.loginButton.setOnClickListener {
+            // Save the email when user login with email and password
+            if (binding.loginEmail.getValue().isNotEmpty()) {
+                preferences.edit().putString(ConstantHolder.USER_EMAIL, binding.loginEmail.getValue()).apply()
+            }
+            presenter.onUserLogin()
+        }
 
         binding.loginWithGoogleBtn.setOnClickListener { presenter.getGoogleAccount() }
 
@@ -188,9 +194,7 @@ class LoginActivity : BaseActivity() , LoginContract.LoginView {
 
     override fun disableLogin() = binding.loginButton.fadeOut()
 
-    override fun displayLoginInProgressMessage() {
-        progressDialog.show(supportFragmentManager, LoadingDialog::class.java.simpleName)
-    }
+    override fun displayLoginInProgressMessage() = progressDialog.show(supportFragmentManager, LoadingDialog::class.java.simpleName)
 
     override fun hideLoginInProgressMessage() = progressDialog.dismiss()
 
@@ -209,17 +213,12 @@ class LoginActivity : BaseActivity() , LoginContract.LoginView {
         startActivityForResult(signInIntent, ConstantHolder.RC_SIGN_IN)
     }
 
-    override fun requestFacebookAccount() {
-        displayErrorMessage("Login with facebook")
-    }
+    override fun requestFacebookAccount() = displayErrorMessage("Login with facebook")
 
     override fun displayErrorMessage(error: String) = binding.loginViewLayout.snack(error)
 
-    override fun goToHomePage() {
-        Navigator.startActivity(this, Intent(this, HomeActivity::class.java))
-    }
+    override fun goToHomePage() = Navigator.startActivity(this, Intent(this, HomeActivity::class.java))
 
-    override fun goToSignUpScreen() {
-        Navigator.startActivity(this, Intent(this, SignUpActivity::class.java))
-    }
+    override fun goToSignUpScreen() = Navigator.startActivity(this, Intent(this, SignUpActivity::class.java))
+
 }

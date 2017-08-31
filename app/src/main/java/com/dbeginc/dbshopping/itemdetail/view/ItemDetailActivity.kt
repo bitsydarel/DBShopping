@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.dbshopping.itemdetail.view
 
 import android.app.Activity
@@ -7,6 +24,7 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.databinding.DataBindingUtil
 import android.os.Bundle
+import android.support.v4.content.res.ResourcesCompat
 import android.view.Menu
 import android.view.MenuItem
 import com.dbeginc.dbshopping.R
@@ -42,10 +60,10 @@ import javax.inject.Inject
  * Created by darel on 24.08.17.
  */
 class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
-
     @Inject lateinit var presenter: ItemDetailContract.ItemDetailPresenter
     private lateinit var binding: ItemDetailLayoutBinding
     private lateinit var loadingDialog: LoadingDialog
+    private var isInShoppingMode: Boolean = false
 
     /********************************************************** Android Part Method **********************************************************/
     override fun onCreate(savedState: Bundle?) {
@@ -53,8 +71,14 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
         Injector.injectUserComponent(this)
         binding = DataBindingUtil.setContentView(this, R.layout.item_detail_layout)
 
-        binding.item = if (savedState == null) intent.getParcelableExtra(ConstantHolder.ITEM_DATA_KEY)
-        else savedState.getParcelable(ConstantHolder.ITEM_DATA_KEY)
+        if (savedState == null) {
+            binding.item = intent.getParcelableExtra(ConstantHolder.ITEM_DATA_KEY)
+            isInShoppingMode = intent.getBooleanExtra(ConstantHolder.IS_IN_SHOPPING_MODE, false)
+
+        } else {
+            binding.item = savedState.getParcelable(ConstantHolder.ITEM_DATA_KEY)
+            isInShoppingMode = savedState.getBoolean(ConstantHolder.IS_IN_SHOPPING_MODE)
+        }
 
         loadingDialog = LoadingDialog()
         loadingDialog.setMessage(getString(R.string.updatingDataMessageItem))
@@ -128,6 +152,17 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
         binding.itemImageDetail.setOnClickListener { presenter.changeItemImage() }
         binding.addItemCountDetail.setOnClickListener { presenter.addQuantity() }
         binding.removeItemCountDetail.setOnClickListener { presenter.removeQuantity() }
+
+        if (isInShoppingMode) {
+            binding.itemBrought.show()
+            if (binding.item.bought) {
+                binding.itemBrought.setImageResource(R.drawable.ic_item_was_not_bought_black)
+                binding.itemBrought.backgroundTintList = ResourcesCompat.getColorStateList(resources, android.R.color.holo_red_light, theme)
+            }
+
+        } else binding.itemBrought.hide()
+
+        binding.itemBrought.setOnClickListener { _ -> presenter.onItemBought(!binding.item.bought) }
     }
 
     override fun cleanState() = presenter.unBind()
@@ -135,6 +170,22 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
     override fun getItemId(): String = binding.item.id
 
     override fun getItem(): ItemModel = binding.item
+
+    override fun itemNotBought() {
+        binding.item.bought = false
+
+        binding.itemBrought.setImageResource(R.drawable.ic_item_was_bought_black)
+
+        binding.itemBrought.backgroundTintList = ResourcesCompat.getColorStateList(resources, R.color.ItemDetailColorSecondary, theme)
+    }
+
+    override fun itemBought() {
+        binding.item.bought = true
+
+        binding.itemBrought.setImageResource(R.drawable.ic_item_was_not_bought_black)
+
+        binding.itemBrought.backgroundTintList = ResourcesCompat.getColorStateList(resources, android.R.color.holo_red_light, theme)
+    }
 
     override fun requestImage() {
         if (hasWritePermission()) {

@@ -42,15 +42,17 @@ interface ItemContract {
 
         fun setUpOnClick(presenter: ItemContract.ItemPresenter)
 
-        fun isShoppingEnabled(): Boolean
-
         fun displayItemDetail(item: ItemModel)
 
         fun displayItemBroughtBy(currentUserName: String)
 
         fun hideItemBroughtBy()
 
-        fun displayNotInShoppingModeMessage()
+        fun enableShoppingMode()
+
+        fun disableShoppingMode()
+
+        fun showError(e: Throwable)
     }
 
     interface ItemPresenter : IPresenter<ItemView> {

@@ -20,6 +20,7 @@ package com.dbeginc.dbshopping.listitems
 import com.dbeginc.dbshopping.base.IPresenter
 import com.dbeginc.dbshopping.base.IView
 import com.dbeginc.dbshopping.viewmodels.ItemModel
+import com.dbeginc.dbshopping.viewmodels.UserModel
 
 /**
  * Copyright (C) 2017 Darel Bitsy
@@ -41,6 +42,7 @@ interface ListItemsContract {
 
     interface ListItemsView : IView {
         fun getListId() : String
+        fun getAppUser(): UserModel
         fun displayItems(items: List<ItemModel>)
         fun hideItems()
         fun displayNoItemsMessage()

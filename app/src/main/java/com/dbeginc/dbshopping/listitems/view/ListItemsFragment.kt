@@ -37,24 +37,9 @@ import com.dbeginc.dbshopping.listitems.adapter.ItemsAdapter
 import com.dbeginc.dbshopping.listitems.presenter.ListItemsPresenterImpl
 import com.dbeginc.dbshopping.viewmodels.ItemModel
 import com.dbeginc.dbshopping.viewmodels.UserModel
+import io.reactivex.subjects.BehaviorSubject
 import javax.inject.Inject
 
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
- * Created by darel on 24.08.17.
- */
 class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
     @Inject lateinit var presenter: ListItemsContract.ListItemPresenter
     @Inject lateinit var user: UserModel
@@ -65,13 +50,15 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
     private lateinit var defaultName: String
     private var items = emptyList<ItemModel>()
     private val swipeToRemove = ItemTouchHelper(SwipeToDeleteItem())
+    private val shoppingModeUpdate: BehaviorSubject<Boolean> = BehaviorSubject.create()
 
     /********************************************************** Android Part Method **********************************************************/
     companion object {
-        @JvmStatic fun newInstance(listId: String) : ListItemsFragment {
+        @JvmStatic fun newInstance(listId: String, isUserShoppingThisList: Boolean) : ListItemsFragment {
             val fragment = ListItemsFragment()
             val args = Bundle()
             args.putString(ConstantHolder.LIST_ID, listId)
+            args.putBoolean(ConstantHolder.IS_IN_SHOPPING_MODE, isUserShoppingThisList)
             fragment.arguments = args
             return fragment
         }
@@ -83,12 +70,16 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
 
         if (savedState == null) {
             listId = arguments.getString(ConstantHolder.LIST_ID)
-            adapter = ItemsAdapter(items, user.name, preferences, (presenter as ListItemsPresenterImpl).itemUpdate)
+            // set the current shopping mode
+            shoppingModeUpdate.onNext(arguments.getBoolean(ConstantHolder.IS_IN_SHOPPING_MODE))
+            adapter = ItemsAdapter(items, user.name, shoppingModeUpdate, (presenter as ListItemsPresenterImpl).itemUpdate)
 
         } else {
             listId = savedState.getString(ConstantHolder.LIST_ID)
             items = savedState.getList(ConstantHolder.ITEM_DATA_KEY) ?: emptyList()
-            adapter = ItemsAdapter(items, user.name, preferences, (presenter as ListItemsPresenterImpl).itemUpdate)
+            // Recover current shopping mode
+            shoppingModeUpdate.onNext(savedState.getBoolean(ConstantHolder.IS_IN_SHOPPING_MODE))
+            adapter = ItemsAdapter(items, user.name, shoppingModeUpdate, (presenter as ListItemsPresenterImpl).itemUpdate)
         }
 
         defaultName = getString(R.string.default_item_name)
@@ -115,6 +106,7 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
         super.onSaveInstanceState(outState)
         outState?.putString(ConstantHolder.LIST_ID, listId)
         outState?.putList(ConstantHolder.ITEM_DATA_KEY, adapter.getViewModels())
+        outState?.putBoolean(ConstantHolder.IS_IN_SHOPPING_MODE, shoppingModeUpdate.value)
     }
 
     /********************************************************** List Items View Part Method **********************************************************/
@@ -127,15 +119,20 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
         binding.addItemBtn.setOnClickListener { presenter.addItem() }
         binding.listItemsSRL.setOnRefreshListener { presenter.loadItems() }
 
-        binding.listInShoppingModeStatus.isChecked = preferences.getBoolean(ConstantHolder.List_IN_SHOPPING_MODE, false)
         binding.listInShoppingModeStatus.setOnCheckedChangeListener { _, isOn -> presenter.onShoppingStatusChange(isOn) }
+        binding.listInShoppingModeStatus.isChecked = shoppingModeUpdate.value as Boolean
 
         presenter.loadItems()
     }
 
-    override fun cleanState() = presenter.unBind()
+    override fun cleanState() {
+        shoppingModeUpdate.onComplete()
+        presenter.unBind()
+    }
 
     override fun getListId(): String = listId
+
+    override fun getAppUser(): UserModel = user
 
     override fun displayItems(items: List<ItemModel>) = adapter.updateData(items)
 
@@ -170,16 +167,12 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
     override fun displayErrorMessage(error: String) = binding.listItemsLayout.snack(error)
 
     override fun enableShoppingMode() {
-        preferences.edit()
-                .putBoolean(ConstantHolder.List_IN_SHOPPING_MODE, true)
-                .apply()
+        shoppingModeUpdate.onNext(true)
         binding.listItemsLayout.snack(getString(R.string.shoppingModeEnable))
     }
 
     override fun disableShoppingMode() {
-        preferences.edit()
-                .putBoolean(ConstantHolder.List_IN_SHOPPING_MODE, false)
-                .apply()
+        shoppingModeUpdate.onNext(false)
         binding.listItemsLayout.snack(getString(R.string.shoppingModeDisable))
     }
 

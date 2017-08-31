@@ -23,11 +23,14 @@ import com.dbeginc.dbshopping.mapper.data.toItemModel
 import com.dbeginc.dbshopping.viewmodels.ItemModel
 import com.dbeginc.domain.entities.data.ShoppingItem
 import com.dbeginc.domain.entities.requestmodel.ItemRequestModel
+import com.dbeginc.domain.entities.requestmodel.ListRequestModel
 import com.dbeginc.domain.repositories.IDataRepo
 import com.dbeginc.domain.usecases.data.item.AddItem
 import com.dbeginc.domain.usecases.data.item.DeleteItem
 import com.dbeginc.domain.usecases.data.item.GetItems
 import com.dbeginc.domain.usecases.data.item.UpdateItem
+import com.dbeginc.domain.usecases.data.list.AddUserShoppingList
+import com.dbeginc.domain.usecases.data.list.RemoveUserShopping
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.subjects.PublishSubject
@@ -52,12 +55,20 @@ import io.reactivex.subscribers.DisposableSubscriber
 class ListItemsPresenterImpl(dataRepo: IDataRepo) : ListItemsContract.ListItemPresenter {
 
     private lateinit var view: ListItemsContract.ListItemsView
+
+    /************************ Use Cases ************************/
     private val getAllItems = GetItems(dataRepo)
     private val addItem = AddItem(dataRepo)
     private val updateItem = UpdateItem(dataRepo)
     private val deleteItem = DeleteItem(dataRepo)
+    private val addUserShopping = AddUserShoppingList(dataRepo)
+    private val removeUserShopping = RemoveUserShopping(dataRepo)
+
+    /************************ Event publishers ************************/
+    val itemUpdate : PublishSubject<ItemModel> = PublishSubject.create()
+
+    /************************ Subscriptions ************************/
     private val subscriptions = CompositeDisposable()
-    val itemUpdate : PublishSubject<ItemModel> = PublishSubject.create<ItemModel>()
 
     override fun bind(view: ListItemsContract.ListItemsView) {
         this.view = view
@@ -75,6 +86,8 @@ class ListItemsPresenterImpl(dataRepo: IDataRepo) : ListItemsContract.ListItemPr
         addItem.dispose()
         updateItem.dispose()
         deleteItem.dispose()
+        addUserShopping.dispose()
+        removeUserShopping.dispose()
         subscriptions.clear()
     }
 
@@ -112,8 +125,29 @@ class ListItemsPresenterImpl(dataRepo: IDataRepo) : ListItemsContract.ListItemPr
     }
 
     override fun onShoppingStatusChange(isOn: Boolean) {
-        if (isOn) view.enableShoppingMode()
-        else view.disableShoppingMode()
+        view.displayUpdatingStatus()
+        val requestParams = ListRequestModel(view.getListId(), view.getAppUser().id)
+
+        if (isOn) addUserShopping.execute(AddUserShoppingObserver(), requestParams)
+        else removeUserShopping.execute(RemoveUserShoppingObserver(), requestParams)
+    }
+
+    private inner class AddUserShoppingObserver : DisposableCompletableObserver() {
+        override fun onComplete() {
+            view.hideUpdatingStatus()
+            view.enableShoppingMode()
+            dispose()
+        }
+        override fun onError(e: Throwable) = view.displayErrorMessage(e.localizedMessage)
+    }
+
+    private inner class RemoveUserShoppingObserver : DisposableCompletableObserver() {
+        override fun onComplete() {
+            view.hideUpdatingStatus()
+            view.disableShoppingMode()
+            dispose()
+        }
+        override fun onError(e: Throwable) = view.displayErrorMessage(e.localizedMessage)
     }
 
     private inner class UpdateObserver : DisposableCompletableObserver() {

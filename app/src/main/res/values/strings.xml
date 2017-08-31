@@ -53,8 +53,8 @@
     <string name="default_item_name">No name</string>
     <string name="itemImageDescription">Shopping Item Image</string>
     <string name="itemsCount">Items count: %1$d</string>
-    <string name="ItemWasBrought">Has been bought</string>
-    <string name="ItemWasNotBrought">Has not been brought</string>
+    <string name="ItemWasBought">Has been bought</string>
+    <string name="ItemWasNotBought">Has not been brought</string>
     <string name="LabelItemName">Item Name</string>
     <string name="LabelItemCount">Count</string>
     <string name="LabelItemPrice">Price</string>

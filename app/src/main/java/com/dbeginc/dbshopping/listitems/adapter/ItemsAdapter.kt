@@ -17,7 +17,6 @@
 
 package com.dbeginc.dbshopping.listitems.adapter
 
-import android.content.SharedPreferences
 import android.databinding.DataBindingUtil
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
@@ -27,6 +26,7 @@ import com.dbeginc.dbshopping.R
 import com.dbeginc.dbshopping.listitems.adapter.presenter.ItemPresenterImpl
 import com.dbeginc.dbshopping.listitems.adapter.view.ItemViewHolder
 import com.dbeginc.dbshopping.viewmodels.ItemModel
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 /**
@@ -45,18 +45,18 @@ import io.reactivex.subjects.PublishSubject
  *
  * Created by darel on 24.08.17.
  */
-class ItemsAdapter(items: List<ItemModel>, private val currentUserName: String,
-                   private val preferences: SharedPreferences, private val itemUpdateEvent: PublishSubject<ItemModel>) : RecyclerView.Adapter<ItemViewHolder>() {
+class ItemsAdapter(items: List<ItemModel>, private val currentUserName: String, private val shoppingModeState: BehaviorSubject<Boolean>,
+                   private val itemUpdateEvent: PublishSubject<ItemModel>) : RecyclerView.Adapter<ItemViewHolder>() {
 
     private val presenters : MutableList<ItemContract.ItemPresenter> = mutableListOf()
     private var container: RecyclerView? = null
 
-    init { items.mapTo(presenters) { item -> ItemPresenterImpl(item, currentUserName, itemUpdateEvent) } }
+    init { items.mapTo(presenters) { item -> ItemPresenterImpl(item, currentUserName, shoppingModeState, itemUpdateEvent) } }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
-        return ItemViewHolder(DataBindingUtil.inflate(inflater, R.layout.item_layout, parent, false), preferences)
+        return ItemViewHolder(DataBindingUtil.inflate(inflater, R.layout.item_layout, parent, false))
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
@@ -81,7 +81,7 @@ class ItemsAdapter(items: List<ItemModel>, private val currentUserName: String,
     }
 
     fun addItem(item: ItemModel) {
-        presenters.add(ItemPresenterImpl(item, currentUserName, itemUpdateEvent))
+        presenters.add(ItemPresenterImpl(item, currentUserName, shoppingModeState, itemUpdateEvent))
         notifyItemChanged(presenters.size)
     }
 
@@ -122,7 +122,7 @@ class ItemsAdapter(items: List<ItemModel>, private val currentUserName: String,
      */
     private fun fillMe(newData: List<ItemModel>) {
         presenters.clear()
-        newData.mapTo(presenters) { item -> ItemPresenterImpl(item, currentUserName, itemUpdateEvent) }
+        newData.mapTo(presenters) { item -> ItemPresenterImpl(item, currentUserName, shoppingModeState, itemUpdateEvent) }
     }
 
 }
