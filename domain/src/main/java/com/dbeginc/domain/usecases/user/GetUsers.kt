@@ -15,18 +15,20 @@
  *
  */
 
-package com.dbeginc.domain.entities.data
+package com.dbeginc.domain.usecases.user
 
-import java.util.*
+import com.dbeginc.domain.entities.requestmodel.UserRequestModel
+import com.dbeginc.domain.entities.user.User
+import com.dbeginc.domain.repositories.IUserRepo
+import com.dbeginc.domain.usecases.UseCase
+import io.reactivex.Flowable
 
 /**
- * Pojo representing a user shopping list item
+ * Created by darel on 02.09.17.
+ *
+ * Get Users by their ids
  */
-data class ShoppingItem(var uuid: String = UUID.randomUUID().toString(),
-                        var name: String,
-                        var itemOf: String,
-                        var count: Long = 1,
-                        var price: Double = 0.0,
-                        var bought: Boolean = false,
-                        var boughtBy: String = "",
-                        var image: ItemImage = ItemImage())
+class GetUsers(private val userRepo: IUserRepo) : UseCase<List<User>, UserRequestModel<List<String>>>() {
+    override fun buildUseCaseObservable(params: UserRequestModel<List<String>>): Flowable<List<User>> =
+            userRepo.getUsers(params)
+}

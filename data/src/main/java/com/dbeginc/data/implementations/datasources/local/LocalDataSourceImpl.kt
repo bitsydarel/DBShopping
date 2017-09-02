@@ -56,6 +56,7 @@ import java.util.*
  * Created by darel on 21.08.17.
  */
 class LocalDataSourceImpl : DataSource {
+
     override fun addUserShopping(requestModel: ListRequestModel<String>): Completable {
         return Completable.fromAction {
             Realm.getDefaultInstance().use {

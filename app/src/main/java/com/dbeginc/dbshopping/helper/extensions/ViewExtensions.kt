@@ -37,25 +37,30 @@ import com.dbeginc.dbshopping.R
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
- * Created by darel on 21.08.17.
- */
-fun View.hide() { visibility = View.GONE }
 
-fun View.show() { visibility = View.VISIBLE }
+fun View.invisible() {
+    animate().alpha(0F)
+            .setInterpolator(DecelerateInterpolator())
+            .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+            .start()
+    visibility = View.INVISIBLE
+}
+
+fun View.hide() {
+    animate().alpha(0F)
+            .setInterpolator(DecelerateInterpolator())
+            .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+            .start()
+    visibility = View.GONE
+}
+
+fun View.show() {
+    visibility = View.VISIBLE
+    animate().alpha(1F)
+            .setInterpolator(DecelerateInterpolator())
+            .setDuration(resources.getInteger(android.R.integer.config_shortAnimTime).toLong())
+            .start()
+}
 
 fun ViewGroup.snack(message: String, duration: Int = Snackbar.LENGTH_LONG) {
     Snackbar.make(this, message, duration).show()

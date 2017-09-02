@@ -41,17 +41,29 @@ import com.dbeginc.dbshopping.viewmodels.UserModel
 interface ListItemsContract {
 
     interface ListItemsView : IView {
-        fun getListId() : String
+        /******************** User actions ********************/
         fun getAppUser(): UserModel
+        fun getUsersShopping() : List<String>
+        fun displayNoUserShopping()
+        fun displayCurrentUserShoppingAlone()
+        fun displayCurrentUserShoppingWith(numberOfUsers: Int)
+        fun displayCurrentUserShoppingWith(name: String)
+        fun displayUserShopping(username: String)
+        fun displayTheTwoUsersShopping(firstUserName: String, secondUserName: String)
+        fun displayUsersShopping(numberOfUsers: Int)
+        fun showGettingUsersShoppingStatus()
+        fun hideGettingUsersShoppingStatus()
+        /******************** Data actions ********************/
+        fun getListId() : String
+        fun getItemAtPosition(position: Int): ItemModel
+        fun getDefaultItemName(): String
+        fun getItemsSize(): Int
         fun displayItems(items: List<ItemModel>)
         fun hideItems()
         fun displayNoItemsMessage()
         fun hideNoItemsMessage()
         fun addItem(item: ItemModel)
         fun removeItem(position: Int)
-        fun getItemAtPosition(position: Int): ItemModel
-        fun getDefaultItemName(): String
-        fun getItemsSize(): Int
         fun displayLoadingStatus()
         fun hideLoadingStatus()
         fun displayUpdatingStatus()
@@ -67,6 +79,8 @@ interface ListItemsContract {
         fun onShoppingStatusChange(isOn: Boolean)
 
         fun updateItem(item: ItemModel)
+
+        fun defineUsersShopping()
 
         fun removeItem(position: Int)
 

@@ -45,6 +45,13 @@
     <string name="shoppingModeEnable">Shopping mode is on!</string>
     <string name="shoppingModeDisable">Shopping mode is off!</string>
     <string name="shoppingModeNotEnabled">Shopping mode not enabled!</string>
+    <string name="nobodyIsShopping">Nobody is shopping</string>
+    <string name="youAreShopping">You are shopping</string>
+    <string name="youAndUsersAreShopping">You and %1$d others are shopping</string>
+    <string name="youAndUserAreShopping">You and %1$s are shopping</string>
+    <string name="userIsShopping">%1$s is shopping</string>
+    <string name="twoUsersAreShopping">%1$s and %1$s are shopping</string>
+    <string name="UsersAreShopping">%1$d are shopping</string>
     <string name="action_edit_list_name">Edit list name</string>
     <string name="action_remove_list">Delete list</string>
     <string name="action_remove_message_list">Are you sure you want to remove this list ?</string>

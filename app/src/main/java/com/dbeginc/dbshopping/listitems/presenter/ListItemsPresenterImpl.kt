@@ -24,13 +24,18 @@ import com.dbeginc.dbshopping.viewmodels.ItemModel
 import com.dbeginc.domain.entities.data.ShoppingItem
 import com.dbeginc.domain.entities.requestmodel.ItemRequestModel
 import com.dbeginc.domain.entities.requestmodel.ListRequestModel
+import com.dbeginc.domain.entities.requestmodel.UserRequestModel
+import com.dbeginc.domain.entities.user.User
 import com.dbeginc.domain.repositories.IDataRepo
+import com.dbeginc.domain.repositories.IUserRepo
 import com.dbeginc.domain.usecases.data.item.AddItem
 import com.dbeginc.domain.usecases.data.item.DeleteItem
 import com.dbeginc.domain.usecases.data.item.GetItems
 import com.dbeginc.domain.usecases.data.item.UpdateItem
 import com.dbeginc.domain.usecases.data.list.AddUserShoppingList
 import com.dbeginc.domain.usecases.data.list.RemoveUserShopping
+import com.dbeginc.domain.usecases.user.GetUser
+import com.dbeginc.domain.usecases.user.GetUsers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.subjects.PublishSubject
@@ -52,11 +57,16 @@ import io.reactivex.subscribers.DisposableSubscriber
  *
  * Created by darel on 24.08.17.
  */
-class ListItemsPresenterImpl(dataRepo: IDataRepo) : ListItemsContract.ListItemPresenter {
-
+class ListItemsPresenterImpl(userRepo: IUserRepo, dataRepo: IDataRepo) : ListItemsContract.ListItemPresenter {
     private lateinit var view: ListItemsContract.ListItemsView
 
     /************************ Use Cases ************************/
+
+    /************************ User Cases ************************/
+    private val getUser = GetUser(userRepo)
+    private val getUsers = GetUsers(userRepo)
+
+    /************************ Data Cases ************************/
     private val getAllItems = GetItems(dataRepo)
     private val addItem = AddItem(dataRepo)
     private val updateItem = UpdateItem(dataRepo)
@@ -91,6 +101,8 @@ class ListItemsPresenterImpl(dataRepo: IDataRepo) : ListItemsContract.ListItemPr
         subscriptions.clear()
     }
 
+    /******************************************************************** Data Actions ********************************************************************/
+
     override fun loadItems() {
         view.displayLoadingStatus()
         getAllItems.execute(ItemsObserver(), ItemRequestModel(view.getListId(), Unit))
@@ -122,32 +134,6 @@ class ListItemsPresenterImpl(dataRepo: IDataRepo) : ListItemsContract.ListItemPr
         view.addItem(item.toItemModel())
 
         addItem.execute(AddItemObserver(), ItemRequestModel(view.getListId(), item))
-    }
-
-    override fun onShoppingStatusChange(isOn: Boolean) {
-        view.displayUpdatingStatus()
-        val requestParams = ListRequestModel(view.getListId(), view.getAppUser().id)
-
-        if (isOn) addUserShopping.execute(AddUserShoppingObserver(), requestParams)
-        else removeUserShopping.execute(RemoveUserShoppingObserver(), requestParams)
-    }
-
-    private inner class AddUserShoppingObserver : DisposableCompletableObserver() {
-        override fun onComplete() {
-            view.hideUpdatingStatus()
-            view.enableShoppingMode()
-            dispose()
-        }
-        override fun onError(e: Throwable) = view.displayErrorMessage(e.localizedMessage)
-    }
-
-    private inner class RemoveUserShoppingObserver : DisposableCompletableObserver() {
-        override fun onComplete() {
-            view.hideUpdatingStatus()
-            view.disableShoppingMode()
-            dispose()
-        }
-        override fun onError(e: Throwable) = view.displayErrorMessage(e.localizedMessage)
     }
 
     private inner class UpdateObserver : DisposableCompletableObserver() {
@@ -205,6 +191,117 @@ class ListItemsPresenterImpl(dataRepo: IDataRepo) : ListItemsContract.ListItemPr
         override fun onError(error: Throwable) {
             view.hideLoadingStatus()
             view.displayErrorMessage(error.localizedMessage)
+        }
+    }
+
+    /******************************************************************** User Actions ********************************************************************/
+
+    override fun defineUsersShopping() {
+        val numberOfUsers = view.getUsersShopping().size
+
+        when {
+            view.getUsersShopping().contains(view.getAppUser().id) -> {
+                val currentUserPosition = view.getUsersShopping().indexOf(view.getAppUser().id)
+
+                when(numberOfUsers) {
+                    1 -> view.displayCurrentUserShoppingAlone()
+                    2 -> if (currentUserPosition == 0) getWhoIsAlsoShopping(userId = view.getUsersShopping()[1]) else getWhoIsAlsoShopping(userId = view.getUsersShopping()[0])
+                    else -> view.displayCurrentUserShoppingWith(numberOfUsers - 1)
+                }
+
+            }
+            numberOfUsers > 0 -> when(numberOfUsers) {
+                1 -> getWhoIsShopping(view.getUsersShopping()[0])
+                2 -> getTheTwoUsersAreShopping(view.getUsersShopping())
+                else -> view.displayUsersShopping(numberOfUsers)
+            }
+            else -> view.displayNoUserShopping()
+        }
+    }
+
+    override fun onShoppingStatusChange(isOn: Boolean) {
+        view.displayUpdatingStatus()
+        val requestParams = ListRequestModel(view.getListId(), view.getAppUser().id)
+
+        if (isOn) addUserShopping.execute(AddUserShoppingObserver(), requestParams)
+        else removeUserShopping.execute(RemoveUserShoppingObserver(), requestParams)
+    }
+
+    private fun getWhoIsShopping(userId: String) {
+        view.showGettingUsersShoppingStatus()
+        getUser.execute(WhoIsShoppingObserver(), UserRequestModel(userId, Unit))
+    }
+
+    private fun getWhoIsAlsoShopping(userId: String) {
+        view.showGettingUsersShoppingStatus()
+        getUser.execute(WhoIsAlsoShoppingObserver(), UserRequestModel(userId, Unit))
+    }
+
+    private fun getTheTwoUsersAreShopping(users: List<String>) {
+        view.showGettingUsersShoppingStatus()
+        getUsers.execute(TwoUsersAreShoppingObserver(), UserRequestModel(view.getAppUser().id, users))
+    }
+
+    private inner class WhoIsShoppingObserver : DisposableSubscriber<User>() {
+        override fun onNext(user: User) {
+            view.hideGettingUsersShoppingStatus()
+            view.displayUserShopping(user.name)
+            dispose()
+        }
+        override fun onError(error: Throwable) {
+            view.hideGettingUsersShoppingStatus()
+            view.displayErrorMessage(error.localizedMessage)
+        }
+        override fun onComplete() = dispose()
+    }
+
+    private inner class WhoIsAlsoShoppingObserver : DisposableSubscriber<User>() {
+        override fun onNext(user: User) {
+            view.hideGettingUsersShoppingStatus()
+            view.displayCurrentUserShoppingWith(user.name)
+            dispose()
+        }
+        override fun onError(error: Throwable) {
+            view.hideGettingUsersShoppingStatus()
+            view.displayErrorMessage(error.localizedMessage)
+        }
+        override fun onComplete() = dispose()
+    }
+
+    private inner class TwoUsersAreShoppingObserver : DisposableSubscriber<List<User>>() {
+        override fun onNext(users: List<User>) {
+            view.hideGettingUsersShoppingStatus()
+            view.displayTheTwoUsersShopping(users[0].name, users[1].name)
+            dispose()
+        }
+        override fun onError(error: Throwable) {
+            view.hideGettingUsersShoppingStatus()
+            view.displayErrorMessage(error.localizedMessage)
+        }
+        override fun onComplete() = dispose()
+    }
+
+    private inner class AddUserShoppingObserver : DisposableCompletableObserver() {
+        override fun onComplete() {
+            view.hideUpdatingStatus()
+            view.enableShoppingMode()
+            dispose()
+        }
+        override fun onError(e: Throwable) {
+            view.hideUpdatingStatus()
+            view.displayErrorMessage(e.localizedMessage)
+        }
+    }
+
+    private inner class RemoveUserShoppingObserver : DisposableCompletableObserver() {
+        override fun onComplete() {
+            view.hideUpdatingStatus()
+            view.disableShoppingMode()
+            dispose()
+        }
+        override fun onError(e: Throwable) {
+            view.hideUpdatingStatus()
+            view.displayErrorMessage(e.localizedMessage)
         }
     }
 }
