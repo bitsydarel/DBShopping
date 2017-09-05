@@ -72,7 +72,7 @@ class ListDetailActivity : BaseActivity(), ListDetailContract.ListDetailView, Di
 
         if (savedState == null) {
             list = intent.getParcelableExtra(ConstantHolder.LIST_DATA_KEY)
-            listItemFragment = ListItemsFragment.newInstance(listId = list.id, listOfShoppingUser = list.usersShopping)
+            listItemFragment = ListItemsFragment.newInstance(listId = list.id, isCurrentUserShopping = list.usersShopping.contains(user.id))
 
         } else {
             list = savedState.getParcelable(ConstantHolder.LIST_DATA_KEY)

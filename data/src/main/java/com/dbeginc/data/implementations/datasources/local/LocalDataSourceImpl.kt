@@ -35,6 +35,7 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.realm.Realm
+import io.realm.RealmList
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -258,8 +259,8 @@ class LocalDataSourceImpl : DataSource {
             }
         }
 
-        return LocalShoppingList(uuid= uuid, name = name, ownerName = ownerName,
-                lastChange = timestamp, savedInServer = wasSaveRemotely
+        return LocalShoppingList(uuid= uuid, name = name, ownerName = ownerName, lastChange = timestamp,
+                savedInServer = wasSaveRemotely, usersShopping = usersShopping.mapTo(RealmList()) { userId -> RealmString(userId) }
         )
     }
 

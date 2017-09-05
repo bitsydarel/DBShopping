@@ -22,8 +22,11 @@ import android.util.Log
 import com.dbeginc.data.ConstantHolder
 import com.dbeginc.data.datasource.DataSource
 import com.dbeginc.data.datasource.UserSource
+import com.dbeginc.domain.entities.requestmodel.AccountRequestModel
 import com.dbeginc.domain.entities.requestmodel.AuthRequestModel
+import com.dbeginc.domain.entities.requestmodel.GoogleRequestModel
 import com.dbeginc.domain.entities.requestmodel.UserRequestModel
+import com.dbeginc.domain.entities.user.Account
 import com.dbeginc.domain.entities.user.User
 import com.dbeginc.domain.repositories.IUserRepo
 import com.google.firebase.auth.FirebaseAuth
@@ -36,28 +39,11 @@ import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableCompletableObserver
 
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
- * Created by darel on 21.08.17.
- */
 class UserRepoImpl(private val firebaseAuth: FirebaseAuth, private val local: UserSource, private val remote: UserSource,
                    private val workerThread: Scheduler, private val ioThread: Scheduler, private val uiThread: Scheduler,
                    private val localData: DataSource) : IUserRepo {
 
     private val subscriptions = CompositeDisposable()
-
     /********************************** Create user methods **********************************/
 
     override fun createNewUser(requestModel: AuthRequestModel<String>): Completable {
@@ -68,13 +54,15 @@ class UserRepoImpl(private val firebaseAuth: FirebaseAuth, private val local: Us
                 }
         }.flatMapCompletable {
             user -> val encodedEmail = Base64.encodeToString(user.email?.toByteArray(), Base64.NO_WRAP)
-            remote.createUser(
-                    UserRequestModel(encodedEmail, User(encodedEmail, requestModel.arg, email = user.email!!))
-            )
-        }
+            val userToAdd = UserRequestModel(encodedEmail, User(encodedEmail, requestModel.arg, email = user.email!!))
+            val userAccount = UserRequestModel(encodedEmail, Account(encodedEmail, requestModel.arg, accountProviders = listOf(user.providers!![0])))
+
+            remote.createUser(userToAdd, userAccount).concatWith(local.createUser(userToAdd, userAccount))
+
+        }.subscribeOn(ioThread).observeOn(uiThread)
     }
 
-    override fun createNewUserWithGoogle(requestModel: UserRequestModel<String>): Completable {
+    override fun createNewUserWithGoogle(requestModel: GoogleRequestModel<String>): Completable {
         val credentials = GoogleAuthProvider.getCredential(requestModel.arg, null)
 
         val login = Single.create<FirebaseUser> { emitter -> firebaseAuth.signInWithCredential(credentials)
@@ -85,7 +73,8 @@ class UserRepoImpl(private val firebaseAuth: FirebaseAuth, private val local: Us
 
         return login.flatMapCompletable {
             user -> val userToAdd = UserRequestModel(requestModel.userId, User(requestModel.userId, name = user.displayName ?: "", email = user.email ?: ""))
-            remote.createUser(userToAdd)
+            val userAccount = UserRequestModel(requestModel.userId, requestModel.userAccount)
+            remote.createUser(userToAdd, userAccount).concatWith(local.createUser(userToAdd, userAccount))
         }.subscribeOn(ioThread).observeOn(uiThread)
     }
 
@@ -111,7 +100,11 @@ class UserRepoImpl(private val firebaseAuth: FirebaseAuth, private val local: Us
 
     /********************************** User checking methods **********************************/
 
-    override fun doesUserExist(requestModel: UserRequestModel<Unit>): Single<Boolean> = remote.checkIfUserExist(requestModel)
+    override fun doesUserExist(requestModel: UserRequestModel<Unit>): Single<Boolean> =
+            remote.checkIfUserExist(requestModel).subscribeOn(ioThread).observeOn(uiThread)
+
+    override fun canUserLoginWithAccountProvider(requestModel: UserRequestModel<String>): Single<Boolean> =
+            remote.checkIfUserHasAccountProvider(requestModel).subscribeOn(ioThread).observeOn(uiThread)
 
     /********************************** User Interactions methods **********************************/
 
@@ -121,7 +114,7 @@ class UserRepoImpl(private val firebaseAuth: FirebaseAuth, private val local: Us
                 .doOnNext { user -> subscriptions.addUser(user) }
                 .publish {
                     remoteData -> Flowable.mergeDelayError(remoteData, local.getUser(requestModel).takeUntil(remoteData).subscribeOn(workerThread))
-                }
+                }.observeOn(uiThread)
     }
 
     override fun getUsers(requestModel: UserRequestModel<List<String>>): Flowable<List<User>> {
@@ -130,7 +123,23 @@ class UserRepoImpl(private val firebaseAuth: FirebaseAuth, private val local: Us
                 .doOnNext { users -> users.forEach { user -> subscriptions.addUser(user) } }
                 .publish {
                     remoteData -> Flowable.mergeDelayError(remoteData, local.getUsers(requestModel).takeUntil(remoteData).subscribeOn(workerThread))
-                }
+                }.observeOn(uiThread)
+    }
+
+    override fun getAccount(requestModel: AccountRequestModel<Unit>): Flowable<Account> {
+        return remote.getAccount(requestModel)
+                .subscribeOn(ioThread)
+                .doOnNext { account -> subscriptions.addAccount(account) }
+                .publish {
+                    remoteData -> Flowable.mergeDelayError(remoteData, local.getAccount(requestModel).takeUntil(remoteData).subscribeOn(workerThread))
+                }.observeOn(uiThread)
+    }
+
+    override fun updateAccount(requestModel: AccountRequestModel<Account>): Completable {
+        return local.updateAccount(requestModel)
+                .subscribeOn(workerThread)
+                .andThen(remote.updateAccount(requestModel).subscribeOn(ioThread))
+                .observeOn(uiThread)
     }
 
     override fun updateUser(requestModel: UserRequestModel<User>): Completable {
@@ -164,14 +173,22 @@ class UserRepoImpl(private val firebaseAuth: FirebaseAuth, private val local: Us
         )
     }
 
+    private fun CompositeDisposable.addAccount(account: Account) {
+        val requestModel = AccountRequestModel(userId = account.userId, arg = account)
+        add(local.updateAccount(requestModel).subscribeOn(workerThread)
+                .subscribeWith(UpdateObserver())
+        )
+    }
+
     private inner class UpdateObserver : DisposableCompletableObserver() {
         override fun onComplete() {
             Log.i(ConstantHolder.TAG, "Update of data done in ${UserRepoImpl::class.java.simpleName}")
             dispose()
         }
-
         override fun onError(e: Throwable) {
             Log.e(ConstantHolder.TAG, "Error in ${UserRepoImpl::class.java.simpleName}: ", e)
         }
     }
+
+    override fun clean() = subscriptions.clear()
 }

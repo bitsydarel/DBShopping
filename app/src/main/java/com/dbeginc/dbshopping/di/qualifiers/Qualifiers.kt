@@ -51,6 +51,10 @@ import javax.inject.Qualifier
  */
 @Qualifier annotation class UserTable
 
+/**
+ * Account Table
+ */
+@Qualifier annotation class AccountTable
 
 /**
  * Network Thread

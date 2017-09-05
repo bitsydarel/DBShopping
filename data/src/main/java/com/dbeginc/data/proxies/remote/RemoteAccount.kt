@@ -15,22 +15,23 @@
  *
  */
 
-package com.dbeginc.dbshopping.mapper.user
+package com.dbeginc.data.proxies.remote
 
-import com.dbeginc.dbshopping.viewmodels.AccountModel
-import com.dbeginc.dbshopping.viewmodels.UserModel
 import com.dbeginc.domain.entities.user.Account
-import com.dbeginc.domain.entities.user.User
+import java.util.*
 
 /**
- * Created by darel on 29.08.17.
+ * Created by darel on 03.09.17.
  *
- * User Mapper file
+ * Remote User Account
  */
-fun UserModel.toUser() : User = User(id, name, email, joinedAt)
+data class RemoteAccount(var userId: String = UUID.randomUUID().toString(), var name: String = "", var profileImage: String = "", var accountProviders: Map<String, Boolean> = mapOf()) {
 
-fun User.toUserModel() : UserModel = UserModel(uuid, name, email, joinedAt)
-
-fun AccountModel.toAccount() : Account = Account(id, name, profileImage, accountProviders)
-
-fun Account.toAccountModel() : AccountModel = AccountModel(id = userId, name = name, profileImage = profileImage, accountProviders = accountProviders)
+    /**
+     * Convert a firebase user account pojo
+     * to a domain entities user account
+     * @return [Account] domain account
+     */
+    fun toDomainAccount() : Account =
+            Account(userId, name, profileImage,  accountProviders.keys.toList())
+}

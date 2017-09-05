@@ -15,22 +15,13 @@
  *
  */
 
-package com.dbeginc.dbshopping.mapper.user
+package com.dbeginc.domain.entities.requestmodel
 
-import com.dbeginc.dbshopping.viewmodels.AccountModel
-import com.dbeginc.dbshopping.viewmodels.UserModel
 import com.dbeginc.domain.entities.user.Account
-import com.dbeginc.domain.entities.user.User
 
 /**
- * Created by darel on 29.08.17.
+ * Created by darel on 02.09.17.
  *
- * User Mapper file
+ * Google Request Model
  */
-fun UserModel.toUser() : User = User(id, name, email, joinedAt)
-
-fun User.toUserModel() : UserModel = UserModel(uuid, name, email, joinedAt)
-
-fun AccountModel.toAccount() : Account = Account(id, name, profileImage, accountProviders)
-
-fun Account.toAccountModel() : AccountModel = AccountModel(id = userId, name = name, profileImage = profileImage, accountProviders = accountProviders)
+class GoogleRequestModel<out V>(val userId: String, val userAccount: Account, val arg: V)

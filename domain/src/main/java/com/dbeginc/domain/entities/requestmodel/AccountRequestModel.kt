@@ -15,17 +15,11 @@
  *
  */
 
-package com.dbeginc.data
+package com.dbeginc.domain.entities.requestmodel
 
-object ConstantHolder {
-    const val ANONYMOUS = "ANONYMOUS"
-    const val TAG = "DBSHOPPING"
-    const val UUID = "uuid"
-    const val ITEM_OF = "itemOf"
-    const val NAME = "name"
-    const val LAST_CHANGE = "lastChange"
-    const val IMAGE = "image"
-    const val EMAIL = "email"
-    const val USER_SHOPPING = "userShopping"
-    const val PROFILE_IMAGE = "profileImage"
-}
+/**
+ * Created by darel on 05.09.17.
+ *
+ * Account Request Model
+ */
+data class AccountRequestModel<out V>(val userId: String, val arg: V)

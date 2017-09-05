@@ -22,6 +22,7 @@ import com.dbeginc.dbshopping.mapper.data.toItem
 import com.dbeginc.dbshopping.mapper.data.toItemModel
 import com.dbeginc.dbshopping.viewmodels.ItemModel
 import com.dbeginc.domain.entities.data.ShoppingItem
+import com.dbeginc.domain.entities.data.ShoppingList
 import com.dbeginc.domain.entities.requestmodel.ItemRequestModel
 import com.dbeginc.domain.entities.requestmodel.ListRequestModel
 import com.dbeginc.domain.entities.requestmodel.UserRequestModel
@@ -33,6 +34,7 @@ import com.dbeginc.domain.usecases.data.item.DeleteItem
 import com.dbeginc.domain.usecases.data.item.GetItems
 import com.dbeginc.domain.usecases.data.item.UpdateItem
 import com.dbeginc.domain.usecases.data.list.AddUserShoppingList
+import com.dbeginc.domain.usecases.data.list.GetList
 import com.dbeginc.domain.usecases.data.list.RemoveUserShopping
 import com.dbeginc.domain.usecases.user.GetUser
 import com.dbeginc.domain.usecases.user.GetUsers
@@ -41,22 +43,6 @@ import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.subjects.PublishSubject
 import io.reactivex.subscribers.DisposableSubscriber
 
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
- * Created by darel on 24.08.17.
- */
 class ListItemsPresenterImpl(userRepo: IUserRepo, dataRepo: IDataRepo) : ListItemsContract.ListItemPresenter {
     private lateinit var view: ListItemsContract.ListItemsView
 
@@ -67,6 +53,7 @@ class ListItemsPresenterImpl(userRepo: IUserRepo, dataRepo: IDataRepo) : ListIte
     private val getUsers = GetUsers(userRepo)
 
     /************************ Data Cases ************************/
+    private val getShoppingUsers = GetList(dataRepo)
     private val getAllItems = GetItems(dataRepo)
     private val addItem = AddItem(dataRepo)
     private val updateItem = UpdateItem(dataRepo)
@@ -195,28 +182,8 @@ class ListItemsPresenterImpl(userRepo: IUserRepo, dataRepo: IDataRepo) : ListIte
     }
 
     /******************************************************************** User Actions ********************************************************************/
-
     override fun defineUsersShopping() {
-        val numberOfUsers = view.getUsersShopping().size
-
-        when {
-            view.getUsersShopping().contains(view.getAppUser().id) -> {
-                val currentUserPosition = view.getUsersShopping().indexOf(view.getAppUser().id)
-
-                when(numberOfUsers) {
-                    1 -> view.displayCurrentUserShoppingAlone()
-                    2 -> if (currentUserPosition == 0) getWhoIsAlsoShopping(userId = view.getUsersShopping()[1]) else getWhoIsAlsoShopping(userId = view.getUsersShopping()[0])
-                    else -> view.displayCurrentUserShoppingWith(numberOfUsers - 1)
-                }
-
-            }
-            numberOfUsers > 0 -> when(numberOfUsers) {
-                1 -> getWhoIsShopping(view.getUsersShopping()[0])
-                2 -> getTheTwoUsersAreShopping(view.getUsersShopping())
-                else -> view.displayUsersShopping(numberOfUsers)
-            }
-            else -> view.displayNoUserShopping()
-        }
+        getShoppingUsers.execute(UsersShoppingObserver(), ListRequestModel(view.getListId(), Unit))
     }
 
     override fun onShoppingStatusChange(isOn: Boolean) {
@@ -281,10 +248,42 @@ class ListItemsPresenterImpl(userRepo: IUserRepo, dataRepo: IDataRepo) : ListIte
         override fun onComplete() = dispose()
     }
 
+    private inner class UsersShoppingObserver : DisposableSubscriber<ShoppingList>() {
+        override fun onNext(list: ShoppingList) {
+            val numberOfUsers = list.usersShopping.size
+
+            when {
+                list.usersShopping.contains(view.getAppUser().id) -> {
+                    val currentUserPosition = list.usersShopping.indexOf(view.getAppUser().id)
+
+                    when(numberOfUsers) {
+                        1 -> view.displayCurrentUserShoppingAlone()
+                        2 -> if (currentUserPosition == 0) getWhoIsAlsoShopping(userId = list.usersShopping[1]) else getWhoIsAlsoShopping(userId = list.usersShopping[0])
+                        else -> view.displayCurrentUserShoppingWith(numberOfUsers - 1)
+                    }
+
+                }
+                numberOfUsers > 0 -> when(numberOfUsers) {
+                    1 -> getWhoIsShopping(list.usersShopping[0])
+                    2 -> getTheTwoUsersAreShopping(list.usersShopping)
+                    else -> view.displayUsersShopping(numberOfUsers)
+                }
+                else -> view.displayNoUserShopping()
+            }
+        }
+
+        override fun onError(error: Throwable) {
+            view.displayCouldNotFindUsersShopping()
+            view.displayErrorMessage(error.localizedMessage)
+        }
+        override fun onComplete() = dispose()
+    }
+
     private inner class AddUserShoppingObserver : DisposableCompletableObserver() {
         override fun onComplete() {
             view.hideUpdatingStatus()
             view.enableShoppingMode()
+            defineUsersShopping()
             dispose()
         }
         override fun onError(e: Throwable) {
@@ -297,6 +296,7 @@ class ListItemsPresenterImpl(userRepo: IUserRepo, dataRepo: IDataRepo) : ListIte
         override fun onComplete() {
             view.hideUpdatingStatus()
             view.disableShoppingMode()
+            defineUsersShopping()
             dispose()
         }
         override fun onError(e: Throwable) {

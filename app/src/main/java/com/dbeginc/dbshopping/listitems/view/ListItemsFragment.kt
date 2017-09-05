@@ -38,7 +38,6 @@ import com.dbeginc.dbshopping.listitems.presenter.ListItemsPresenterImpl
 import com.dbeginc.dbshopping.viewmodels.ItemModel
 import com.dbeginc.dbshopping.viewmodels.UserModel
 import io.reactivex.subjects.BehaviorSubject
-import java.util.*
 import javax.inject.Inject
 
 class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
@@ -49,7 +48,6 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
     private lateinit var listId: String
     private lateinit var adapter: ItemsAdapter
     private lateinit var defaultName: String
-    private lateinit var shoppingUsers: List<String>
     private val swipeToRemove = ItemTouchHelper(SwipeToDeleteItem())
     private val shoppingModeUpdate: BehaviorSubject<Boolean> = BehaviorSubject.create()
     private var items = emptyList<ItemModel>()
@@ -60,15 +58,16 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
     private val currentUserShoppingWithMessage by lazy { getString(R.string.youAndUserAreShopping) }
     private val userIsShopping by lazy { getString(R.string.userIsShopping) }
     private val twoUserAreShoppingMessage by lazy { getString(R.string.twoUsersAreShopping) }
-    private val usersAreShoppingMessage by lazy { getString(R.string.UsersAreShopping) }
+    private val usersAreShoppingMessage by lazy { getString(R.string.usersAreShopping) }
+    private val couldNotFindUsersShopping by lazy { getString(R.string.couldNotFindUsersShopping) }
 
     /********************************************************** Android Part Method **********************************************************/
     companion object {
-        @JvmStatic fun newInstance(listId: String, listOfShoppingUser: List<String>) : ListItemsFragment {
+        @JvmStatic fun newInstance(listId: String, isCurrentUserShopping: Boolean) : ListItemsFragment {
             val fragment = ListItemsFragment()
             val args = Bundle()
             args.putString(ConstantHolder.LIST_ID, listId)
-            args.putStringArrayList(ConstantHolder.SHOPPING_USERS, listOfShoppingUser as ArrayList<String>)
+            args.putBoolean(ConstantHolder.IS_IN_SHOPPING_MODE, isCurrentUserShopping)
             fragment.arguments = args
             return fragment
         }
@@ -81,8 +80,7 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
         if (savedState == null) {
             listId = arguments.getString(ConstantHolder.LIST_ID)
             // set the current shopping mode
-            shoppingUsers = arguments.getStringArrayList(ConstantHolder.SHOPPING_USERS)
-            shoppingModeUpdate.onNext(shoppingUsers.contains(user.id))
+            shoppingModeUpdate.onNext(arguments.getBoolean(ConstantHolder.IS_IN_SHOPPING_MODE))
 
             adapter = ItemsAdapter(items, user.name, shoppingModeUpdate, (presenter as ListItemsPresenterImpl).itemUpdate)
 
@@ -90,8 +88,7 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
             listId = savedState.getString(ConstantHolder.LIST_ID)
             items = savedState.getList(ConstantHolder.ITEM_DATA_KEY) ?: emptyList()
             // Recover current shopping mode
-            shoppingUsers = savedState.getStringArrayList(ConstantHolder.SHOPPING_USERS)
-            shoppingModeUpdate.onNext(shoppingUsers.contains(user.id))
+            shoppingModeUpdate.onNext(savedState.getBoolean(ConstantHolder.IS_IN_SHOPPING_MODE))
 
             adapter = ItemsAdapter(items, user.name, shoppingModeUpdate, (presenter as ListItemsPresenterImpl).itemUpdate)
         }
@@ -120,7 +117,7 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
         super.onSaveInstanceState(outState)
         outState?.putString(ConstantHolder.LIST_ID, listId)
         outState?.putList(ConstantHolder.ITEM_DATA_KEY, adapter.getViewModels())
-        outState?.putStringArrayList(ConstantHolder.SHOPPING_USERS, shoppingUsers as ArrayList<String>)
+        outState?.putBoolean(ConstantHolder.IS_IN_SHOPPING_MODE, shoppingModeUpdate.value)
     }
 
     /********************************************************** List Items View Part Method **********************************************************/
@@ -148,8 +145,6 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
     /********************************************************** User Part Method **********************************************************/
     override fun getAppUser(): UserModel = user
 
-    override fun getUsersShopping(): List<String> = shoppingUsers
-
     override fun displayNoUserShopping() {
         binding.listInShoppingModeLabel.text = noUserShoppingMessage
     }
@@ -176,6 +171,10 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
 
     override fun displayUsersShopping(numberOfUsers: Int) {
         binding.listInShoppingModeLabel.text = String.format(usersAreShoppingMessage, numberOfUsers)
+    }
+
+    override fun displayCouldNotFindUsersShopping() {
+        binding.listInShoppingModeLabel.text = couldNotFindUsersShopping
     }
 
     override fun showGettingUsersShoppingStatus() {

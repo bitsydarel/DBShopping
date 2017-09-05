@@ -15,22 +15,25 @@
  *
  */
 
-package com.dbeginc.dbshopping.mapper.user
+package com.dbeginc.domain.usecases.user
 
-import com.dbeginc.dbshopping.viewmodels.AccountModel
-import com.dbeginc.dbshopping.viewmodels.UserModel
+import com.dbeginc.domain.entities.requestmodel.AccountRequestModel
 import com.dbeginc.domain.entities.user.Account
-import com.dbeginc.domain.entities.user.User
+import com.dbeginc.domain.repositories.IUserRepo
+import com.dbeginc.domain.usecases.UseCase
+import io.reactivex.Flowable
 
 /**
- * Created by darel on 29.08.17.
+ * Created by darel on 05.09.17.
  *
- * User Mapper file
+ * Get user account
  */
-fun UserModel.toUser() : User = User(id, name, email, joinedAt)
+class GetAccount(private val userRepo: IUserRepo) : UseCase<Account, AccountRequestModel<Unit>>() {
+    override fun buildUseCaseObservable(params: AccountRequestModel<Unit>): Flowable<Account> =
+            userRepo.getAccount(params)
 
-fun User.toUserModel() : UserModel = UserModel(uuid, name, email, joinedAt)
-
-fun AccountModel.toAccount() : Account = Account(id, name, profileImage, accountProviders)
-
-fun Account.toAccountModel() : AccountModel = AccountModel(id = userId, name = name, profileImage = profileImage, accountProviders = accountProviders)
+    override fun dispose() {
+        super.dispose()
+        userRepo.clean()
+    }
+}

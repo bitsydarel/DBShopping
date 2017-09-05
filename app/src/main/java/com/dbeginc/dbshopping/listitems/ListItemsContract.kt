@@ -43,7 +43,6 @@ interface ListItemsContract {
     interface ListItemsView : IView {
         /******************** User actions ********************/
         fun getAppUser(): UserModel
-        fun getUsersShopping() : List<String>
         fun displayNoUserShopping()
         fun displayCurrentUserShoppingAlone()
         fun displayCurrentUserShoppingWith(numberOfUsers: Int)
@@ -51,6 +50,7 @@ interface ListItemsContract {
         fun displayUserShopping(username: String)
         fun displayTheTwoUsersShopping(firstUserName: String, secondUserName: String)
         fun displayUsersShopping(numberOfUsers: Int)
+        fun displayCouldNotFindUsersShopping()
         fun showGettingUsersShoppingStatus()
         fun hideGettingUsersShoppingStatus()
         /******************** Data actions ********************/

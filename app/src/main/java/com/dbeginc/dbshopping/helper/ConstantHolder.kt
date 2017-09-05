@@ -50,6 +50,6 @@ object ConstantHolder {
     const val REQUEST_IMAGE_CAPTURE = 7125
     const val NAME = "name"
     const val USER_EMAIL = "user_email"
-    const val SHOPPING_USERS = "shopping_users"
     const val IS_IN_SHOPPING_MODE = "is_in_shopping_mode"
+    const val ACCOUNTS = "accounts"
 }

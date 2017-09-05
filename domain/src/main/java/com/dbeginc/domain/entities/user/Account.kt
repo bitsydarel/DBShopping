@@ -15,17 +15,11 @@
  *
  */
 
-package com.dbeginc.data
+package com.dbeginc.domain.entities.user
 
-object ConstantHolder {
-    const val ANONYMOUS = "ANONYMOUS"
-    const val TAG = "DBSHOPPING"
-    const val UUID = "uuid"
-    const val ITEM_OF = "itemOf"
-    const val NAME = "name"
-    const val LAST_CHANGE = "lastChange"
-    const val IMAGE = "image"
-    const val EMAIL = "email"
-    const val USER_SHOPPING = "userShopping"
-    const val PROFILE_IMAGE = "profileImage"
-}
+/**
+ * Created by darel on 02.09.17.
+ *
+ * User his account
+ */
+class Account(val userId: String, var name: String, var profileImage: String = "", var accountProviders: List<String>)
