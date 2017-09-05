@@ -38,25 +38,9 @@ import com.dbeginc.dbshopping.viewmodels.UserModel
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import io.reactivex.Flowable
 import javax.inject.Inject
-
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- */
 
 class LoginActivity : BaseActivity() , LoginContract.LoginView {
 
@@ -112,19 +96,12 @@ class LoginActivity : BaseActivity() , LoginContract.LoginView {
             if (result.isSuccess) {
                 // Google Sign In was successful, authenticate with Firebase
                 val email : String = result.signInAccount?.email!!
-
+                val emailAsUniqueId = Base64.encodeToString(email.toByteArray(), Base64.NO_WRAP)
+                val provider = GoogleAuthProvider.PROVIDER_ID.substring(0, GoogleAuthProvider.PROVIDER_ID.indexOf("."))
 
                 preferences.edit().putString(ConstantHolder.USER_EMAIL, email).apply()
 
-                val emailAsUniqueId = Base64.encodeToString(email.toByteArray(), Base64.NO_WRAP)
-
-                FirebaseAuth.getInstance()
-                        .fetchProvidersForEmail(email)
-                        .addOnCompleteListener {
-                            task -> if (task.isSuccessful && isUserProvideGoogle(task.result.providers!!)) {
-                            presenter.loginWithGoogle(emailAsUniqueId, result.signInAccount?.idToken!!)
-
-                        } else { displayIncorrectLoginType() }}
+                presenter.loginWithGoogle(emailAsUniqueId, provider, result.signInAccount?.idToken!!)
 
             } else {
                 // Google Sign In failed, update UI appropriately
@@ -132,17 +109,6 @@ class LoginActivity : BaseActivity() , LoginContract.LoginView {
             }
         }
     }
-
-    private fun displayIncorrectLoginType() {
-        AlertDialog.Builder(this)
-                .setTitle(R.string.incorrectLoginType)
-                .setMessage(R.string.userExistButWithDifferentAccount)
-                .setPositiveButton(android.R.string.ok, null)
-                .create()
-                .show()
-    }
-
-    private fun isUserProvideGoogle(providers: List<String>) : Boolean = providers.contains(GoogleAuthProvider.PROVIDER_ID)
 
     /********************************************************** Login View Part Method **********************************************************/
 
@@ -173,6 +139,19 @@ class LoginActivity : BaseActivity() , LoginContract.LoginView {
     override fun getEmailInputEvent(): Flowable<String> = binding.loginEmail.getInputEvent()
 
     override fun getPasswordInputEvent(): Flowable<String> = binding.loginPassword.getInputEvent()
+
+    override fun displayIncorrectLoginType() {
+        AlertDialog.Builder(this)
+                .setTitle(R.string.incorrectLoginType)
+                .setMessage(R.string.userExistButWithDifferentAccount)
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show()
+    }
+
+    override fun displayUserDoesNotExist() {
+        binding.loginViewLayout.snack("No account found with this account type")
+    }
 
     override fun displayEmailInvalidMessage() {
         binding.loginEmailContainer.error = getString(R.string.EmailErrorMessage)
@@ -209,6 +188,7 @@ class LoginActivity : BaseActivity() , LoginContract.LoginView {
     }
 
     override fun requestGoogleAccount() {
+        if (googleApiClient.isConnected) googleApiClient.clearDefaultAccountAndReconnect()
         val signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient)
         startActivityForResult(signInIntent, ConstantHolder.RC_SIGN_IN)
     }

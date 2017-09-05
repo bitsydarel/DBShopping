@@ -141,6 +141,9 @@ interface LoginContract {
          * Go to home view
          */
         fun goToSignUpScreen()
+
+        fun displayIncorrectLoginType()
+        fun displayUserDoesNotExist()
     }
 
     interface LoginPresenter : IPresenter<LoginView> {
@@ -170,17 +173,13 @@ interface LoginContract {
         /**
          * On user Login with google in the application
          */
-        fun loginWithGoogle(userId: String, idToken: String)
+        fun loginWithGoogle(userId: String, accountProvider: String, idToken: String)
 
         /**
          * On user Login with facebook in the application
          */
         fun loginWithFacebook()
 
-        /**
-         * Check if user already exist in database
-         */
-        fun checkIfUserExist(userId: String)
 
 
         /**

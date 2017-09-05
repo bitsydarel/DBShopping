@@ -35,28 +35,16 @@ import com.dbeginc.dbshopping.helper.Injector
 import com.dbeginc.dbshopping.helper.Navigator
 import com.dbeginc.dbshopping.helper.extensions.*
 import com.dbeginc.dbshopping.home.view.HomeActivity
+import com.dbeginc.dbshopping.viewmodels.AccountModel
 import com.dbeginc.dbshopping.viewmodels.UserModel
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import io.reactivex.Flowable
 import javax.inject.Inject
 
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- */
 class SignUpActivity : BaseActivity(), SignUpContract.SignUpView {
     @Inject lateinit var presenter: SignUpContract.SignUpPresenter
     private lateinit var binding: ActivitySignupBinding
@@ -107,8 +95,14 @@ class SignUpActivity : BaseActivity(), SignUpContract.SignUpView {
 
             if (result.isSuccess) {
                 // Google Sign In was successful, authenticate with Firebase
-                val emailAsUniqueId = Base64.encodeToString(result.signInAccount?.email?.toByteArray(), Base64.NO_WRAP)
-                presenter.onUserSignUpWithGoogle(emailAsUniqueId, result.signInAccount?.idToken!!)
+                val email: String = result.signInAccount?.email!!
+                val emailAsUniqueId = Base64.encodeToString(email.toByteArray(), Base64.NO_WRAP)
+                val provider = GoogleAuthProvider.PROVIDER_ID.substring(0, GoogleAuthProvider.PROVIDER_ID.indexOf("."))
+
+                val account = AccountModel(id = emailAsUniqueId, name = result.signInAccount?.displayName!!,
+                        profileImage = result.signInAccount?.photoUrl?.toString()!!, accountProviders = listOf(provider))
+
+                presenter.onUserSignUpWithGoogle(emailAsUniqueId, account, result.signInAccount?.idToken!!)
 
             } else {
                 // Google Sign In failed, update UI appropriately
@@ -198,6 +192,7 @@ class SignUpActivity : BaseActivity(), SignUpContract.SignUpView {
     }
 
     override fun requestGoogleAccount() {
+        if (googleApiClient.isConnected) googleApiClient.clearDefaultAccountAndReconnect()
         val signInIntent = Auth.GoogleSignInApi.getSignInIntent(googleApiClient)
         startActivityForResult(signInIntent, ConstantHolder.RC_SIGN_IN)
     }

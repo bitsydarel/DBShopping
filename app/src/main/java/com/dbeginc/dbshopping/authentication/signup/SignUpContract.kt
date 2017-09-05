@@ -19,6 +19,7 @@ package com.dbeginc.dbshopping.authentication.signup
 
 import com.dbeginc.dbshopping.base.IPresenter
 import com.dbeginc.dbshopping.base.IView
+import com.dbeginc.dbshopping.viewmodels.AccountModel
 import com.dbeginc.dbshopping.viewmodels.UserModel
 import io.reactivex.Flowable
 
@@ -178,7 +179,7 @@ interface SignUpContract {
         /**
          * On user Sign Up with google in the application
          */
-        fun onUserSignUpWithGoogle(userId: String, idToken: String)
+        fun onUserSignUpWithGoogle(userId: String, account: AccountModel, idToken: String)
 
         /**
          * On user Sign Up with facebook in the application

@@ -26,7 +26,7 @@ import com.dbeginc.domain.entities.requestmodel.UserRequestModel
 import com.dbeginc.domain.entities.user.User
 import com.dbeginc.domain.repositories.IUserRepo
 import com.dbeginc.domain.usecases.user.GetUser
-import com.dbeginc.domain.usecases.user.authentication.CheckIfUserExist
+import com.dbeginc.domain.usecases.user.authentication.CheckIfUserCanLoginWithAccount
 import com.dbeginc.domain.usecases.user.authentication.LoginUser
 import com.dbeginc.domain.usecases.user.authentication.LoginWithGoogle
 import io.reactivex.Flowable
@@ -36,28 +36,12 @@ import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.subscribers.DisposableSubscriber
 
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
- * Created by darel on 21.08.17.
- */
 class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErrorManager, private val fieldValidator: IFormValidator) : LoginContract.LoginPresenter {
     private lateinit var view: LoginContract.LoginView
     private val subscription = CompositeDisposable()
     private val login = LoginUser(userRepo)
     private val loginWithGoogle = LoginWithGoogle(userRepo)
-    private val checkIfUserExist = CheckIfUserExist(userRepo)
+    private val checkIfUserCanLoginWithAccount = CheckIfUserCanLoginWithAccount(userRepo)
     private val getUser = GetUser(userRepo)
 
     override fun bind(view: LoginContract.LoginView) {
@@ -72,7 +56,9 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
         subscription.clear()
     }
 
-    override fun loadUser(userId: String) = getUser.execute(UserObserver(), UserRequestModel(userId, Unit))
+    override fun loadUser(userId: String) {
+        getUser.execute(UserObserver(), UserRequestModel(userId, Unit))
+    }
 
     override fun onUserLogin() {
         if (view.getEmail().isEmpty()) {
@@ -89,18 +75,12 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
     }
 
 
-    override fun loginWithGoogle(userId: String, idToken: String) {
+    override fun loginWithGoogle(userId: String, accountProvider: String, idToken: String) {
         view.displayLoginInProgressMessage()
-        loginWithGoogle.execute(LoginObserver(), UserRequestModel(userId, idToken))
+        checkIfUserCanLoginWithAccount.execute(LoginWithAccountResponseObserver(userId, idToken), UserRequestModel(userId, accountProvider))
     }
 
-    override fun loginWithFacebook() {
-
-    }
-
-    override fun checkIfUserExist(userId: String) {
-        checkIfUserExist.execute(UserExistResponseObserver(), UserRequestModel(userId, Unit))
-    }
+    override fun loginWithFacebook() = view.requestFacebookAccount()
 
     override fun getGoogleAccount() = view.requestGoogleAccount()
 
@@ -136,7 +116,6 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
             if (isValid) view.removeEmailInvalidMessage()
             else view.displayEmailInvalidMessage()
         }
-
         override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
         override fun onComplete() = dispose()
     }
@@ -146,7 +125,6 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
             if (isValid) view.removePasswordInvalidMessage()
             else view.displayPasswordInvalidMessage()
         }
-
         override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
         override fun onComplete() = dispose()
     }
@@ -156,9 +134,23 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
             if (areValid) view.activateLogin()
             else view.disableLogin()
         }
-
         override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
         override fun onComplete() = dispose()
+    }
+
+    private inner class LoginWithAccountResponseObserver(val userId: String, val userToken: String) : DisposableSingleObserver<Boolean>() {
+        override fun onSuccess(canUserLogin: Boolean) {
+            if (canUserLogin) loginWithGoogle.execute(GoogleAccountProvider(), UserRequestModel(userId, userToken))
+            else {
+                view.hideLoginInProgressMessage()
+                view.displayUserDoesNotExist()
+            }
+            dispose()
+        }
+        override fun onError(e: Throwable) {
+            view.hideLoginInProgressMessage()
+            view.displayErrorMessage(e.localizedMessage)
+        }
     }
 
     private inner class LoginObserver : DisposableCompletableObserver() {
@@ -166,21 +158,20 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
             view.onLoginSuccess()
             dispose()
         }
-
         override fun onError(e: Throwable) {
             view.hideLoginInProgressMessage()
             view.displayErrorMessage(authErrorManager.translateError(e))
         }
     }
 
-    private inner class UserExistResponseObserver : DisposableSingleObserver<Boolean>() {
-        override fun onSuccess(t: Boolean) {
-            view.hideLoginInProgressMessage()
+    private inner class GoogleAccountProvider : DisposableCompletableObserver() {
+        override fun onComplete() {
+            view.onLoginSuccess()
+            dispose()
         }
-
-        override fun onError(e: Throwable) {
+        override fun onError(error: Throwable) {
             view.hideLoginInProgressMessage()
-            view.displayErrorMessage(e.localizedMessage)
+            view.displayErrorMessage(authErrorManager.translateError(error))
         }
     }
 

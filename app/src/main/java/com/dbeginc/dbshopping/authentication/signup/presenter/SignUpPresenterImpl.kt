@@ -20,8 +20,11 @@ package com.dbeginc.dbshopping.authentication.signup.presenter
 import com.dbeginc.dbshopping.authentication.signup.SignUpContract
 import com.dbeginc.dbshopping.exception.IErrorManager
 import com.dbeginc.dbshopping.fieldvalidator.IFormValidator
+import com.dbeginc.dbshopping.mapper.user.toAccount
 import com.dbeginc.dbshopping.mapper.user.toUserModel
+import com.dbeginc.dbshopping.viewmodels.AccountModel
 import com.dbeginc.domain.entities.requestmodel.AuthRequestModel
+import com.dbeginc.domain.entities.requestmodel.GoogleRequestModel
 import com.dbeginc.domain.entities.requestmodel.UserRequestModel
 import com.dbeginc.domain.entities.user.User
 import com.dbeginc.domain.repositories.IUserRepo
@@ -36,27 +39,10 @@ import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.subscribers.DisposableSubscriber
 
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
- * Created by darel on 22.08.17.
- */
 class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErrorManager, private val fieldValidator: IFormValidator) : SignUpContract.SignUpPresenter {
-
     private lateinit var view: SignUpContract.SignUpView
-    private val createNewUser = CreateNewUser(userRepo)
-    private val authenticateWithGoogle = CreateNewUserWithGoogle(userRepo)
+    private val createUser = CreateNewUser(userRepo)
+    private val createUserWithGoogle = CreateNewUserWithGoogle(userRepo)
     private val getUser = GetUser(userRepo)
     private val checkUserExist = CheckIfUserExist(userRepo)
     private val subscription = CompositeDisposable()
@@ -67,8 +53,10 @@ class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IEr
     }
 
     override fun unBind() {
-        createNewUser.dispose()
-        authenticateWithGoogle.dispose()
+        createUser.dispose()
+        createUserWithGoogle.dispose()
+        getUser.dispose()
+        checkUserExist.dispose()
         subscription.clear()
     }
 
@@ -77,34 +65,35 @@ class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IEr
             view.getNickname().isEmpty() -> {
                 view.displayNicknameInvalidMessage()
                 return
-
             }
+
             view.getEmail().isEmpty() -> {
                 view.displayEmailInvalidMessage()
                 return
-
             }
+
             view.getPassword().isEmpty() -> {
                 view.displayPasswordInvalidMessage()
                 return
             }
             else -> {
                 view.displaySignUpProgressMessage()
-                createNewUser.execute(SignUpObserver(), AuthRequestModel(view.getEmail(), view.getPassword(), view.getNickname()))
+                createUser.execute(SignUpObserver(), AuthRequestModel(view.getEmail(), view.getPassword(), view.getNickname()))
             }
         }
     }
 
-    override fun onUserSignUpWithGoogle(userId: String, idToken: String) {
+    override fun onUserSignUpWithGoogle(userId: String, account: AccountModel, idToken: String) {
         view.displaySignUpProgressMessage()
-        checkUserExist.execute(CheckIfUserExist(userId, idToken), UserRequestModel(userId, Unit))
+        checkUserExist.execute(CheckIfUserExist(userId, account, idToken), UserRequestModel(userId, Unit))
     }
 
     override fun onUserSignUpWithFacebook() {
-
     }
 
-    override fun loadUser(userId: String) = getUser.execute(UserObserver(), UserRequestModel(userId, Unit))
+    override fun loadUser(userId: String) {
+        getUser.execute(UserObserver(), UserRequestModel(userId, Unit))
+    }
 
     override fun getUserGoogleAccount() = view.requestGoogleAccount()
 
@@ -145,12 +134,12 @@ class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IEr
         )
     }
 
+    /********************************** Form Observer **********************************/
     private inner class NicknameObserver : DisposableSubscriber<Boolean>() {
         override fun onNext(isValid: Boolean) {
             if (isValid) view.removeNicknameInvalidMessage()
             else view.displayNicknameInvalidMessage()
         }
-
         override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
         override fun onComplete() = dispose()
     }
@@ -160,7 +149,6 @@ class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IEr
             if (isValid) view.removeEmailInvalidMessage()
             else view.displayEmailInvalidMessage()
         }
-
         override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
         override fun onComplete() = dispose()
     }
@@ -170,7 +158,6 @@ class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IEr
             if (isValid) view.removePasswordInvalidMessage()
             else view.displayPasswordInvalidMessage()
         }
-
         override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
         override fun onComplete() = dispose()
     }
@@ -180,32 +167,33 @@ class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IEr
             if (areValid) view.activateSignUp()
             else view.disableSignUp()
         }
-
         override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
         override fun onComplete() = dispose()
     }
 
-    private inner class CheckIfUserExist(val userId: String, val userIdToken: String) : DisposableSingleObserver<Boolean>() {
+    /********************************** Check User Observer **********************************/
+    private inner class CheckIfUserExist(val userId: String, val userAccount: AccountModel, val userIdToken: String) : DisposableSingleObserver<Boolean>() {
         override fun onSuccess(exist: Boolean) {
             if (exist) {
                 view.hideSignUpProgressMessage()
                 view.displayUserAlreadyExist()
 
-            } else authenticateWithGoogle.execute(GoogleAuthObserver(), UserRequestModel(userId, userIdToken))
+            } else createUserWithGoogle.execute(GoogleAuthObserver(), GoogleRequestModel(userId, userAccount.toAccount(),userIdToken))
+            dispose()
         }
-
         override fun onError(e: Throwable) {
             view.hideSignUpProgressMessage()
             view.displayErrorMessage(e.localizedMessage)
         }
     }
 
+    /********************************** Authentication Observer **********************************/
     private inner class GoogleAuthObserver : DisposableCompletableObserver() {
         override fun onComplete() {
+            view.hideSignUpProgressMessage()
             view.onSignUpSuccess()
             dispose()
         }
-
         override fun onError(error: Throwable) {
             view.hideSignUpProgressMessage()
             view.displayErrorMessage(authErrorManager.translateError(error))
@@ -218,7 +206,6 @@ class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IEr
             view.goToLoginPage()
             dispose()
         }
-
         override fun onError(e: Throwable) {
             view.hideSignUpProgressMessage()
             view.displayErrorMessage(authErrorManager.translateError(e))
@@ -226,7 +213,6 @@ class SignUpPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IEr
     }
 
     private inner class UserObserver : DisposableSubscriber<User>() {
-
         override fun onNext(user: User) {
             view.setUser(user.toUserModel())
             view.hideSignUpProgressMessage()
