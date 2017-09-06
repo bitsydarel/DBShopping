@@ -55,6 +55,15 @@
 
         </android.support.design.widget.AppBarLayout>
 
+        <ProgressBar
+            android:id="@+id/itemDetailUpdateStatusPB"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            app:layout_constraintTop_toBottomOf="@id/itemDetailAppBar"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
         <ImageView
             android:id="@+id/itemImageDetail"
             android:layout_width="0dp"
@@ -62,7 +71,7 @@
             android:layout_marginTop="8dp"
             android:minHeight="200dp"
             android:contentDescription="@string/itemImageDescription"
-            app:layout_constraintTop_toBottomOf="@+id/itemDetailAppBar"
+            app:layout_constraintTop_toBottomOf="@+id/itemDetailUpdateStatusPB"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:setImageUrl="@{Item.image}"

@@ -22,9 +22,14 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.util.*
 
+/**
+ * Pojo representing a item of an shopping list
+ * from the user interface
+ */
 data class ItemModel(var id: String = UUID.randomUUID().toString(),
                      var name: String,
                      var itemOf: String,
+                     var itemOwner: String,
                      var count: Long = 1,
                      var price: Double = 0.0,
                      var bought: Boolean = false,
@@ -32,6 +37,7 @@ data class ItemModel(var id: String = UUID.randomUUID().toString(),
                      var image: String = Uri.EMPTY.toString()) : Parcelable {
 
     constructor(parcel: Parcel) : this(
+            parcel.readString(),
             parcel.readString(),
             parcel.readString(),
             parcel.readString(),
@@ -46,6 +52,7 @@ data class ItemModel(var id: String = UUID.randomUUID().toString(),
         parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeString(itemOf)
+        parcel.writeString(itemOwner)
         parcel.writeLong(count)
         parcel.writeDouble(price)
         parcel.writeByte(if (bought) 1 else 0)

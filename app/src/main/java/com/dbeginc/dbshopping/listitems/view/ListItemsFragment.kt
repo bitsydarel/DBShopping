@@ -34,6 +34,7 @@ import com.dbeginc.dbshopping.helper.Injector
 import com.dbeginc.dbshopping.helper.extensions.*
 import com.dbeginc.dbshopping.listitems.ListItemsContract
 import com.dbeginc.dbshopping.listitems.adapter.ItemsAdapter
+import com.dbeginc.dbshopping.listitems.adapter.view.ItemViewHolder
 import com.dbeginc.dbshopping.listitems.presenter.ListItemsPresenterImpl
 import com.dbeginc.dbshopping.viewmodels.ItemModel
 import com.dbeginc.dbshopping.viewmodels.UserModel
@@ -240,5 +241,8 @@ class ListItemsFragment : BaseFragment(), ListItemsContract.ListItemsView {
             //Todo: implement cancellation of task
             presenter.removeItem(viewHolder.adapterPosition)
         }
+
+        override fun getSwipeDirs(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int =
+                if((viewHolder as? ItemViewHolder)?.binding?.item?.itemOwner != user.email) 0 else super.getSwipeDirs(recyclerView, viewHolder)
     }
 }

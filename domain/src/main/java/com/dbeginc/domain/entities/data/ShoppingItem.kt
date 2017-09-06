@@ -20,11 +20,12 @@ package com.dbeginc.domain.entities.data
 import java.util.*
 
 /**
- * Pojo representing a user shopping list item
+ * Pojo representing a item of an shopping list
  */
 data class ShoppingItem(var uuid: String = UUID.randomUUID().toString(),
                         var name: String,
                         var itemOf: String,
+                        var itemOwner: String,
                         var count: Long = 1,
                         var price: Double = 0.0,
                         var bought: Boolean = false,

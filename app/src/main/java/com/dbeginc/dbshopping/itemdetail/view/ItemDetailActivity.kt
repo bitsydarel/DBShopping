@@ -34,33 +34,21 @@ import com.dbeginc.dbshopping.databinding.ItemDetailLayoutBinding
 import com.dbeginc.dbshopping.helper.ConstantHolder
 import com.dbeginc.dbshopping.helper.DBShoppingEngine
 import com.dbeginc.dbshopping.helper.Injector
+import com.dbeginc.dbshopping.helper.extensions.hide
 import com.dbeginc.dbshopping.helper.extensions.setImageUrl
+import com.dbeginc.dbshopping.helper.extensions.show
 import com.dbeginc.dbshopping.helper.extensions.snack
 import com.dbeginc.dbshopping.itemdetail.ItemDetailContract
 import com.dbeginc.dbshopping.viewmodels.ItemModel
+import com.dbeginc.dbshopping.viewmodels.UserModel
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import com.zhihu.matisse.internal.entity.CaptureStrategy
 import javax.inject.Inject
 
-/**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
- * Created by darel on 24.08.17.
- */
 class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
     @Inject lateinit var presenter: ItemDetailContract.ItemDetailPresenter
+    @Inject lateinit var user: UserModel
     private lateinit var binding: ItemDetailLayoutBinding
     private lateinit var loadingDialog: LoadingDialog
     private var isInShoppingMode: Boolean = false
@@ -118,6 +106,9 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_item_details, menu)
+        // Hide the delete icon if the current user
+        // is not the creator of the item
+        menu?.findItem(R.id.action_delete_item)?.isVisible = binding.item.itemOwner == user.email
         return true
     }
 
@@ -163,6 +154,8 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
         } else binding.itemBrought.hide()
 
         binding.itemBrought.setOnClickListener { _ -> presenter.onItemBought(!binding.item.bought) }
+
+        presenter.setupRestrictions()
     }
 
     override fun cleanState() = presenter.unBind()
@@ -171,8 +164,11 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
 
     override fun getItem(): ItemModel = binding.item
 
+    override fun getCurrentUser(): UserModel = user
+
     override fun itemNotBought() {
         binding.item.bought = false
+        binding.item.boughtBy = ""
 
         binding.itemBrought.setImageResource(R.drawable.ic_item_was_bought_black)
 
@@ -181,6 +177,7 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
 
     override fun itemBought() {
         binding.item.bought = true
+        binding.item.boughtBy = user.name
 
         binding.itemBrought.setImageResource(R.drawable.ic_item_was_not_bought_black)
 
@@ -223,9 +220,27 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
         binding.itemCountDetail.text = binding.item.count.toString()
     }
 
-    override fun displayUpdateStatus() = loadingDialog.show(supportFragmentManager, LoadingDialog::class.java.simpleName)
+    override fun displayLoadingStatus() = loadingDialog.show(supportFragmentManager, LoadingDialog::class.java.simpleName)
 
-    override fun hideUpdateStatus() = loadingDialog.dismiss()
+    override fun hideLoadingStatus() = loadingDialog.dismiss()
+
+    override fun displayUpdateStatus() = binding.itemDetailUpdateStatusPB.show()
+
+    override fun hideUpdateStatus() = binding.itemDetailUpdateStatusPB.hide()
+
+    override fun restrictUserToEditItemName() {
+        binding.itemNameDetailContainer.apply {
+            isFocusable = false
+            isEnabled = false
+        }
+    }
+
+    override fun allowUserToEditItemName() {
+        binding.itemNameDetailContainer.apply {
+            isFocusable = true
+            isEnabled = true
+        }
+    }
 
     override fun displayImageUploadDoneMessage() = binding.itemDetailLayout.snack("Image Upload Completed")
 

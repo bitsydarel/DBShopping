@@ -20,10 +20,9 @@ package com.dbeginc.data.implementations.datasources.remote
 import android.net.Uri
 import com.dbeginc.data.ConstantHolder
 import com.dbeginc.data.datasource.DataSource
-import com.dbeginc.data.proxies.remote.RemoteItemImage
 import com.dbeginc.data.proxies.remote.RemoteShoppingItem
 import com.dbeginc.data.proxies.remote.RemoteShoppingList
-import com.dbeginc.domain.entities.data.ItemImage
+import com.dbeginc.data.proxies.remote.mapper.toProxy
 import com.dbeginc.domain.entities.data.ShoppingItem
 import com.dbeginc.domain.entities.data.ShoppingList
 import com.dbeginc.domain.entities.requestmodel.ItemRequestModel
@@ -239,21 +238,6 @@ class RemoteDataSourceImpl(private val remoteListTable: DatabaseReference, priva
     }
 
     override fun clean() { /* Not necessary here  */ }
-
-    private fun ShoppingList.toProxy(): RemoteShoppingList {
-        val shoppingUserIds = mutableMapOf<String, Boolean>()
-        usersShopping.forEach { userId -> shoppingUserIds.put(userId, true)  }
-
-        return RemoteShoppingList(uuid = uuid, name = name, ownerName = ownerName)
-    }
-
-    private fun ShoppingItem.toProxy() : RemoteShoppingItem {
-        return RemoteShoppingItem(uuid = uuid, name = name, itemOf = itemOf, count = count,
-                price = price, brought = bought, boughtBy = boughtBy, image = image.toProxy()
-        )
-    }
-
-    private fun ItemImage.toProxy() : RemoteItemImage = RemoteItemImage(uri = uri)
 
     private fun DataSnapshot.toList() : ShoppingList {
         val proxy : RemoteShoppingList = getValue(RemoteShoppingList::class.java) as RemoteShoppingList

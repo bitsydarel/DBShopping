@@ -17,6 +17,7 @@
 
 <resources>
     <string name="app_name">DBShopping</string>
+    <string name="you">You</string>
     <!-- #################################################### Application Action #################################################### -->
     <string name="action_create">Create</string>
     <string name="action_open_help">Help</string>
@@ -34,7 +35,7 @@
     <string name="userProfileTitle">Your profile</string>
     <string name="userProfileImageContentDescription">Profile Image</string>
     <!-- #################################################### List Data #################################################### -->
-    <string name="listOwner">Created by: %1$s</string>
+    <string name="listOwner">Created by %1$s</string>
     <string name="listName">List Name</string>
     <string name="noListMessage">Create your first list\nClick on the button with the plus sign</string>
     <string name="nameIncorrect">Name Incorrect, can\'t be empty!</string>
@@ -53,6 +54,8 @@
     <string name="twoUsersAreShopping">%1$s and %2$s are shopping</string>
     <string name="usersAreShopping">%1$d users are shopping</string>
     <string name="couldNotFindUsersShopping">error while getting list of users shopping!</string>
+    <string name="aPersonIsShopping">%1$d person is shopping</string>
+    <string name="peopleAreShopping">%1$d people shopping</string>
     <string name="action_edit_list_name">Edit list name</string>
     <string name="action_remove_list">Delete list</string>
     <string name="action_remove_message_list">Are you sure you want to remove this list ?</string>

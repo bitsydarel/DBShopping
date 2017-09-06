@@ -17,12 +17,12 @@
 
 package com.dbeginc.data.implementations.datasources.local
 
-import android.util.Log
 import com.dbeginc.data.ConstantHolder
 import com.dbeginc.data.datasource.UserSource
 import com.dbeginc.data.proxies.local.LocalAccount
 import com.dbeginc.data.proxies.local.LocalUser
 import com.dbeginc.data.proxies.local.RealmString
+import com.dbeginc.data.proxies.local.mapper.toProxy
 import com.dbeginc.domain.entities.requestmodel.AccountRequestModel
 import com.dbeginc.domain.entities.requestmodel.UserRequestModel
 import com.dbeginc.domain.entities.user.Account
@@ -32,10 +32,6 @@ import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.realm.Realm
-import io.realm.RealmList
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 
 class LocalUserSourceImpl : UserSource {
 
@@ -139,27 +135,5 @@ class LocalUserSourceImpl : UserSource {
                 .findAll()
                 .deleteAllFromRealm()
         } } }
-    }
-
-    private fun User.toProxy() : LocalUser {
-        var creationDate = 0L
-
-        if (joinedAt.isNotEmpty()) {
-            try {
-                creationDate = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-                        .parse(joinedAt)
-                        .time
-
-            } catch (pe: ParseException) {
-                Log.e(ConstantHolder.TAG, "Error in ${LocalUserSourceImpl::class.java.simpleName}: ${pe.localizedMessage}")
-            }
-        }
-
-        return LocalUser(uuid = uuid, name = name, email = email, joinedAt = creationDate)
-    }
-
-    private fun Account.toProxy() : LocalAccount {
-        return LocalAccount(uuid = userId, name = name, profileImage = profileImage,
-                accountProviders = accountProviders.mapTo(RealmList(), { provider -> RealmString(provider) }))
     }
 }

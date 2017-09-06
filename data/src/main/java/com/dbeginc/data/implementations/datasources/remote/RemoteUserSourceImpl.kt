@@ -17,24 +17,23 @@
 
 package com.dbeginc.data.implementations.datasources.remote
 
-import android.util.Log
 import com.dbeginc.data.ConstantHolder
 import com.dbeginc.data.datasource.UserSource
-import com.dbeginc.data.proxies.local.LocalShoppingList
 import com.dbeginc.data.proxies.remote.RemoteAccount
 import com.dbeginc.data.proxies.remote.RemoteUser
+import com.dbeginc.data.proxies.remote.mapper.toProxy
 import com.dbeginc.domain.entities.requestmodel.AccountRequestModel
 import com.dbeginc.domain.entities.requestmodel.UserRequestModel
 import com.dbeginc.domain.entities.user.Account
 import com.dbeginc.domain.entities.user.User
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.ValueEventListener
 import io.reactivex.BackpressureStrategy
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
 
 class RemoteUserSourceImpl(private val userTable: DatabaseReference, private val accountTable: DatabaseReference) : UserSource {
 
@@ -144,30 +143,6 @@ class RemoteUserSourceImpl(private val userTable: DatabaseReference, private val
                     task -> if (task.isSuccessful) emitter.onComplete() else emitter.onError(task.exception!!)
                 }
         }
-    }
-
-    private fun User.toProxy() : RemoteUser {
-
-        var creationTime : Any = ServerValue.TIMESTAMP
-
-        if (joinedAt.isNotEmpty()) {
-            try {
-                creationTime = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-                        .parse(joinedAt)
-                        .time
-
-            } catch (pe: ParseException) {
-                Log.e(ConstantHolder.TAG, "Error in ${LocalShoppingList::class.java.simpleName}: ${pe.localizedMessage}")
-            }
-        }
-
-        return RemoteUser(uuid = uuid, name = name, email = email, joinedAt = creationTime)
-    }
-
-    private fun Account.toProxy() : RemoteAccount {
-        val providers = mutableMapOf<String, Boolean>()
-        accountProviders.forEach { provider -> providers.put(provider, true) }
-        return RemoteAccount(userId = userId, name = name, profileImage = profileImage, accountProviders = providers)
     }
 
     private fun DataSnapshot.toUser() : User {

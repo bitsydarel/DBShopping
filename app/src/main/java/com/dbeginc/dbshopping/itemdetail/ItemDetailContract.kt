@@ -20,6 +20,7 @@ package com.dbeginc.dbshopping.itemdetail
 import com.dbeginc.dbshopping.base.IPresenter
 import com.dbeginc.dbshopping.base.IView
 import com.dbeginc.dbshopping.viewmodels.ItemModel
+import com.dbeginc.dbshopping.viewmodels.UserModel
 
 /**
  * Copyright (C) 2017 Darel Bitsy
@@ -47,19 +48,25 @@ interface ItemDetailContract {
         fun displayImage(imageUrl: String)
         fun addQuantity(value: Int)
         fun removeQuantity(value: Int)
-        fun displayUpdateStatus()
-        fun hideUpdateStatus()
+        fun displayLoadingStatus()
+        fun hideLoadingStatus()
         fun displayImageUploadDoneMessage()
         fun goToList()
         fun displayErrorMessage(error: String)
         fun itemNotBought()
         fun itemBought()
+        fun getCurrentUser(): UserModel
+        fun displayUpdateStatus()
+        fun hideUpdateStatus()
+        fun restrictUserToEditItemName()
+        fun allowUserToEditItemName()
     }
 
     interface ItemDetailPresenter : IPresenter<ItemDetailView> {
         fun changeItemImage()
         fun onImageSelected(imageUrl: String)
         fun onItemBought(boolean: Boolean)
+        fun setupRestrictions()
         fun addQuantity()
         fun removeQuantity()
         fun saveItemImage()

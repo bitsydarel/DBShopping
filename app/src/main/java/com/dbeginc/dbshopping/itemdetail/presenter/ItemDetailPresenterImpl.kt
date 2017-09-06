@@ -22,33 +22,26 @@ import com.dbeginc.dbshopping.itemdetail.ItemDetailContract
 import com.dbeginc.dbshopping.mapper.data.toItem
 import com.dbeginc.dbshopping.mapper.data.toItemModel
 import com.dbeginc.domain.entities.data.ShoppingItem
+import com.dbeginc.domain.entities.data.ShoppingList
 import com.dbeginc.domain.entities.requestmodel.ItemRequestModel
+import com.dbeginc.domain.entities.requestmodel.ListRequestModel
 import com.dbeginc.domain.repositories.IDataRepo
 import com.dbeginc.domain.usecases.data.item.DeleteItem
 import com.dbeginc.domain.usecases.data.item.GetItem
 import com.dbeginc.domain.usecases.data.item.UpdateImage
 import com.dbeginc.domain.usecases.data.item.UpdateItem
+import com.dbeginc.domain.usecases.data.list.GetList
 import io.reactivex.observers.DisposableCompletableObserver
 import io.reactivex.subscribers.DisposableSubscriber
 
 /**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
  * Created by darel on 24.08.17.
+ *
+ * Item Detail Presenter
  */
-class ItemDetailPresenterImpl(dataRepo: IDataRepo, private val errorManager: IErrorManager) : ItemDetailContract.ItemDetailPresenter{
+class ItemDetailPresenterImpl(dataRepo: IDataRepo, private val errorManager: IErrorManager) : ItemDetailContract.ItemDetailPresenter {
     private lateinit var view: ItemDetailContract.ItemDetailView
+    private val getRestrictionForItem = GetList(dataRepo)
     private val getItem = GetItem(dataRepo)
     private val updateItem = UpdateItem(dataRepo)
     private val uploadImage = UpdateImage(dataRepo)
@@ -60,6 +53,8 @@ class ItemDetailPresenterImpl(dataRepo: IDataRepo, private val errorManager: IEr
     }
 
     override fun unBind() {
+        getItem.dispose()
+        getRestrictionForItem.dispose()
         updateItem.dispose()
         uploadImage.dispose()
         deleteItem.dispose()
@@ -77,76 +72,95 @@ class ItemDetailPresenterImpl(dataRepo: IDataRepo, private val errorManager: IEr
         if (view.getItem().count > 0) view.removeQuantity(1)
     }
 
-    override fun onItemBought(boolean: Boolean) = if (boolean) view.itemBought() else view.itemNotBought()
+    override fun onItemBought(boolean: Boolean) {
+        if (boolean) view.itemBought() else {
+            if (view.getItem().boughtBy == view.getCurrentUser().name) {
+                view.itemNotBought()
+            }
+        }
+    }
 
-    private fun getUpdatedItem() {
-        getItem.execute(ItemObserver(), ItemRequestModel(view.getItem().itemOf, view.getItemId()))
+    override fun setupRestrictions() {
+        view.displayUpdateStatus()
+        getRestrictionForItem.execute(RestrictionObserver(), ListRequestModel(view.getItem().itemOf, Unit))
     }
 
     override fun saveItemImage() {
-        view.displayUpdateStatus()
+        view.displayLoadingStatus()
         uploadImage.execute(UploadTaskObserver(), ItemRequestModel(view.getItem().itemOf, view.getItem().toItem()))
     }
 
     override fun updateItem() {
-        view.displayUpdateStatus()
+        view.displayLoadingStatus()
         updateItem.execute(UpdateObserver(), ItemRequestModel(view.getItem().itemOf, view.getItem().toItem()))
     }
 
     override fun deleteItem() {
-        view.displayUpdateStatus()
+        view.displayLoadingStatus()
         deleteItem.execute(DeleteObserver(), ItemRequestModel(view.getItem().itemOf, view.getItem().id))
+    }
+
+    private inner class RestrictionObserver : DisposableSubscriber<ShoppingList>() {
+        override fun onNext(list: ShoppingList) {
+            view.hideUpdateStatus()
+            if (!list.usersShopping.contains(view.getCurrentUser().id) || view.getItem().bought) {
+                view.restrictUserToEditItemName()
+            } else {
+                view.allowUserToEditItemName()
+            }
+        }
+
+        override fun onError(error: Throwable) {
+            view.hideLoadingStatus()
+            view.displayErrorMessage(error.localizedMessage)
+        }
+
+        override fun onComplete() = dispose()
     }
 
     private inner class ItemObserver : DisposableSubscriber<ShoppingItem>() {
         override fun onNext(item: ShoppingItem) {
             view.displayItem(item.toItemModel())
-            view.hideUpdateStatus()
+            view.hideLoadingStatus()
             view.displayImageUploadDoneMessage()
-            dispose()
         }
 
         override fun onComplete() = dispose()
 
         override fun onError(error: Throwable) {
-            view.hideUpdateStatus()
+            view.hideLoadingStatus()
             view.displayErrorMessage(error.localizedMessage)
         }
     }
 
     private inner class UploadTaskObserver : DisposableCompletableObserver() {
-        override fun onComplete() {
-            getUpdatedItem()
-            dispose()
-        }
+        override fun onComplete() = getUpdatedItem()
 
         override fun onError(error: Throwable) {
-            view.hideUpdateStatus()
+            view.hideLoadingStatus()
             view.displayErrorMessage(errorManager.translateError(error))
         }
     }
 
     private inner class UpdateObserver : DisposableCompletableObserver() {
-        override fun onComplete() {
-            view.goToList()
-            dispose()
-        }
+        override fun onComplete() = view.goToList()
 
         override fun onError(e: Throwable) {
-            view.hideUpdateStatus()
+            view.hideLoadingStatus()
             view.displayErrorMessage(e.localizedMessage)
         }
     }
 
     private inner class DeleteObserver : DisposableCompletableObserver() {
-        override fun onComplete() {
-            view.goToList()
-            dispose()
-        }
+        override fun onComplete() = view.goToList()
 
         override fun onError(e: Throwable) {
-            view.hideUpdateStatus()
+            view.hideLoadingStatus()
             view.displayErrorMessage(e.localizedMessage)
         }
+    }
+
+    private fun getUpdatedItem() {
+        getItem.execute(ItemObserver(), ItemRequestModel(view.getItem().itemOf, view.getItemId()))
     }
 }

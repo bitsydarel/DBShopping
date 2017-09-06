@@ -114,7 +114,7 @@ class ListItemsPresenterImpl(userRepo: IUserRepo, dataRepo: IDataRepo) : ListIte
 
     override fun addItem() {
         view.displayUpdatingStatus()
-        val item = ShoppingItem(name = view.getDefaultItemName(), itemOf = view.getListId())
+        val item = ShoppingItem(name = view.getDefaultItemName(), itemOf = view.getListId(), itemOwner = view.getAppUser().email)
 
         view.hideNoItemsMessage()
 

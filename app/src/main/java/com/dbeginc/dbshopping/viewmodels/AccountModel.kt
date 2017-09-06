@@ -26,6 +26,7 @@ import android.os.Parcelable
  * Account Model from the user interface
  */
 class AccountModel(val id: String, var name: String, var profileImage: String = "", var accountProviders: List<String> = listOf()) : Parcelable {
+
     private constructor(parcel: Parcel) : this(
             parcel.readString(),
             parcel.readString(),

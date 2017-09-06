@@ -107,7 +107,7 @@ class ListDetailActivity : BaseActivity(), ListDetailContract.ListDetailView, Di
         /**
          * Get menu items
          */
-        presenter.isUserOwner(user.email).let {
+        presenter.isUserOwner(user.name).let {
             isOwner -> menu?.findItem(R.id.action_edit_list_name)?.isVisible = isOwner
             menu?.findItem(R.id.action_remove_list)?.isVisible = isOwner
         }

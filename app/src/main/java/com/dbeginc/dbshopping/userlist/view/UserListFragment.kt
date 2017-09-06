@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.dbshopping.userlist.view
 
 import android.databinding.DataBindingUtil
@@ -39,16 +56,32 @@ class UserListFragment : BaseFragment(), UserListContract.UserListView {
     private lateinit var binding: UserListLayoutBinding
     private lateinit var adapter: UserListAdapter
     private var lists = emptyList<ListModel>()
+    private lateinit var currentUser: String
 
     /********************************************************** Android Part Method **********************************************************/
+    companion object {
+        @JvmStatic fun newInstance(currentUserName: String): UserListFragment {
+            val fragment = UserListFragment()
+            val arguments = Bundle()
+
+            arguments.putString(ConstantHolder.CURRENT_USERNAME, currentUserName)
+
+            fragment.arguments = arguments
+            return fragment
+        }
+    }
+
     override fun onCreate(savedState: Bundle?) {
         super.onCreate(savedState)
         Injector.injectUserComponent(this)
 
-        if (savedState == null) { adapter = UserListAdapter(lists) }
-        else {
+        if (savedState == null) {
+            currentUser = arguments.getString(ConstantHolder.CURRENT_USERNAME)
+            adapter = UserListAdapter(lists, currentUser)
+        } else {
             lists = savedState.getList(ConstantHolder.LIST_DATA_KEY) ?: emptyList()
-            adapter = UserListAdapter(lists)
+            currentUser = savedState.getString(ConstantHolder.CURRENT_USERNAME)
+            adapter = UserListAdapter(lists, currentUser)
         }
     }
 
@@ -60,6 +93,7 @@ class UserListFragment : BaseFragment(), UserListContract.UserListView {
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         outState?.putList(ConstantHolder.LIST_DATA_KEY, lists)
+        outState?.putString(ConstantHolder.CURRENT_USERNAME, currentUser)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

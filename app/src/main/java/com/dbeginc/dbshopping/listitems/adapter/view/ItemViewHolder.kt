@@ -32,7 +32,7 @@ import com.dbeginc.dbshopping.itemdetail.view.ItemDetailActivity
 import com.dbeginc.dbshopping.listitems.adapter.ItemContract
 import com.dbeginc.dbshopping.viewmodels.ItemModel
 
-class ItemViewHolder(private val binding: ItemLayoutBinding) : RecyclerView.ViewHolder(binding.root), ItemContract.ItemView {
+class ItemViewHolder(val binding: ItemLayoutBinding) : RecyclerView.ViewHolder(binding.root), ItemContract.ItemView {
 
     override fun setupView() { /* Nothing to clear here */ }
 
