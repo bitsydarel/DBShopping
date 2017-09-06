@@ -1,4 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  * Copyright (C) 2017 Darel Bitsy
+  ~  * Licensed under the Apache License, Version 2.0 (the "License");
+  ~  * you may not use this file except in compliance with the License.
+  ~  * You may obtain a copy of the License at
+  ~  *
+  ~  *     http://www.apache.org/licenses/LICENSE-2.0
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the License is distributed on an "AS IS" BASIS,
+  ~  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  * See the License for the specific language governing permissions and
+  ~  * limitations under the License
+  ~  */
+  -->
+
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
@@ -14,12 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:layout_marginBottom="8dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="16dp"
-        app:cardBackgroundColor="@android:color/white">
+        app:cardBackgroundColor="@android:color/white"
+        tools:context=".home.view.HomeActivity">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,6 +50,7 @@
                 android:minHeight="40dp"
                 android:scaleType="centerCrop"
                 android:src="@color/colorSecondaryDark"
+                android:contentDescription="@android:string/unknownName"
                 tools:src="@color/colorPrimaryLight"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
@@ -53,16 +72,27 @@
 
             <TextView
                 android:id="@+id/listOwner"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:gravity="center_horizontal|center_vertical"
-                android:text='@{"created by " + List.owner}'
-                tools:text="Created by : Anonymous"
+                android:padding="8dp"
+                android:gravity="start"
+                tools:text="Created by Darel Bitsy"
                 app:layout_constraintTop_toBottomOf="@id/listName"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"/>
+                app:layout_constraintRight_toLeftOf="@+id/whoIsShoppingTheList"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+
+            <TextView
+                android:id="@+id/whoIsShoppingTheList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:gravity="start"
+                tools:text="2 people are shopping"
+                app:layout_constraintTop_toBottomOf="@id/listName"
+                app:layout_constraintLeft_toRightOf="@id/listOwner"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
         </android.support.constraint.ConstraintLayout>
 

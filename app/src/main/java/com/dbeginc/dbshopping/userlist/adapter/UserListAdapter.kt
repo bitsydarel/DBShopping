@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.dbshopping.userlist.adapter
 
 import android.databinding.DataBindingUtil
@@ -30,7 +47,7 @@ import com.dbeginc.dbshopping.viewmodels.ListModel
  *
  * Here it's used has a container with inner controllers or presenters
  */
-class UserListAdapter(lists: List<ListModel>) : RecyclerView.Adapter<ListViewHolder>() {
+class UserListAdapter(lists: List<ListModel>, private val currentUserName: String) : RecyclerView.Adapter<ListViewHolder>() {
     private val presenters : MutableList<ListContract.ListPresenter> = mutableListOf()
     private var container: RecyclerView? = null
 
@@ -39,7 +56,7 @@ class UserListAdapter(lists: List<ListModel>) : RecyclerView.Adapter<ListViewHol
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
-        return ListViewHolder(DataBindingUtil.inflate(inflater, R.layout.user_list_item_layout, parent, false))
+        return ListViewHolder(DataBindingUtil.inflate(inflater, R.layout.user_list_item_layout, parent, false), currentUserName)
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
