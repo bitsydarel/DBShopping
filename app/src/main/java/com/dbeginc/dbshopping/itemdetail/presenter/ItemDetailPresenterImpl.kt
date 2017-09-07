@@ -114,7 +114,6 @@ class ItemDetailPresenterImpl(dataRepo: IDataRepo, private val errorManager: IEr
             view.hideLoadingStatus()
             view.displayErrorMessage(error.localizedMessage)
         }
-
         override fun onComplete() = dispose()
     }
 
