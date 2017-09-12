@@ -1,3 +1,20 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
 package com.dbeginc.dbshopping.helper
 
 import com.dbeginc.dbshopping.addlist.view.AddListActivity
@@ -15,6 +32,7 @@ import com.dbeginc.dbshopping.itemdetail.view.ItemDetailActivity
 import com.dbeginc.dbshopping.listdetail.view.EditListNameDialog
 import com.dbeginc.dbshopping.listdetail.view.ListDetailActivity
 import com.dbeginc.dbshopping.listitems.view.ListItemsFragment
+import com.dbeginc.dbshopping.settings.view.SettingsActivity
 import com.dbeginc.dbshopping.splash.view.SplashActivity
 import com.dbeginc.dbshopping.userlist.view.UserListFragment
 
@@ -55,4 +73,5 @@ object Injector {
     fun injectUserComponent(itemDetailActivity: ItemDetailActivity) = userComponent.inject(itemDetailActivity)
     fun injectUserComponent(editListNameDialog: EditListNameDialog) = userComponent.inject(editListNameDialog)
     fun injectUserComponent(homeActivity: HomeActivity) = userComponent.inject(homeActivity)
+    fun injectUserComponent(settingsActivity: SettingsActivity) = userComponent.inject(settingsActivity)
 }

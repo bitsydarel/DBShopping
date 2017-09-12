@@ -31,4 +31,6 @@ import io.reactivex.Flowable
 class GetUsers(private val userRepo: IUserRepo) : UseCase<List<User>, UserRequestModel<List<String>>>() {
     override fun buildUseCaseObservable(params: UserRequestModel<List<String>>): Flowable<List<User>> =
             userRepo.getUsers(params)
+
+    override fun clean() = userRepo.clean()
 }

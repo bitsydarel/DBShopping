@@ -52,19 +52,13 @@ abstract class UseCaseCompletable<in Params> {
 
     /**
      * Executes the current use case.
-     * @param observer [DisposableCompletableObserver] which will be listening to the observable build
-     * by [.buildUseCaseCompletableObservable] ()} method.
-     *
      * @param params Parameters (Optional) used to build/execute this use case.
      */
-    fun execute(observer: DisposableCompletableObserver, params: Params) : Completable {
-        val observable = this.buildUseCaseCompletableObservable(params)
-        subscriptions.add(observable.subscribeWith(observer))
-        return observable
-    }
+    fun execute(params: Params) : Completable =
+            buildUseCaseCompletableObservable(params)
 
     /**
-     * Dispose from current [CompositeDisposable].
+     * Clean all resource used use case.
      */
-    open fun dispose() = subscriptions.clear()
+    abstract fun clean()
 }

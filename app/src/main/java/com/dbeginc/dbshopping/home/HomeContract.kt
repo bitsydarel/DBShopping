@@ -19,6 +19,7 @@ package com.dbeginc.dbshopping.home
 
 import com.dbeginc.dbshopping.base.IPresenter
 import com.dbeginc.dbshopping.base.IView
+import com.dbeginc.dbshopping.viewmodels.AccountModel
 import com.dbeginc.dbshopping.viewmodels.UserModel
 
 /**
@@ -61,6 +62,8 @@ interface HomeContract {
 
         fun goToLogin()
 
+        fun showAccount(accountModel: AccountModel)
+
         fun displayErrorMessage(error: String)
     }
 
@@ -75,5 +78,7 @@ interface HomeContract {
         fun onNavigationClick(itemId: Int)
 
         fun logout()
+
+        fun loadAccount()
     }
 }

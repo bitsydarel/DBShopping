@@ -77,7 +77,7 @@
     <color name="ListDetailColorSecondaryLight">#76ffff</color>
     <color name="ListDetailColorTextSecondary">#000000</color>
     <color name="ListDetailColorBackground">#E1E2E1</color>
-    <!--########################################################################## Item Detail ##########################################################################-->
+    <!--####################################################################################################################################-->
     <!--########################################################################## Item Detail ##########################################################################-->
     <color name="ItemDetailColorPrimary">#bdbdbd</color>
     <color name="ItemDetailColorPrimaryDark">#8d8d8d</color>
@@ -87,5 +87,14 @@
     <color name="ItemDetailColorSecondaryDark">#00a73d</color>
     <color name="ItemDetailColorSecondaryLight">#7aff9b</color>
     <color name="ItemDetailColorTextSecondary">#000000</color>
-    <!--########################################################################## Login ##########################################################-->
+    <!--########################################################################## Share List ##########################################################-->
+    <color name="ShareListColorPrimary">#fce4ec</color>
+    <color name="ShareListColorPrimaryDark">#c9b2ba</color>
+    <color name="ShareListColorPrimaryLight">#ffffff</color>
+    <color name="ShareListColorTextPrimary">#000000</color>
+    <color name="ShareListColorSecondary">#64ffda</color>
+    <color name="ShareListColorSecondaryDark">#14cba8</color>
+    <color name="ShareListColorSecondaryLight">#9effff</color>
+    <color name="ShareListColorTextSecondary">#000000</color>
+    <!--####################################################################################################################################-->
 </resources>

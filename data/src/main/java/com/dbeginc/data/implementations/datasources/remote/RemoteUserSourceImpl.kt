@@ -85,7 +85,10 @@ class RemoteUserSourceImpl(private val userTable: DatabaseReference, private val
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) = emitter.onError(error.toException())
 
-                    override fun onDataChange(data: DataSnapshot) = emitter.onNext(data.toUser())
+                    override fun onDataChange(data: DataSnapshot) {
+                        emitter.onNext(data.toUser())
+                        emitter.onComplete()
+                    }
                 })
         }, BackpressureStrategy.LATEST)
     }
@@ -105,7 +108,10 @@ class RemoteUserSourceImpl(private val userTable: DatabaseReference, private val
         return Flowable.create({ emitter -> accountTable.child(requestModel.userId)
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) = emitter.onError(error.toException())
-                    override fun onDataChange(data: DataSnapshot) = emitter.onNext(data.toAccount())
+                    override fun onDataChange(data: DataSnapshot) {
+                        emitter.onNext(data.toAccount())
+                        emitter.onComplete()
+                    }
                 })
         }, BackpressureStrategy.LATEST)
     }

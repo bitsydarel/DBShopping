@@ -20,6 +20,7 @@ package com.dbeginc.dbshopping.authentication.login.presenter
 import com.dbeginc.dbshopping.authentication.login.LoginContract
 import com.dbeginc.dbshopping.exception.IErrorManager
 import com.dbeginc.dbshopping.fieldvalidator.IFormValidator
+import com.dbeginc.dbshopping.helper.extensions.addTo
 import com.dbeginc.dbshopping.mapper.user.toUserModel
 import com.dbeginc.domain.entities.requestmodel.AuthRequestModel
 import com.dbeginc.domain.entities.requestmodel.UserRequestModel
@@ -29,11 +30,10 @@ import com.dbeginc.domain.usecases.user.GetUser
 import com.dbeginc.domain.usecases.user.authentication.CheckIfUserCanLoginWithAccount
 import com.dbeginc.domain.usecases.user.authentication.LoginUser
 import com.dbeginc.domain.usecases.user.authentication.LoginWithGoogle
+import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
-import io.reactivex.observers.DisposableCompletableObserver
-import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.subscribers.DisposableSubscriber
 
 class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErrorManager, private val fieldValidator: IFormValidator) : LoginContract.LoginPresenter {
@@ -50,14 +50,17 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
     }
 
     override fun unBind() {
-        login.dispose()
-        loginWithGoogle.dispose()
-        getUser.dispose()
+        login.clean()
+        loginWithGoogle.clean()
+        checkIfUserCanLoginWithAccount.clean()
+        getUser.clean()
         subscription.clear()
     }
 
     override fun loadUser(userId: String) {
-        getUser.execute(UserObserver(), UserRequestModel(userId, Unit))
+        getUser.execute(UserRequestModel(userId, Unit))
+                .subscribeWith(UserObserver())
+                .addTo(subscription)
     }
 
     override fun onUserLogin() {
@@ -70,14 +73,24 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
             return
         }
 
-        view.displayLoginInProgressMessage()
-        login.execute(LoginObserver(), AuthRequestModel(view.getEmail(), view.getPassword(), Unit))
+        login.execute(AuthRequestModel(view.getEmail(), view.getPassword(), Unit))
+                .doOnSubscribe { view.displayLoginInProgressMessage() }
+                .doOnTerminate { view.hideLoginInProgressMessage() }
+                .subscribe({ view.onLoginSuccess() }, { error -> view.displayErrorMessage(authErrorManager.translateError(error)) })
+                .addTo(subscription)
     }
 
 
     override fun loginWithGoogle(userId: String, accountProvider: String, idToken: String) {
-        view.displayLoginInProgressMessage()
-        checkIfUserCanLoginWithAccount.execute(LoginWithAccountResponseObserver(userId, idToken), UserRequestModel(userId, accountProvider))
+        checkIfUserCanLoginWithAccount.execute(UserRequestModel(userId, accountProvider))
+                .doOnSubscribe { _ -> view.displayLoginInProgressMessage() }
+                .flatMapCompletable { canUserLogin ->
+                    if (canUserLogin) loginWithGoogle.execute(UserRequestModel(userId, idToken)).doOnComplete { view.onLoginSuccess() }
+                    else Completable.complete().doOnComplete { view.displayUserDoesNotExist() }
+
+                }.doOnTerminate { view.hideLoginInProgressMessage() }
+                .subscribe({ /*Nothing to do*/ }, { error -> view.displayErrorMessage(authErrorManager.translateError(error)) })
+                .addTo(subscription)
     }
 
     override fun loginWithFacebook() = view.requestFacebookAccount()
@@ -89,90 +102,30 @@ class LoginPresenterImpl(userRepo: IUserRepo, private val authErrorManager: IErr
     override fun whenUserHasNoAccount() = view.goToSignUpScreen()
 
     override fun onUserEmailInputEvent() {
-        subscription.add(
-                view.getEmailInputEvent().map { text -> fieldValidator.validateEmailForm(text) }
-                        .subscribeWith(EmailObserver())
-        )
+        view.getEmailInputEvent().map { text -> fieldValidator.validateEmailForm(text) }
+                .subscribe(
+                        { valid -> if (valid) view.removeEmailInvalidMessage() else view.displayEmailInvalidMessage() },
+                        { error -> view.displayErrorMessage(error.localizedMessage)
+                })
+                .addTo(subscription)
     }
 
     override fun onUserPasswordInputEvent() {
-        subscription.add(
-                view.getPasswordInputEvent().map { text -> fieldValidator.validatePasswordForm(text) }
-                        .subscribeWith(PasswordObserver())
-        )
+        view.getPasswordInputEvent().map { text -> fieldValidator.validatePasswordForm(text) }
+                .subscribe (
+                        { valid -> if (valid) view.removePasswordInvalidMessage() else view.displayPasswordInvalidMessage()},
+                        { error -> view.displayErrorMessage(error.localizedMessage) }
+                ).addTo(subscription)
     }
 
     override fun onUserInputEvent() {
-        subscription.add(
-                Flowable.combineLatest(
-                        view.getEmailInputEvent(), view.getPasswordInputEvent(),
-                        BiFunction<String, String, Boolean> { email, password -> fieldValidator.validateEmailAndPassword(email, password)}
-                ).subscribeWith(LoginButtonObserver())
-        )
-    }
-
-    private inner class EmailObserver : DisposableSubscriber<Boolean>() {
-        override fun onNext(isValid: Boolean) {
-            if (isValid) view.removeEmailInvalidMessage()
-            else view.displayEmailInvalidMessage()
-        }
-        override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
-        override fun onComplete() = dispose()
-    }
-
-    private inner class PasswordObserver : DisposableSubscriber<Boolean>() {
-        override fun onNext(isValid: Boolean) {
-            if (isValid) view.removePasswordInvalidMessage()
-            else view.displayPasswordInvalidMessage()
-        }
-        override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
-        override fun onComplete() = dispose()
-    }
-
-    private inner class LoginButtonObserver : DisposableSubscriber<Boolean>() {
-        override fun onNext(areValid: Boolean) {
-            if (areValid) view.activateLogin()
-            else view.disableLogin()
-        }
-        override fun onError(error: Throwable) = view.displayErrorMessage(error.localizedMessage)
-        override fun onComplete() = dispose()
-    }
-
-    private inner class LoginWithAccountResponseObserver(val userId: String, val userToken: String) : DisposableSingleObserver<Boolean>() {
-        override fun onSuccess(canUserLogin: Boolean) {
-            if (canUserLogin) loginWithGoogle.execute(GoogleAccountProvider(), UserRequestModel(userId, userToken))
-            else {
-                view.hideLoginInProgressMessage()
-                view.displayUserDoesNotExist()
-            }
-            dispose()
-        }
-        override fun onError(e: Throwable) {
-            view.hideLoginInProgressMessage()
-            view.displayErrorMessage(e.localizedMessage)
-        }
-    }
-
-    private inner class LoginObserver : DisposableCompletableObserver() {
-        override fun onComplete() {
-            view.onLoginSuccess()
-            dispose()
-        }
-        override fun onError(e: Throwable) {
-            view.hideLoginInProgressMessage()
-            view.displayErrorMessage(authErrorManager.translateError(e))
-        }
-    }
-
-    private inner class GoogleAccountProvider : DisposableCompletableObserver() {
-        override fun onComplete() {
-            view.onLoginSuccess()
-            dispose()
-        }
-        override fun onError(error: Throwable) {
-            view.hideLoginInProgressMessage()
-            view.displayErrorMessage(authErrorManager.translateError(error))
-        }
+        Flowable.combineLatest(
+                view.getEmailInputEvent(), view.getPasswordInputEvent(),
+                BiFunction<String, String, Boolean> { email, password -> fieldValidator.validateEmailAndPassword(email, password)}
+        ).subscribe(
+                { valid -> if (valid) view.activateLogin() else view.disableLogin() },
+                { error -> view.displayErrorMessage(error.localizedMessage) }
+        ).addTo(subscription)
     }
 
     private inner class UserObserver : DisposableSubscriber<User>() {

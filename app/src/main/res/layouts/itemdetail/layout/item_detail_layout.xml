@@ -29,6 +29,7 @@
         android:id="@+id/itemDetailLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="@color/ItemDetailColorPrimaryLight"
         tools:context=".detailItem.view.ItemDetailViewImpl">
 
@@ -51,7 +52,7 @@
                 app:contentInsetStart="0dp"
                 app:contentInsetEnd="0dp"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-                app:layout_scrollFlags="scroll|enterAlways" />
+                app:layout_scrollFlags="scroll|enterAlways"/>
 
         </android.support.design.widget.AppBarLayout>
 

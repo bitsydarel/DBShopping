@@ -84,7 +84,7 @@ class LocalUserSourceImpl : UserSource {
                         .findFirst()
 
             if (user != null) emitter.onNext(user.toDomainUser())
-            else emitter.onComplete()
+            emitter.onComplete()
 
         } } }, BackpressureStrategy.LATEST)
     }
@@ -109,7 +109,7 @@ class LocalUserSourceImpl : UserSource {
                 .findFirst()
 
             if (account != null) emitter.onNext(account.toDomainAccount())
-            else emitter.onComplete()
+            emitter.onComplete()
 
         } } }, BackpressureStrategy.LATEST)
     }

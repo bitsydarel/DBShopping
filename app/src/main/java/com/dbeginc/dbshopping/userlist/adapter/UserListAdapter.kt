@@ -100,6 +100,8 @@ class UserListAdapter(lists: List<ListModel>, private val currentUserName: Strin
         }
     }
 
+    fun getData() = presenters.map { presenter -> presenter.getData() }
+
     /**
      * Fill the presenter container with new data
      * this method was named fill me

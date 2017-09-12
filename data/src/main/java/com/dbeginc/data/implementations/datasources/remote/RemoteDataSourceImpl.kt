@@ -65,7 +65,10 @@ class RemoteDataSourceImpl(private val remoteListTable: DatabaseReference, priva
                 .addListenerForSingleValueEvent(object : ValueEventListener {
                     override fun onCancelled(error: DatabaseError) = emitter.onError(error.toException())
 
-                    override fun onDataChange(data: DataSnapshot) = emitter.onNext(data.toList())
+                    override fun onDataChange(data: DataSnapshot) {
+                        emitter.onNext(data.toList())
+                        emitter.onComplete()
+                    }
                 })
 
         }, BackpressureStrategy.LATEST)
@@ -81,6 +84,7 @@ class RemoteDataSourceImpl(private val remoteListTable: DatabaseReference, priva
                 allData.children.forEach { data -> lists.add(data.toList()) }
 
                 emitter.onNext(lists)
+                emitter.onComplete()
             }
         }) }, BackpressureStrategy.LATEST)
     }
@@ -95,6 +99,7 @@ class RemoteDataSourceImpl(private val remoteListTable: DatabaseReference, priva
                 allData.children.forEach { data -> lists.add(data.toItem()) }
 
                 emitter.onNext(lists)
+                emitter.onComplete()
             }
         }) }, BackpressureStrategy.LATEST)
     }
@@ -106,7 +111,10 @@ class RemoteDataSourceImpl(private val remoteListTable: DatabaseReference, priva
 
                     override fun onCancelled(error: DatabaseError) = emitter.onError(error.toException())
 
-                    override fun onDataChange(data: DataSnapshot) = emitter.onNext(data.toItem())
+                    override fun onDataChange(data: DataSnapshot) {
+                        emitter.onNext(data.toItem())
+                        emitter.onComplete()
+                    }
 
                 })
         }, BackpressureStrategy.LATEST)

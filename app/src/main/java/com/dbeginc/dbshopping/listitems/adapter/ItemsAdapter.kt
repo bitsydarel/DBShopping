@@ -124,5 +124,4 @@ class ItemsAdapter(items: List<ItemModel>, private val currentUserName: String, 
         presenters.clear()
         newData.mapTo(presenters) { item -> ItemPresenterImpl(item, currentUserName, shoppingModeState, itemUpdateEvent) }
     }
-
 }

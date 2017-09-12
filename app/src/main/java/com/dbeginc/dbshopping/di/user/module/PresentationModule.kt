@@ -30,6 +30,8 @@ import com.dbeginc.dbshopping.listdetail.ListDetailContract
 import com.dbeginc.dbshopping.listdetail.presenter.ListDetailPresenterImpl
 import com.dbeginc.dbshopping.listitems.ListItemsContract
 import com.dbeginc.dbshopping.listitems.presenter.ListItemsPresenterImpl
+import com.dbeginc.dbshopping.settings.SettingsContract
+import com.dbeginc.dbshopping.settings.presenter.SettingsPresenterImpl
 import com.dbeginc.dbshopping.userlist.UserListContract
 import com.dbeginc.dbshopping.userlist.presenter.UserListPresenterImpl
 import com.dbeginc.domain.repositories.IDataRepo
@@ -43,6 +45,10 @@ import dagger.Provides
  * User Presentation module
  */
 @Module class PresentationModule {
+
+    @Provides
+    internal fun provideSettingsPresenter() : SettingsContract.SettingsPresenter =
+            SettingsPresenterImpl()
 
     @Provides
     internal fun provideItemDetailPresenter(dataRepo: IDataRepo, @StorageErrorManager errorManager: IErrorManager) : ItemDetailContract.ItemDetailPresenter =

@@ -32,8 +32,5 @@ class CheckIfUserCanLoginWithAccount(private val userRepo: IUserRepo) : UseCaseS
     override fun buildUseCaseObservable(params: UserRequestModel<String>): Single<Boolean> =
             userRepo.canUserLoginWithAccountProvider(params)
 
-    override fun dispose() {
-        super.dispose()
-        userRepo.clean()
-    }
+    override fun clean() = userRepo.clean()
 }

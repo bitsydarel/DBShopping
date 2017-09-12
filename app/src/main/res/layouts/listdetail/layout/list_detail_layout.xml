@@ -26,6 +26,7 @@
         android:id="@+id/ListDetailLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
         android:background="@color/ListDetailColorBackground"
         tools:context=".detailList.view.ListDetailViewImpl">
 
@@ -46,7 +47,7 @@
         <android.support.design.widget.AppBarLayout
             android:id="@+id/detailAppBar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             android:background="@color/ListDetailColorPrimary"
             app:layout_constraintTop_toTopOf="parent"

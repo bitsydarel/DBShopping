@@ -31,8 +31,5 @@ class RemoveUserShopping(private val dataRepo: IDataRepo) : UseCaseCompletable<L
     override fun buildUseCaseCompletableObservable(params: ListRequestModel<String>): Completable =
             dataRepo.removeUserShopping(params)
 
-    override fun dispose() {
-        super.dispose()
-        dataRepo.clean()
-    }
+    override fun clean() = dataRepo.clean()
 }

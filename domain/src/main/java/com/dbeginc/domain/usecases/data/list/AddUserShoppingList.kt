@@ -30,8 +30,5 @@ import io.reactivex.Completable
 class AddUserShoppingList(private val dataRepo: IDataRepo) : UseCaseCompletable<ListRequestModel<String>>() {
     override fun buildUseCaseCompletableObservable(params: ListRequestModel<String>): Completable = dataRepo.addUserShopping(params)
 
-    override fun dispose() {
-        super.dispose()
-        dataRepo.clean()
-    }
+    override fun clean() = dataRepo.clean()
 }

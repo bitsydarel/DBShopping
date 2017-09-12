@@ -32,8 +32,5 @@ class GetAccount(private val userRepo: IUserRepo) : UseCase<Account, AccountRequ
     override fun buildUseCaseObservable(params: AccountRequestModel<Unit>): Flowable<Account> =
             userRepo.getAccount(params)
 
-    override fun dispose() {
-        super.dispose()
-        userRepo.clean()
-    }
+    override fun clean() = userRepo.clean()
 }

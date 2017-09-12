@@ -18,6 +18,7 @@
 package com.dbeginc.dbshopping.di.user.module
 
 import android.content.res.Resources
+import com.dbeginc.data.ThreadProvider
 import com.dbeginc.data.datasource.DataSource
 import com.dbeginc.data.implementations.datasources.local.LocalDataSourceImpl
 import com.dbeginc.data.implementations.datasources.remote.RemoteDataSourceImpl
@@ -35,7 +36,6 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import dagger.Module
 import dagger.Provides
-import io.reactivex.Scheduler
 
 /**
  * Created by darel on 22.08.17.
@@ -89,12 +89,6 @@ import io.reactivex.Scheduler
 
     @Provides
     @UserScope
-    internal fun provideDataSource(@LocalDataSource localSource : DataSource, @RemoteDataSource remoteSource: DataSource,
-                                   @UIThread uiThread: Scheduler, @IOThread ioThread: Scheduler,
-                                   @ComputationThread workerThread: Scheduler) : IDataRepo {
-
-        return DataRepoImpl(local = localSource, remote = remoteSource, uiThread = uiThread,
-                workerThread = workerThread, ioThread = ioThread
-        )
-    }
+    internal fun provideDataSource(@LocalDataSource localSource : DataSource, @RemoteDataSource remoteSource: DataSource) : IDataRepo =
+            DataRepoImpl(local = localSource, remote = remoteSource, schedulerProvider = ThreadProvider)
 }

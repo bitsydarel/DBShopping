@@ -19,6 +19,7 @@ package com.dbeginc.data.implementations.repositories
 
 import android.util.Log
 import com.dbeginc.data.ConstantHolder
+import com.dbeginc.data.ThreadProvider
 import com.dbeginc.data.datasource.DataSource
 import com.dbeginc.domain.entities.data.ShoppingItem
 import com.dbeginc.domain.entities.data.ShoppingList
@@ -28,150 +29,148 @@ import com.dbeginc.domain.entities.requestmodel.UserRequestModel
 import com.dbeginc.domain.repositories.IDataRepo
 import io.reactivex.Completable
 import io.reactivex.Flowable
-import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableCompletableObserver
 
-class DataRepoImpl(private val local: DataSource, private val remote: DataSource,
-                   private val uiThread: Scheduler, private val ioThread: Scheduler,
-                   private val workerThread: Scheduler) : IDataRepo {
+class DataRepoImpl(private val local: DataSource, private val remote: DataSource, private val schedulerProvider: ThreadProvider) : IDataRepo {
 
     private val subscriptions = CompositeDisposable()
 
     override fun addUserShopping(requestModel: ListRequestModel<String>): Completable {
         return local.addUserShopping(requestModel)
-                .subscribeOn(workerThread)
-                .andThen(remote.addUserShopping(requestModel).subscribeOn(ioThread))
-                .observeOn(uiThread)
+                .subscribeOn(schedulerProvider.computation)
+                .andThen(remote.addUserShopping(requestModel).subscribeOn(schedulerProvider.network))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun removeUserShopping(requestModel: ListRequestModel<String>): Completable {
         return remote.removeUserShopping(requestModel)
-                .subscribeOn(ioThread)
-                .andThen(local.removeUserShopping(requestModel).subscribeOn(workerThread))
-                .observeOn(uiThread)
+                .subscribeOn(schedulerProvider.network)
+                .andThen(local.removeUserShopping(requestModel).subscribeOn(schedulerProvider.computation))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun getList(requestModel: ListRequestModel<Unit>): Flowable<ShoppingList> {
         return remote.getList(requestModel)
-                .subscribeOn(ioThread)
-                .doOnNext { list ->  subscriptions.addList(list)}
+                .subscribeOn(schedulerProvider.network)
+                .doOnNext { list -> subscriptions.addList(list) }
                 .publish {
-                    remoteData -> Flowable.mergeDelayError(remoteData, local.getList(requestModel).takeUntil(remoteData).subscribeOn(workerThread))
+                    remoteData -> Flowable.merge(remoteData, local.getList(requestModel).takeUntil(remoteData).subscribeOn(schedulerProvider.computation))
                 }
-                .observeOn(uiThread)
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun getAllList(): Flowable<List<ShoppingList>> {
         return remote.getAllList()
-                .subscribeOn(ioThread)
-                .doOnNext { list -> list.forEach { subscriptions.addList(it) } }
+                .subscribeOn(schedulerProvider.network)
+                .doOnNext { lists -> lists.forEach { list -> subscriptions.addList(list) }}
                 .publish {
-                    remoteData -> Flowable.mergeDelayError(remoteData, local.getAllList().takeUntil(remoteData).subscribeOn(workerThread))
+                    remoteData -> Flowable.merge(remoteData, local.getAllList().takeUntil(remoteData).subscribeOn(schedulerProvider.computation))
                 }
-                .observeOn(uiThread)
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun getItems(requestModel: ItemRequestModel<Unit>): Flowable<List<ShoppingItem>> {
         return remote.getItems(requestModel)
-                .subscribeOn(ioThread)
+                .subscribeOn(schedulerProvider.network)
                 .doOnNext { items -> items.forEach { subscriptions.addItem(requestModel.listId, it) } }
                 .publish {
-                    remoteData -> Flowable.merge(remoteData, local.getItems(requestModel).takeUntil(remoteData).subscribeOn(workerThread))
+                    remoteData -> Flowable.merge(remoteData, local.getItems(requestModel).takeUntil(remoteData).subscribeOn(schedulerProvider.computation))
                 }
-                .observeOn(uiThread)
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun getItem(requestModel: ItemRequestModel<String>): Flowable<ShoppingItem> {
         return remote.getItem(requestModel)
-                .subscribeOn(ioThread)
+                .subscribeOn(schedulerProvider.network)
                 .doOnNext { item -> subscriptions.addItem(requestModel.listId, item) }
                 .publish {
-                    remoteData -> Flowable.merge(remoteData, local.getItem(requestModel).takeUntil(remoteData).subscribeOn(workerThread))
+                    remoteData -> Flowable.merge(remoteData, local.getItem(requestModel).takeUntil(remoteData).subscribeOn(schedulerProvider.computation))
                 }
-                .observeOn(uiThread)
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun addList(requestModel: ListRequestModel<ShoppingList>): Completable {
         return local.addList(requestModel)
-                .subscribeOn(workerThread)
+                .subscribeOn(schedulerProvider.computation)
                 .andThen(remote.addList(requestModel).doOnComplete {
                     subscriptions.addList(requestModel.arg)
 
-                }.subscribeOn(ioThread))
-                .observeOn(uiThread)
+                }.subscribeOn(schedulerProvider.network))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun addItem(requestModel: ItemRequestModel<ShoppingItem>): Completable {
         return local.addItem(requestModel)
-                .subscribeOn(workerThread)
+                .subscribeOn(schedulerProvider.computation)
                 .andThen(remote.addItem(requestModel).doOnComplete {
                     subscriptions.addItem(requestModel.listId, requestModel.arg)
 
-                }.subscribeOn(ioThread))
-                .observeOn(uiThread)
+                }.subscribeOn(schedulerProvider.network))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun changeListName(requestModel: ListRequestModel<String>): Completable {
         return local.changeListName(requestModel)
-                .subscribeOn(workerThread)
-                .andThen(remote.changeListName(requestModel).subscribeOn(ioThread))
-                .observeOn(uiThread)
+                .subscribeOn(schedulerProvider.computation)
+                .andThen(remote.changeListName(requestModel).subscribeOn(schedulerProvider.network))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun updateList(requestModel: ListRequestModel<ShoppingList>): Completable {
         return local.updateList(requestModel)
-                .subscribeOn(workerThread)
-                .andThen(remote.updateList(requestModel).subscribeOn(ioThread))
-                .observeOn(uiThread)
+                .subscribeOn(schedulerProvider.computation)
+                .andThen(remote.updateList(requestModel).subscribeOn(schedulerProvider.network))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun updateItem(requestModel: ItemRequestModel<ShoppingItem>): Completable {
         return local.updateItem(requestModel)
-                .subscribeOn(workerThread)
-                .andThen(remote.updateItem(requestModel).subscribeOn(ioThread))
-                .observeOn(uiThread)
+                .subscribeOn(schedulerProvider.computation)
+                .andThen(remote.updateItem(requestModel).subscribeOn(schedulerProvider.network))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun uploadItemImage(requestModel: ItemRequestModel<ShoppingItem>): Completable {
         return remote.uploadItemImage(requestModel)
-                .subscribeOn(ioThread)
-                .andThen(local.uploadItemImage(requestModel).subscribeOn(workerThread))
-                .observeOn(uiThread)
+                .subscribeOn(schedulerProvider.network)
+                .andThen(local.uploadItemImage(requestModel).subscribeOn(schedulerProvider.computation))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun deleteList(requestModel: ListRequestModel<Unit>): Completable {
         return remote.deleteList(requestModel)
-                .subscribeOn(ioThread)
-                .andThen(local.deleteList(requestModel).subscribeOn(workerThread))
-                .observeOn(uiThread)
+                .subscribeOn(schedulerProvider.network)
+                .andThen(local.deleteList(requestModel).subscribeOn(schedulerProvider.computation))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun deleteItem(requestModel: ItemRequestModel<String>): Completable {
         return remote.deleteItem(requestModel)
-                .subscribeOn(ioThread)
-                .andThen(local.deleteItem(requestModel).subscribeOn(workerThread))
-                .observeOn(uiThread)
+                .subscribeOn(schedulerProvider.network)
+                .andThen(local.deleteItem(requestModel).subscribeOn(schedulerProvider.computation))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun deleteAll(requestModel: UserRequestModel<Unit>): Completable {
-        return remote.deleteAll(requestModel).subscribeOn(ioThread)
-                .andThen(local.deleteAll(requestModel).subscribeOn(workerThread))
-                .observeOn(uiThread)
+        return remote.deleteAll(requestModel)
+                .subscribeOn(schedulerProvider.network)
+                .andThen(local.deleteAll(requestModel).subscribeOn(schedulerProvider.computation))
+                .observeOn(schedulerProvider.ui)
     }
 
     override fun clean() = subscriptions.clear()
 
     private fun CompositeDisposable.addList(list: ShoppingList) {
         val requestModel = ListRequestModel(listId = list.uuid, arg = list)
-        add(local.updateList(requestModel).subscribeOn(workerThread)
+        add(local.updateList(requestModel).subscribeOn(schedulerProvider.computation)
                 .subscribeWith(UpdateObserver())
         )
     }
 
     private fun CompositeDisposable.addItem(listId: String, item: ShoppingItem) {
         val requestModel = ItemRequestModel(listId = listId, arg = item)
-        add(local.updateItem(requestModel).subscribeOn(workerThread)
+        add(local.updateItem(requestModel).subscribeOn(schedulerProvider.computation)
                 .subscribeWith(UpdateObserver())
         )
     }

@@ -18,11 +18,10 @@
 package com.dbeginc.dbshopping.itemdetail.presenter
 
 import com.dbeginc.dbshopping.exception.IErrorManager
+import com.dbeginc.dbshopping.helper.extensions.addTo
 import com.dbeginc.dbshopping.itemdetail.ItemDetailContract
 import com.dbeginc.dbshopping.mapper.data.toItem
 import com.dbeginc.dbshopping.mapper.data.toItemModel
-import com.dbeginc.domain.entities.data.ShoppingItem
-import com.dbeginc.domain.entities.data.ShoppingList
 import com.dbeginc.domain.entities.requestmodel.ItemRequestModel
 import com.dbeginc.domain.entities.requestmodel.ListRequestModel
 import com.dbeginc.domain.repositories.IDataRepo
@@ -31,8 +30,7 @@ import com.dbeginc.domain.usecases.data.item.GetItem
 import com.dbeginc.domain.usecases.data.item.UpdateImage
 import com.dbeginc.domain.usecases.data.item.UpdateItem
 import com.dbeginc.domain.usecases.data.list.GetList
-import io.reactivex.observers.DisposableCompletableObserver
-import io.reactivex.subscribers.DisposableSubscriber
+import io.reactivex.disposables.CompositeDisposable
 
 /**
  * Created by darel on 24.08.17.
@@ -41,11 +39,12 @@ import io.reactivex.subscribers.DisposableSubscriber
  */
 class ItemDetailPresenterImpl(dataRepo: IDataRepo, private val errorManager: IErrorManager) : ItemDetailContract.ItemDetailPresenter {
     private lateinit var view: ItemDetailContract.ItemDetailView
-    private val getRestrictionForItem = GetList(dataRepo)
     private val getItem = GetItem(dataRepo)
+    private val getRestrictionForItem = GetList(dataRepo)
     private val updateItem = UpdateItem(dataRepo)
     private val uploadImage = UpdateImage(dataRepo)
     private val deleteItem = DeleteItem(dataRepo)
+    private val subscriptions = CompositeDisposable()
 
     override fun bind(view: ItemDetailContract.ItemDetailView) {
         this.view = view
@@ -53,18 +52,17 @@ class ItemDetailPresenterImpl(dataRepo: IDataRepo, private val errorManager: IEr
     }
 
     override fun unBind() {
-        getItem.dispose()
-        getRestrictionForItem.dispose()
-        updateItem.dispose()
-        uploadImage.dispose()
-        deleteItem.dispose()
+        getItem.clean()
+        getRestrictionForItem.clean()
+        updateItem.clean()
+        uploadImage.clean()
+        deleteItem.clean()
+        subscriptions.clear()
     }
 
     override fun changeItemImage() = view.requestImage()
 
-    override fun onImageSelected(imageUrl: String) {
-        view.displayImage(imageUrl)
-    }
+    override fun onImageSelected(imageUrl: String) = view.displayImage(imageUrl)
 
     override fun addQuantity() = view.addQuantity(1)
 
@@ -81,85 +79,51 @@ class ItemDetailPresenterImpl(dataRepo: IDataRepo, private val errorManager: IEr
     }
 
     override fun setupRestrictions() {
-        view.displayUpdateStatus()
-        getRestrictionForItem.execute(RestrictionObserver(), ListRequestModel(view.getItem().itemOf, Unit))
+        getRestrictionForItem.execute(ListRequestModel(view.getItem().itemOf, Unit))
+                .doOnSubscribe { view.displayUpdateStatus() }
+                .doOnTerminate { view.hideUpdateStatus() }
+                .subscribe(
+                        { list ->
+                            if (!list.usersShopping.contains(view.getCurrentUser().id) || view.getItem().bought) view.restrictUserToEditItemName()
+                            else view.allowUserToEditItemName()
+                        },
+                        { error -> view.displayErrorMessage(error.localizedMessage) }
+                ).addTo(subscriptions)
     }
 
     override fun saveItemImage() {
-        view.displayLoadingStatus()
-        uploadImage.execute(UploadTaskObserver(), ItemRequestModel(view.getItem().itemOf, view.getItem().toItem()))
+        uploadImage.execute(ItemRequestModel(view.getItem().itemOf, view.getItem().toItem()))
+                .doOnSubscribe { view.displayLoadingStatus() }
+                .doOnError { view.hideLoadingStatus() }
+                .subscribe(
+                        { getUpdatedItem() },
+                        { error -> view.displayErrorMessage(errorManager.translateError(error)) }
+                ).addTo(subscriptions)
     }
 
     override fun updateItem() {
-        view.displayLoadingStatus()
-        updateItem.execute(UpdateObserver(), ItemRequestModel(view.getItem().itemOf, view.getItem().toItem()))
+        updateItem.execute(ItemRequestModel(view.getItem().itemOf, view.getItem().toItem()))
+                .doOnSubscribe { view.displayLoadingStatus() }
+                .doOnTerminate { view.hideLoadingStatus() }
+                .subscribe({ view.goToList() }, { error -> view.displayErrorMessage(error.localizedMessage) })
+                .addTo(subscriptions)
     }
 
     override fun deleteItem() {
-        view.displayLoadingStatus()
-        deleteItem.execute(DeleteObserver(), ItemRequestModel(view.getItem().itemOf, view.getItem().id))
-    }
-
-    private inner class RestrictionObserver : DisposableSubscriber<ShoppingList>() {
-        override fun onNext(list: ShoppingList) {
-            view.hideUpdateStatus()
-            if (!list.usersShopping.contains(view.getCurrentUser().id) || view.getItem().bought) {
-                view.restrictUserToEditItemName()
-            } else {
-                view.allowUserToEditItemName()
-            }
-        }
-
-        override fun onError(error: Throwable) {
-            view.hideLoadingStatus()
-            view.displayErrorMessage(error.localizedMessage)
-        }
-        override fun onComplete() = dispose()
-    }
-
-    private inner class ItemObserver : DisposableSubscriber<ShoppingItem>() {
-        override fun onNext(item: ShoppingItem) {
-            view.displayItem(item.toItemModel())
-            view.hideLoadingStatus()
-            view.displayImageUploadDoneMessage()
-        }
-
-        override fun onComplete() = dispose()
-
-        override fun onError(error: Throwable) {
-            view.hideLoadingStatus()
-            view.displayErrorMessage(error.localizedMessage)
-        }
-    }
-
-    private inner class UploadTaskObserver : DisposableCompletableObserver() {
-        override fun onComplete() = getUpdatedItem()
-
-        override fun onError(error: Throwable) {
-            view.hideLoadingStatus()
-            view.displayErrorMessage(errorManager.translateError(error))
-        }
-    }
-
-    private inner class UpdateObserver : DisposableCompletableObserver() {
-        override fun onComplete() = view.goToList()
-
-        override fun onError(e: Throwable) {
-            view.hideLoadingStatus()
-            view.displayErrorMessage(e.localizedMessage)
-        }
-    }
-
-    private inner class DeleteObserver : DisposableCompletableObserver() {
-        override fun onComplete() = view.goToList()
-
-        override fun onError(e: Throwable) {
-            view.hideLoadingStatus()
-            view.displayErrorMessage(e.localizedMessage)
-        }
+        deleteItem.execute(ItemRequestModel(view.getItem().itemOf, view.getItem().id))
+                .doOnSubscribe { view.displayLoadingStatus() }
+                .doOnTerminate { view.hideLoadingStatus() }
+                .subscribe({ view.goToList() }, { error -> view.displayErrorMessage(error.localizedMessage) })
+                .addTo(subscriptions)
     }
 
     private fun getUpdatedItem() {
-        getItem.execute(ItemObserver(), ItemRequestModel(view.getItem().itemOf, view.getItemId()))
+        getItem.execute(ItemRequestModel(view.getItem().itemOf, view.getItemId()))
+                .doOnTerminate { view.hideLoadingStatus() }
+                .subscribe(
+                        { item -> view.displayItem(item.toItemModel()); view.displayImageUploadDoneMessage() },
+                        { error -> view.displayErrorMessage(error.localizedMessage) }
+
+                ).addTo(subscriptions)
     }
 }

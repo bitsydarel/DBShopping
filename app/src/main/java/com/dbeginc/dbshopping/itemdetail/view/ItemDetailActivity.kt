@@ -105,7 +105,7 @@ class ItemDetailActivity : BaseActivity(), ItemDetailContract.ItemDetailView {
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_item_details, menu)
+        menuInflater.inflate(R.menu.item_details_menu, menu)
         // Hide the delete icon if the current user
         // is not the creator of the item
         menu?.findItem(R.id.action_delete_item)?.isVisible = binding.item.itemOwner == user.email

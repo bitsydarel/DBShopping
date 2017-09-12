@@ -82,6 +82,7 @@ class LocalDataSourceImpl : DataSource {
                 .toDomainList()
 
             emitter.onNext(list)
+            emitter.onComplete()
 
         } } }, BackpressureStrategy.LATEST)
     }
@@ -96,6 +97,7 @@ class LocalDataSourceImpl : DataSource {
                     .forEach { list -> lists.add(list.toDomainList()) }
 
             emitter.onNext(lists)
+            emitter.onComplete()
 
         } } }, BackpressureStrategy.LATEST)
     }
@@ -111,6 +113,7 @@ class LocalDataSourceImpl : DataSource {
                     .forEach { item -> items.add(item.toDomainItem()) }
 
             emitter.onNext(items)
+            emitter.onComplete()
 
         } } }, BackpressureStrategy.LATEST)
     }
@@ -125,6 +128,7 @@ class LocalDataSourceImpl : DataSource {
                 .toDomainItem()
 
             emitter.onNext(item)
+            emitter.onComplete()
 
         } } }, BackpressureStrategy.LATEST)
     }

@@ -19,22 +19,8 @@ package com.dbeginc.domain.usecases
 
 import io.reactivex.Flowable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subscribers.DisposableSubscriber
 
 /**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
  * Created by darel on 19.07.17.
  *
  * Abstract class for a Use Case (Interactor in terms of Clean Architecture).
@@ -46,8 +32,6 @@ import io.reactivex.subscribers.DisposableSubscriber
  */
 abstract class UseCase<T, in Params> {
 
-    private val subscriptions = CompositeDisposable()
-
     /**
      * Builds an [Flowable] which will be used when executing the current [UseCase].
      */
@@ -55,19 +39,12 @@ abstract class UseCase<T, in Params> {
 
     /**
      * Executes the current use case.
-     * @param observer [DisposableSubscriber] which will be listening to the observable build
-     * * by [.buildUseCaseObservable] ()} method.c
-     * *
      * @param params Parameters (Optional) used to build/execute this use case.
      */
-    fun execute(observer: DisposableSubscriber<T>, params: Params) : Flowable<T> {
-        val observable = this.buildUseCaseObservable(params)
-        subscriptions.add(observable.subscribeWith(observer))
-        return observable
-    }
+    fun execute(params: Params) : Flowable<T> = buildUseCaseObservable(params)
 
     /**
      * Dispose from current [CompositeDisposable].
      */
-    open fun dispose() = subscriptions.clear()
+    abstract fun clean()
 }

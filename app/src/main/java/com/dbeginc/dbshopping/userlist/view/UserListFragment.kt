@@ -35,27 +35,15 @@ import com.dbeginc.dbshopping.viewmodels.ListModel
 import javax.inject.Inject
 
 /**
- * Copyright (C) 2017 Darel Bitsy
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License
- *
  * Created by darel on 22.08.17.
+ *
+ * User List View
  */
 class UserListFragment : BaseFragment(), UserListContract.UserListView {
 
     @Inject lateinit var presenter: UserListContract.UserListPresenter
     private lateinit var binding: UserListLayoutBinding
     private lateinit var adapter: UserListAdapter
-    private var lists = emptyList<ListModel>()
     private lateinit var currentUser: String
 
     /********************************************************** Android Part Method **********************************************************/
@@ -77,9 +65,9 @@ class UserListFragment : BaseFragment(), UserListContract.UserListView {
 
         if (savedState == null) {
             currentUser = arguments.getString(ConstantHolder.CURRENT_USERNAME)
-            adapter = UserListAdapter(lists, currentUser)
+            adapter = UserListAdapter(emptyList(), currentUser)
         } else {
-            lists = savedState.getList(ConstantHolder.LIST_DATA_KEY) ?: emptyList()
+            val lists : List<ListModel> = savedState.getList(ConstantHolder.LIST_DATA_KEY) ?: emptyList()
             currentUser = savedState.getString(ConstantHolder.CURRENT_USERNAME)
             adapter = UserListAdapter(lists, currentUser)
         }
@@ -92,7 +80,7 @@ class UserListFragment : BaseFragment(), UserListContract.UserListView {
 
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
-        outState?.putList(ConstantHolder.LIST_DATA_KEY, lists)
+        outState?.putList(ConstantHolder.LIST_DATA_KEY, adapter.getData())
         outState?.putString(ConstantHolder.CURRENT_USERNAME, currentUser)
     }
 
