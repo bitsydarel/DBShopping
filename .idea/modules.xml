@@ -2,10 +2,63 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/DBShopping.iml" filepath="$PROJECT_DIR$/.idea/DBShopping.iml" />
       <module fileurl="file://$PROJECT_DIR$/DBShopping.iml" filepath="$PROJECT_DIR$/DBShopping.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/DBShopping.domain.iml" filepath="$PROJECT_DIR$/domain/DBShopping.domain.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/buildSrc/buildSrc.iml" filepath="$PROJECT_DIR$/buildSrc/buildSrc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.backendMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.backendMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.backendTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.backendTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.commonMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.commonMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.commonTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.commonTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.iosMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.iosMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.iosTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain.iosTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_backendMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_backendMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_backendTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_backendTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_commonMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_commonMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_commonTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_commonTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_iosMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_iosMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_iosTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.dbshopping.domain_iosTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.backendMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.backendMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.backendTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.backendTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.commonMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.commonMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.commonTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.commonTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.iosArm64Main.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.iosArm64Main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.iosArm64Test.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.iosArm64Test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.iosMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.iosMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.iosTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.iosTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.iosX64Main.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.iosX64Main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain.iosX64Test.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain.iosX64Test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_backendMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_backendMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_backendTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_backendTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_commonMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_commonMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_commonTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_commonTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_iosArm64Main.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_iosArm64Main.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_iosArm64Test.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_iosArm64Test.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_iosMain.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_iosMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_iosTest.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_iosTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_iosX64Main.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_iosX64Main.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/com.dbeginc.domain_iosX64Test.iml" filepath="$PROJECT_DIR$/domain/com.dbeginc.domain_iosX64Test.iml" group="domain" />
       <module fileurl="file://$PROJECT_DIR$/data/data.iml" filepath="$PROJECT_DIR$/data/data.iml" />
       <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain.iml" filepath="$PROJECT_DIR$/domain/domain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain-old/domain-old.iml" filepath="$PROJECT_DIR$/domain-old/domain-old.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.backendMain.iml" filepath="$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.backendMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.backendTest.iml" filepath="$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.backendTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.commonMain.iml" filepath="$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.commonMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.commonTest.iml" filepath="$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.commonTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.iosMain.iml" filepath="$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.iosMain.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.iosTest.iml" filepath="$PROJECT_DIR$/domain/domain.com.dbeginc.dbshopping.domain.iosTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_backendMain.iml" filepath="$PROJECT_DIR$/domain/domain_backendMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_backendTest.iml" filepath="$PROJECT_DIR$/domain/domain_backendTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_commonMain.iml" filepath="$PROJECT_DIR$/domain/domain_commonMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_commonTest.iml" filepath="$PROJECT_DIR$/domain/domain_commonTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_iosArm64Main.iml" filepath="$PROJECT_DIR$/domain/domain_iosArm64Main.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_iosArm64Test.iml" filepath="$PROJECT_DIR$/domain/domain_iosArm64Test.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_iosMain.iml" filepath="$PROJECT_DIR$/domain/domain_iosMain.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_iosTest.iml" filepath="$PROJECT_DIR$/domain/domain_iosTest.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_iosX64Main.iml" filepath="$PROJECT_DIR$/domain/domain_iosX64Main.iml" group="domain" />
+      <module fileurl="file://$PROJECT_DIR$/domain/domain_iosX64Test.iml" filepath="$PROJECT_DIR$/domain/domain_iosX64Test.iml" group="domain" />
     </modules>
   </component>
 </project>

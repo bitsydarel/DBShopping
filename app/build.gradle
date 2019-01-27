@@ -1,6 +1,6 @@
 /*
  *
- *  * Copyright (C) 2017 Darel Bitsy
+ *  * Copyright (C) 2019 Darel Bitsy
  *  * Licensed under the Apache License, Version 2.0 (the "License");
  *  * you may not use this file except in compliance with the License.
  *  * You may obtain a copy of the License at
@@ -31,7 +31,6 @@ kapt { generateStubs = true }
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "com.dbeginc.dbshopping"
         minSdkVersion 21
@@ -92,7 +91,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compile KotlinLibraries.stdlibJdk7
 
     /*********************** Support library ***********************/
     compile "com.android.support:design:$supportLibraryVersion"
@@ -108,9 +107,6 @@ dependencies {
     compile "com.google.firebase:firebase-database:$googleServices"
     compile "com.google.firebase:firebase-storage:$googleServices"
     compile "com.google.firebase:firebase-auth:$googleServices"
-
-    /*********************** Kotlin ***********************/
-    kapt "com.android.databinding:compiler:$androidPluginVersion"
 
     /*********************** Glide ***********************/
     compile "com.github.bumptech.glide:glide:$glideVersion"
