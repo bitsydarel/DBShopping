@@ -22,7 +22,7 @@ import com.dbeginc.dbshopping.domain.shopping.entities.UserId
 import com.dbeginc.dbshopping.domain.shopping.entities.lists.ShoppingList
 import com.dbeginc.dbshopping.domain.shopping.entities.lists.ShoppingListUser
 
-internal actual class LocalShoppingService {
+actual class LocalShoppingService {
     actual fun getShoppingLists(userId: UserId): List<ShoppingList> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

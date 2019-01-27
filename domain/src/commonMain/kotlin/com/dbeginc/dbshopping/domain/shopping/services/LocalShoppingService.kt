@@ -22,7 +22,7 @@ import com.dbeginc.dbshopping.domain.shopping.entities.UserId
 import com.dbeginc.dbshopping.domain.shopping.entities.lists.ShoppingList
 import com.dbeginc.dbshopping.domain.shopping.entities.lists.ShoppingListUser
 
-internal expect class LocalShoppingService {
+expect class LocalShoppingService {
     fun getShoppingLists(userId: UserId): List<ShoppingList>
 
     fun getCurrentlyShoppingUser(listId: ListId): List<ShoppingListUser>

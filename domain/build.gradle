@@ -52,7 +52,8 @@ android {
 }
 
 dependencies {
-    implementation(KotlinLibraries.stdlibJdk7)
+    api(KotlinLibraries.stdlibJdk7)
+    implementation(ThirdPartiesLibraries.cleanArchCoreJvm)
 //    testImplementation(KotlinLibraries.testJvm)
 //    testImplementation(KotlinLibraries.testJunitJvm)
 //    androidTestImplementation(KotlinLibraries.testJvm)
@@ -87,11 +88,15 @@ kotlin {
             }
         }
     }
+    
+    def cleanArchCoreNative = (buildForDevice) ? ThirdPartiesLibraries.cleanArchCoreIosarm64 : ThirdPartiesLibraries.cleanArchCoreIosX64
 
     sourceSets {
         commonMain {
             dependencies {
                 implementation(kotlin('stdlib-common'))
+                implementation(ThirdPartiesLibraries.cleanArchCore)
+                implementation(ThirdPartiesLibraries.cleanArchCoreMetadata)
             }
         }
         commonTest {
@@ -103,10 +108,10 @@ kotlin {
         jvm("backend").compilations.main.defaultSourceSet {
             dependencies {
                 api(kotlin('stdlib-jdk8'))
+                implementation(ThirdPartiesLibraries.cleanArchCoreJvm)
                 implementation(SpringDependencies.springBootStarter + ":${Configurations.springBootFrameworkVersion}")
             }
         }
-
         jvm("backend").compilations.test.defaultSourceSet {
             dependencies {
                 implementation(kotlin('test'))
@@ -115,10 +120,14 @@ kotlin {
             }
         }
         androidMain {
-
         }
         androidTest {
-
+        }
+        iosMain {
+            dependencies {
+                implementation(kotlin("stdlib"))
+                api(cleanArchCoreNative)
+            }
         }
     }
 }

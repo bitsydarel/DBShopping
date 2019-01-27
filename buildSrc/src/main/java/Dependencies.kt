@@ -15,7 +15,8 @@
  *
  */
 
-import Configurations.androidGraldePluginVersion
+import Configurations.androidGradlePluginVersion
+import Configurations.cleanArchCoreVersion
 import Configurations.kotlinLanguageVersion
 import Configurations.springBootFrameworkVersion
 
@@ -40,6 +41,8 @@ object KotlinLibraries {
     /*************************** Kotlin Javascript libraries *********************************/
     const val stdlibJs: String = "org.jetbrains.kotlin:kotlin-stdlib-js"
     const val testJs: String = "org.jetbrains.kotlin:kotlin-test-js"
+    /*************************** Kotlin Native libraries *************************************/
+    const val stdlibNative: String = "org.jetbrains.kotlin:kotlin-stdlib"
 }
 
 /**
@@ -49,7 +52,7 @@ object GoogleLibraries {
     /**
      * Android gradle plugin.
      */
-    const val androidGradlePlugin: String = "com.android.tools.build:gradle:$androidGraldePluginVersion"
+    const val androidGradlePlugin: String = "com.android.tools.build:gradle:$androidGradlePluginVersion"
 }
 
 /**
@@ -57,6 +60,30 @@ object GoogleLibraries {
  */
 object ThirdPartiesLibraries {
     const val rxJava2: String = "io.reactivex.rxjava2:rxjava:2.2.4"
+    /**
+     * Clean architecture core library.
+     */
+    const val cleanArchCore: String = "com.bitsydarel.clean-arch:core:$cleanArchCoreVersion"
+
+    /**
+     * Clean architecture core metadata library.
+     */
+    const val cleanArchCoreMetadata: String = "com.bitsydarel.clean-arch:core-metadata:$cleanArchCoreVersion"
+
+    /**
+     * Clean architecture core jvm platform library.
+     */
+    const val cleanArchCoreJvm: String = "com.bitsydarel.clean-arch:core-jvm:$cleanArchCoreVersion"
+
+    /**
+     * Clean architecture core ios arm64 platform library, used for ios devices.
+     */
+    const val cleanArchCoreIosarm64: String = "com.bitsydarel.clean-arch:core-iosarm64:$cleanArchCoreVersion"
+
+    /**
+     * Clean architecture core ios x64 platform library, used for ios simulators.
+     */
+    const val cleanArchCoreIosX64: String = "com.bitsydarel.clean-arch:core-iosx64:$cleanArchCoreVersion"
 }
 
 /**
