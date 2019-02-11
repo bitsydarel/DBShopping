@@ -17,17 +17,16 @@
 
 package com.dbeginc.domain.entities.data
 
-import java.util.*
-
 /**
  * Pojo representing a item of an shopping list
  */
-data class ShoppingItem(var uuid: String = UUID.randomUUID().toString(),
+data class ShoppingItem(var uniqueId: String,
                         var name: String,
                         var itemOf: String,
                         var itemOwner: String,
-                        var count: Long = 1,
-                        var price: Double = 0.0,
-                        var bought: Boolean = false,
-                        var boughtBy: String = "",
-                        var image: ItemImage = ItemImage())
+                        var count: Long,
+                        var price: Double,
+                        var bought: Boolean,
+                        var boughtBy: String,
+                        var imageUrl: String
+)

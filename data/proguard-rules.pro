@@ -10,7 +10,7 @@
 # Add any project specific keep options here:
 
 # If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
+# and specify the fully qualified class nickname to the JavaScript interface
 # class:
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
@@ -21,5 +21,27 @@
 #-keepattributes SourceFile,LineNumberTable
 
 # If you keep the line number information, uncomment this to
-# hide the original source file name.
+# hide the original source file nickname.
 #-renamesourcefileattribute SourceFile
+# Add this global rule
+-optimizationpasses 5
+-optimizations !class/unboxing/enum
+-verbose
+
+-keepattributes Signature
+
+# This rule will properly ProGuard all the model classes in
+# the package com.yourcompany.models. Modify to fit the structure
+# of your app.
+
+-keepclassmembers class com.dbeginc.data.proxies.local.** {
+  *;
+}
+
+-keepclassmembers class com.dbeginc.data.proxies.remote.** {
+  *;
+}
+
+-keep public class com.dbeginc.data.implementations.repositories.**
+
+-dontwarn javax.annotation.**

@@ -18,128 +18,135 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'io.fabric'
+
 
 buildscript {
-    repositories { jcenter() }
+    repositories {
+        jcenter()
+        maven { url 'https://maven.fabric.io/public' }
+    }
 
     dependencies {
         classpath 'com.google.gms:google-services:3.1.0'
+        // These docs use an open ended version so that our plugin
+        // can be updated quickly in response to Android tooling updates
+
+        // We recommend changing it to the latest version from our changelog:
+        // https://docs.fabric.io/android/changelog.html#fabric-gradle-plugin
+        classpath 'io.fabric.tools:gradle:1.+'
+        // dex count checking
+        classpath "com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.+"
     }
 }
 
 kapt { generateStubs = true }
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
     defaultConfig {
         applicationId "com.dbeginc.dbshopping"
-        minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.versionCode
+        versionName versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        multiDexEnabled true
     }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            multiDexEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug {
+            multiDexEnabled true
         }
     }
 
     dataBinding { enabled = true }
 
     sourceSets {
-        test.java { srcDirs += 'src/test/kotlin' }
+        test.java { srcDirs += new File(buildDir, 'src/test/kotlin') }
 
-        androidTest.java { srcDirs += 'src/androidTest/kotlin' }
+        androidTest.java { srcDirs += new File(buildDir, 'src/androidTest/kotlin') }
 
         main {
-            java { srcDirs += 'src/main/kotlin' }
-
-            res {
-                srcDirs += [
-                        'src/main/res/layouts/listorder',
-                        'src/main/res/layouts/settings',
-                        'src/main/res/layouts/sharelist',
-                        'src/main/res/layouts/itemdetail',
-                        'src/main/res/layouts/listitems',
-                        'src/main/res/layouts/listdetail',
-                        'src/main/res/layouts/addlist',
-                        'src/main/res/layouts/userlist',
-                        'src/main/res/layouts/signup',
-                        'src/main/res/layouts/login',
-                        'src/main/res/layouts/home',
-                        'src/main/res/layouts/splash',
-                        'src/main/res/layouts/dialog',
-                        'src/main/res/layouts',
-                        'src/main/res'
-                ]
-            }
+            java { srcDirs += new File(buildDir, 'src/main/kotlin') }
         }
     }
 
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
     }
+
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(":data")
-
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(":data")
+    implementation project(":users")
+    implementation project(":lists")
 
     /*********************** Support library ***********************/
-    compile "com.android.support:design:$supportLibraryVersion"
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "com.android.support:cardview-v7:$supportLibraryVersion"
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation supportLibs.design
+    implementation supportLibs.appcompatV7
+    implementation supportLibs.cardviewV7
+    implementation supportLibs.emoji_appcompat
+    implementation supportLibs.constraintLayout
 
-    /*********************** RxJava & RxAndroid ***********************/
-    compile "io.reactivex.rxjava2:rxjava:$rxJava"
+    /******************************* ARCH COMPONENTS *****************************/
+    implementation archComponentLibs.liveAndViewModel
+    implementation archComponentLibs.paging
+    /*********************** User Interface library ***********************/
+    implementation designLibs.lottie
+    implementation 'com.zhihu.android:matisse:0.5.0-alpha4'
+    implementation 'com.github.iwgang:countdownview:2.1.6'
+    /************************** Google Libraries **************************/
+    implementation googleLibs.playServicesAuth
+    implementation googleLibs.playServicesPlaces
+    implementation googleLibs.playServicesVision
+    implementation googleLibs.exoplayer_core
+    implementation googleLibs.exoplayer_ui
+    implementation googleLibs.exoplayer_dash
+    implementation googleLibs.exoplayer_okhttp
 
-    /********************************************** Firebase & Play Services **********************************************/
-    compile "com.google.android.gms:play-services-auth:$googleServices"
-    compile "com.google.firebase:firebase-database:$googleServices"
-    compile "com.google.firebase:firebase-storage:$googleServices"
-    compile "com.google.firebase:firebase-auth:$googleServices"
+    implementation(googleLibs.crashlytics) {
+        transitive = true
+    }
 
     /*********************** Kotlin ***********************/
-    kapt "com.android.databinding:compiler:$androidPluginVersion"
+    implementation 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    implementation 'com.facebook.android:facebook-android-sdk:4.31.0'
+    implementation 'com.android.support:support-v4:27.1.0'
+    kapt googleLibs.databinding
 
     /*********************** Glide ***********************/
-    compile "com.github.bumptech.glide:glide:$glideVersion"
-    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
-    kapt "com.github.bumptech.glide:compiler:$glideVersion"
-
-    /*********************** User Interfaces Libraries ***********************/
-    compile 'com.roughike:bottom-bar:2.3.1'
-    compile 'com.zhihu.android:matisse:0.5.0-alpha4'
-
+    implementation glideLibs.glide
+    implementation glideLibs.glide_okhttp
+    kapt glideLibs.compiler
     /********************************************** Dagger **********************************************/
-    compile "com.google.dagger:dagger:$daggerVersion"
-    compile "com.google.dagger:dagger-android:$daggerVersion"
-    compile "com.google.dagger:dagger-android-support:$daggerVersion"
+    implementation daggerLibs.dagger
+    implementation daggerLibs.android
+    implementation daggerLibs.androidSupport
 
-    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
-    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
+    kapt daggerLibs.compiler
+    kapt daggerLibs.androidProcessor
+    /** ******************************************************************************************/
+    debugImplementation leakCanaryLibs.android
+    releaseImplementation leakCanaryLibs.androidNoOp
 
-    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
-    /********************************************************************************************/
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.2'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.2'
+    androidTestImplementation(testingLibs.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
 
-    testCompile 'junit:junit:4.12'
-}
-repositories {
-    mavenCentral()
-    maven { url 'https://oss.jfrog.org/libs-snapshot' }
-    maven { url "https://maven.google.com" }
+    testImplementation testingLibs.junit
 }
 
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.getkeepsafe.dexcount'

@@ -25,14 +25,27 @@
         android:id="@+id/action_edit_list_name"
         android:title="@string/action_edit_list_name"
         android:icon="@drawable/ic_pencil"
-        android:orderInCategory="100"
-        android:visible="true"
-        app:showAsAction="ifRoom"/>
+        android:orderInCategory="1"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/action_list_members"
+        android:icon="@drawable/ic_list_members"
+        android:title="@string/list_members"
+        android:orderInCategory="2"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/action_share_list"
+        android:icon="@drawable/ic_share"
+        android:title="@string/share_list"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_remove_list"
-        android:icon="@drawable/ic_delete_white"
-        android:orderInCategory="100"
+        android:icon="@drawable/ic_delete"
+        android:orderInCategory="4"
         android:title="@string/action_remove_list"
-        app:showAsAction="withText"/>
+        app:showAsAction="ifRoom"/>
 </menu>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/RegisterViewLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.dbeginc.dbshopping.authentication.register.RegisterFragment">
+
+        <TextView
+            android:id="@+id/RegisterScreenTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:gravity="center_horizontal"
+            android:textColor="?attr/colorAccent"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/RegisterOptions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
+            style="@style/CardView.Light"
+            app:cardElevation="4dp"
+            app:cardCornerRadius="2dp"
+            app:layout_constraintTop_toBottomOf="@id/RegisterScreenTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/RegisterWithGoogleBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/registerWithGoogleDescription"
+                    android:src="@drawable/ic_authenticate_with_google"
+                    style="@style/Widget.Design.FloatingActionButton"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toLeftOf="@+id/RegisterWithFacebookBtn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintHorizontal_chainStyle="spread"/>
+
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/RegisterWithFacebookBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/registerWithFacebookDescription"
+                    android:src="@drawable/ic_authenticate_with_facebook"
+                    style="@style/Widget.Design.FloatingActionButton"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintLeft_toRightOf="@id/RegisterWithGoogleBtn"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+            </android.support.constraint.ConstraintLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/RegisterNicknameContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/NicknameHint"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            style="@style/Widget.Design.TextInputLayout"
+            app:hintEnabled="true"
+            app:hintAnimationEnabled="true"
+            app:errorEnabled="true"
+            app:layout_constraintTop_toBottomOf="@id/RegisterOptions"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/RegisterNickname"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPersonName"
+                android:imeOptions="actionNext"
+                style="@style/Widget.AppCompat.EditText" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/RegisterEmailContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/EmailHint"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            style="@style/Widget.Design.TextInputLayout"
+            app:hintEnabled="true"
+            app:hintAnimationEnabled="true"
+            app:errorEnabled="true"
+            app:layout_constraintTop_toBottomOf="@id/RegisterNicknameContainer"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/RegisterEmail"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textEmailAddress"
+                android:imeOptions="actionNext"
+                style="@style/Widget.AppCompat.EditText" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/RegisterPasswordContainer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/PasswordHint"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            style="@style/Widget.Design.TextInputLayout"
+            app:hintEnabled="true"
+            app:errorEnabled="true"
+            app:hintAnimationEnabled="true"
+            app:passwordToggleEnabled="true"
+            app:layout_constraintTop_toBottomOf="@id/RegisterEmailContainer"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/RegisterPassword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:inputType="textPassword"
+                android:imeOptions="actionDone"
+                style="@style/Widget.AppCompat.EditText" />
+        </android.support.design.widget.TextInputLayout>
+
+
+        <Button
+            android:id="@+id/RegisterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/registerLabel"
+            android:textAllCaps="true"
+            android:filterTouchesWhenObscured="true"
+            style="@style/Widget.AppCompat.Button.Colored"
+            app:layout_constraintTop_toBottomOf="@id/RegisterPasswordContainer"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/processingRegisterAnimation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:lottie_autoPlay="true"
+            app:lottie_enableMergePathsForKitKatAndAbove="true"
+            app:lottie_loop="true"
+            app:lottie_fileName="auth_loading.json"
+            app:layout_constraintTop_toTopOf="@id/RegisterButton"
+            app:layout_constraintLeft_toLeftOf="@id/RegisterButton"
+            app:layout_constraintRight_toRightOf="@id/RegisterButton"/>
+
+        <TextView
+            android:id="@+id/goToLoginScreenTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/alreadyHaveAccountToLogin"
+            android:textAllCaps="false"
+            android:textColor="@color/colorCaption"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            app:layout_constraintTop_toBottomOf="@id/RegisterButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/goToLoginScreenBtn"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_chainStyle="packed"/>
+
+        <Button
+            android:id="@+id/goToLoginScreenBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loginLabel"
+            android:textAllCaps="true"
+            android:filterTouchesWhenObscured="true"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            app:layout_constraintTop_toTopOf="@id/goToLoginScreenTxt"
+            app:layout_constraintLeft_toRightOf="@id/goToLoginScreenTxt"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/goToLoginScreenTxt" />
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

@@ -17,13 +17,12 @@
 
 package com.dbeginc.domain.entities.data
 
-import java.util.*
-
 /**
  * Pojo representing a user shopping list
  */
-data class ShoppingList(var uuid: String = UUID.randomUUID().toString(),
-                        var name: String ,
+data class ShoppingList(val uniqueId: String,
+                        var name: String,
+                        var ownerId: String,
                         var ownerName: String,
-                        var usersShopping : List<String>,
-                        var lastChange: String = "")
+                        var lastChange: Long
+)

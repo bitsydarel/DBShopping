@@ -1,0 +1,243 @@
+<!--
+  ~ /*
+  ~  * Copyright (C) 2017 Darel Bitsy
+  ~  * Licensed under the Apache License, Version 2.0 (the "License");
+  ~  * you may not use this file except in compliance with the License.
+  ~  * You may obtain a copy of the License at
+  ~  *
+  ~  *     http://www.apache.org/licenses/LICENSE-2.0
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the License is distributed on an "AS IS" BASIS,
+  ~  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  * See the License for the specific language governing permissions and
+  ~  * limitations under the License
+  ~  */
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="User"
+            type="com.dbeginc.users.viewmodels.UserProfileModel"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/settingsLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.dbeginc.dbshopping.settings.SettingsFragment">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/settingsAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            style="@style/Widget.Design.AppBarLayout"
+            android:theme="@style/ThemeOverlay.AppCompat.ActionBar">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/settingsToolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                style="@style/DBShoppingToolbar"
+                app:title="@string/label_settings"
+                app:navigationIcon="@drawable/ic_arrow"
+                app:layout_scrollFlags="scroll|enterAlways" />
+        </android.support.design.widget.AppBarLayout>
+
+        <ProgressBar
+            android:id="@+id/settingsLoadingProgressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:indeterminateOnly="true"
+            android:indeterminate="true"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            app:layout_constraintTop_toBottomOf="@id/settingsAppBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <ImageView
+            android:id="@+id/userAvatar"
+            android:layout_width="88dp"
+            android:layout_height="88dp"
+            android:src="@drawable/ic_avatar"
+            android:contentDescription="@string/user_avatar"
+            app:setUserImage="@{User.avatar}"
+            app:layout_constraintTop_toBottomOf="@id/settingsLoadingProgressBar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/userNickname" />
+
+        <TextView
+            android:id="@+id/userNickname"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{User.nickname}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            android:textAlignment="center"
+            tools:text="Darel Bitsy"
+            app:layout_constraintTop_toBottomOf="@id/userAvatar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/userEmail" />
+
+        <TextView
+            android:id="@+id/userEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@{User.email}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textAlignment="center"
+            tools:text="bitsydarel@gmail.com"
+            app:layout_constraintTop_toBottomOf="@id/userNickname"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/linkAccountWithGoogle"/>
+
+        <ImageButton
+            android:id="@+id/linkAccountWithGoogle"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_authenticate_with_google"
+            android:contentDescription="@string/link_account_with_google_account"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintTop_toBottomOf="@id/userEmail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/linkAccountWithGoogleLabel"
+            app:layout_constraintBottom_toTopOf="@id/linkAccountWithFacebook"
+            app:layout_constraintVertical_chainStyle="spread" />
+
+        <TextView
+            android:id="@+id/linkAccountWithGoogleLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/link_account_with_google_account"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toTopOf="@id/linkAccountWithGoogle"
+            app:layout_constraintStart_toEndOf="@id/linkAccountWithGoogle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/linkAccountWithGoogle" />
+
+        <ImageButton
+            android:id="@+id/linkAccountWithFacebook"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_authenticate_with_facebook"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/link_account_with_facebook_account"
+            app:layout_constraintTop_toBottomOf="@id/linkAccountWithGoogle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/linkAccountWithFacebookLabel"
+            app:layout_constraintBottom_toTopOf="@id/deleteAllYourList"/>
+
+        <TextView
+            android:id="@+id/linkAccountWithFacebookLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/link_account_with_facebook_account"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toTopOf="@id/linkAccountWithFacebook"
+            app:layout_constraintStart_toEndOf="@id/linkAccountWithFacebook"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/linkAccountWithFacebook"/>
+
+        <ImageButton
+            android:id="@+id/deleteAllYourList"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_warning"
+            android:contentDescription="@string/request_features"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintTop_toBottomOf="@id/linkAccountWithFacebook"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/deleteAllYourListLabel"
+            app:layout_constraintBottom_toTopOf="@id/requestFeature"/>
+
+        <TextView
+            android:id="@+id/deleteAllYourListLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/delete_all_your_lists"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toTopOf="@id/deleteAllYourList"
+            app:layout_constraintStart_toEndOf="@id/deleteAllYourList"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/deleteAllYourList"/>
+
+        <ImageButton
+            android:id="@+id/requestFeature"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_request_features"
+            android:contentDescription="@string/request_features"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintTop_toBottomOf="@id/deleteAllYourList"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/requestFeatureLabel"
+            app:layout_constraintBottom_toTopOf="@id/applicationVersion" />
+
+        <TextView
+            android:id="@+id/requestFeatureLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/request_features"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toTopOf="@id/requestFeature"
+            app:layout_constraintStart_toEndOf="@id/requestFeature"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/requestFeature"/>
+
+        <ImageButton
+            android:id="@+id/applicationVersion"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:src="@drawable/ic_groceries"
+            android:contentDescription="@string/app_name"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:layout_constraintTop_toBottomOf="@id/requestFeature"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/applicationVersionLabel"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <TextView
+            android:id="@+id/applicationVersionLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            tools:text="Version 4.0"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toTopOf="@id/applicationVersion"
+            app:layout_constraintStart_toEndOf="@id/applicationVersion"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/applicationVersion"/>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

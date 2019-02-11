@@ -15,7 +15,7 @@
   ~  */
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -23,70 +23,60 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorSecondary</item>
+        <item name="android:colorControlNormal">@color/colorSecondary</item>
         <item name="android:colorControlHighlight">@color/colorSecondaryLight</item>
-    </style>
-
-    <!-- #################################################### Splash #################################################### -->
-    <style name="AppTheme.Splash" parent="AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/splashColorPrimary</item>
-        <item name="colorPrimaryDark">@color/splashColorPrimaryDark</item>
-        <item name="colorAccent">@color/splashColorSecondary</item>
-        <item name="android:colorControlHighlight">@color/splashColorSecondaryLight</item>
-    </style>
-    <!-- #####################################################################################################################-->
-    <!-- #################################################### Login #################################################### -->
-    <style name="AppTheme.Login" parent="AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/loginColorPrimary</item>
-        <item name="colorPrimaryDark">@color/loginColorPrimaryDark</item>
-        <item name="colorAccent">@color/loginColorSecondary</item>
-        <item name="android:colorControlHighlight">@color/loginColorSecondaryLight</item>
-    </style>
-    <!-- #####################################################################################################################-->
-    <!-- #################################################### Sign Uo #################################################### -->
-    <style name="AppTheme.SignUp" parent="AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/SignUpColorPrimary</item>
-        <item name="colorPrimaryDark">@color/SignUpColorPrimaryDark</item>
-        <item name="colorAccent">@color/SignUpColorSecondary</item>
-        <item name="android:colorControlHighlight">@color/SignUpColorSecondaryLight</item>
+        <item name="android:colorControlActivated">@color/colorSecondaryLight</item>
+        <item name="android:colorButtonNormal">@color/colorSecondary</item>
+        <item name="colorSwitchThumbNormal">@color/colorSecondary</item>
+        <item name="android:textColorPrimary">@color/colorTextPrimary</item>
+        <item name="android:textColorHighlight">@color/colorSecondaryLight</item>
+        <item name="android:textColorSecondary">@color/colorTextSecondary</item>
+        <item name="android:colorError" tools:ignore="NewApi">@color/colorError</item>
+        <item name="android:navigationBarColor">@color/colorPrimaryLight</item>
+        <!-- ***************** Default component style ***************** -->
+        <item name="imageButtonStyle">@style/Widget.AppCompat.ImageButton</item>
+        <item name="android:searchViewStyle">@style/Widget.AppCompat.SearchView</item>
+        <item name="android:switchStyle">@style/Widget.AppCompat.CompoundButton.Switch</item>
+        <item name="checkboxStyle">@style/Widget.AppCompat.CompoundButton.CheckBox</item>
+        <item name="radioButtonStyle">@style/Widget.AppCompat.CompoundButton.RadioButton</item>
+        <item name="android:toolbarStyle">@style/Widget.AppCompat.Toolbar</item>
+        <item name="editTextStyle">@style/Widget.AppCompat.EditText</item>
+        <item name="progressBarStyle">@style/Widget.AppCompat.ProgressBar</item>
+        <item name="android:progressBarStyleHorizontal">@style/Widget.AppCompat.ProgressBar.Horizontal</item>
+        <item name="dialogTheme">@style/ThemeOverlay.AppCompat.Dialog</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Dark</item>
+        <item name="android:windowActivityTransitions">true</item>
+        <item name="android:windowEnterTransition">@android:transition/slide_right</item>
+        <item name="android:windowExitTransition">@android:transition/slide_left</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
     <!-- #####################################################################################################################-->
-    <!-- #################################################### Add List #################################################### -->
-    <style name="AppTheme.AddList" parent="AppTheme">
+    <!-- #################################################### Forgot Password #################################################### -->
+    <style name="AppTheme.ForgotPassword" parent="AppTheme">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/addListColorPrimary</item>
-        <item name="colorPrimaryDark">@color/addListColorPrimaryDark</item>
-        <item name="colorAccent">@color/addListColorSecondary</item>
-        <item name="android:colorControlHighlight">@color/addListColorSecondaryLight</item>
+        <item name="colorPrimary">@color/forgotPasswordColorPrimary</item>
+        <item name="colorPrimaryDark">@color/forgotPasswordColorPrimaryDark</item>
+        <item name="colorAccent">@color/forgotPasswordColorSecondary</item>
+        <item name="android:colorControlActivated">@color/forgotPasswordColorSecondaryLight</item>
+        <item name="android:colorControlHighlight">@color/forgotPasswordColorSecondaryLight</item>
+        <item name="android:colorControlNormal">@color/forgotPasswordColorPrimary</item>
+        <item name="android:colorButtonNormal">@color/forgotPasswordColorPrimary</item>
+        <item name="colorSwitchThumbNormal">@color/forgotPasswordColorPrimary</item>
+        <item name="android:textColorPrimary">@color/forgotPasswordColorTextPrimary</item>
+        <item name="android:textColorHighlight">@color/forgotPasswordColorSecondaryLight</item>
+        <item name="android:textColorSecondary">@color/forgotPasswordColorTextSecondary</item>
+        <item name="android:navigationBarColor">@color/forgotPasswordColorPrimaryLight</item>
     </style>
-    <!-- #############################################################################################-->
-    <!-- #################################################### List Detail #################################################### -->
-    <style name="AppTheme.ListDetail" parent="AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/ListDetailColorPrimary</item>
-        <item name="colorPrimaryDark">@color/ListDetailColorPrimaryDark</item>
-        <item name="colorAccent">@color/ListDetailColorSecondary</item>
-        <item name="android:colorControlHighlight">@color/ListDetailColorSecondaryLight</item>
+    <style name="AppTheme.Main" parent="AppTheme">
+        <item name="android:textColorSecondary">@color/colorTextPrimary</item>
     </style>
-    <!-- #####################################################################################################################-->
-    <!-- #################################################### Item Detail #################################################### -->
-    <style name="AppTheme.ItemDetail" parent="AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/ItemDetailColorPrimary</item>
-        <item name="colorPrimaryDark">@color/ItemDetailColorPrimaryDark</item>
-        <item name="colorAccent">@color/ItemDetailColorSecondary</item>
-        <item name="android:colorControlHighlight">@color/ItemDetailColorSecondaryLight</item>
+    <style name="DBShoppingToolbar" parent="Widget.AppCompat.Toolbar">
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="titleTextAppearance">@style/TextAppearance.Widget.AppCompat.Toolbar.Title</item>
     </style>
     <!-- #####################################################################################################################-->
-    <!-- #################################################### Share List #################################################### -->
-    <style name="AppTheme.ShareList" parent="AppTheme">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/ItemDetailColorPrimary</item>
-        <item name="colorPrimaryDark">@color/ItemDetailColorPrimaryDark</item>
-        <item name="colorAccent">@color/ItemDetailColorSecondary</item>
-        <item name="android:colorControlHighlight">@color/ItemDetailColorSecondaryLight</item>
+    <style name="AppTheme.ExpandedImage" parent="AppTheme">
+        <item name="android:windowBackground">@null</item>
     </style>
-    <!-- #####################################################################################################################-->
 </resources>

@@ -18,34 +18,22 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'realm-android'
-
-buildscript {
-    repositories {
-        jcenter()
-    }
-
-    dependencies {
-        classpath 'io.realm:realm-gradle-plugin:3.5.0'
-    }
-}
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.1"
-
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+    
     defaultConfig {
-        minSdkVersion 21
-        targetSdkVersion 26
-        versionCode 1
-        versionName "1.0"
-
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.versionCode
+        versionName versions.versionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
@@ -59,25 +47,34 @@ android {
     }
 }
 
+kapt { generateStubs = true }
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(":domain")
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project(":domain")
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "io.reactivex.rxjava2:rxjava:$rxJava"
-    compile "io.reactivex.rxjava2:rxandroid:$rxAndroid"
-
+    implementation supportLibs.annotations
+    implementation reactiveStreamLibs.rxAndroid
+    /******************** Room dependencies ********************/
+    implementation archComponentLibs.roomRuntime
+    implementation archComponentLibs.roomRxJava
+    kapt archComponentLibs.roomCompiler
     /******************** Provided dependencies ********************/
-    provided "com.google.firebase:firebase-database:$googleServices"
-    provided "com.google.firebase:firebase-storage:$googleServices"
-    provided "com.google.firebase:firebase-auth:$googleServices"
+    implementation googleLibs.firebaseDatabase
+    implementation googleLibs.firebaseStorage
+    implementation googleLibs.firebaseAuth
 
-    testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    compileOnly(googleLibs.crashlytics) {
+        transitive = true
+    }
+    
+    /*androidTestCompile(testingLibs.espressoCore, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })*/
+
+    //testImplementation archComponentLibs.roomTesting
+    //testImplementation testingLibs.junit
+
 }
 repositories {
     mavenCentral()

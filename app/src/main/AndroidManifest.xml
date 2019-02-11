@@ -2,9 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dbeginc.dbshopping">
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".DBShopping"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -19,66 +24,65 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-        <!-- ############################## Splash  ############################## -->
+
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="e1f70cc235a003a2a3e76e5932bc702c80c4c750" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBEFn-SkrphPm-BS4j9geOmzNC9fWs5CVA"/>
+
+        <service android:name=".utils.sync.DataPushJob"
+            android:label="Data Sync"
+            android:permission="android.permission.BIND_JOB_SERVICE"/>
+
+        <service android:name=".utils.sync.UserAvailabilityJob"
+            android:label="User Availability"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
+        <meta-data android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id"/>
+
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
         <activity
-            android:name=".splash.view.SplashActivity"
-            android:theme="@style/AppTheme.Splash">
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+        <!-- ########################################################################################## -->
+        <activity
+            android:name=".LaunchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!-- ########################################################################################## -->
-        <!-- ############################## Authentication ############################## -->
         <activity
-            android:name=".authentication.login.view.LoginActivity"
-            android:theme="@style/AppTheme.Login">
+            android:name=".MainActivity"
+            android:label=""
+            android:theme="@style/AppTheme.Main"
+            android:windowSoftInputMode="stateHidden|adjustPan">
             <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/share_friend_searchable" />
         </activity>
-        <activity
-            android:name=".authentication.signup.view.SignUpActivity"
-            android:theme="@style/AppTheme.SignUp">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <!-- ########################################################################################## -->
-        <!-- ############################## Home Activity ############################## -->
-        <activity
-            android:name=".home.view.HomeActivity"
-            android:theme="@style/AppTheme">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <!-- ########################################################################################## -->
-        <!-- ############################## Add List Activity ############################## -->
-        <activity android:name=".addlist.view.AddListActivity"
-            android:theme="@style/AppTheme.AddList">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <!-- ########################################################################################## -->
-        <!-- ############################## List Detail Activity ############################## -->
-        <activity android:name=".listdetail.view.ListDetailActivity"
-            android:theme="@style/AppTheme.ListDetail">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <!-- ########################################################################################## -->
-        <!-- ############################## Item Detail Activity ############################## -->
-        <activity android:name=".itemdetail.view.ItemDetailActivity"
-            android:theme="@style/AppTheme.ItemDetail">
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-        </activity>
-        <!-- ########################################################################################## -->
     </application>
 
 </manifest>

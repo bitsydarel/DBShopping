@@ -17,183 +17,282 @@
 
 package com.dbeginc.data.implementations.repositories
 
-import android.util.Base64
-import android.util.Log
-import com.dbeginc.data.ConstantHolder
-import com.dbeginc.data.ThreadProvider
-import com.dbeginc.data.datasource.DataSource
-import com.dbeginc.data.datasource.UserSource
-import com.dbeginc.domain.entities.requestmodel.AccountRequestModel
-import com.dbeginc.domain.entities.requestmodel.AuthRequestModel
-import com.dbeginc.domain.entities.requestmodel.GoogleRequestModel
-import com.dbeginc.domain.entities.requestmodel.UserRequestModel
-import com.dbeginc.domain.entities.user.Account
-import com.dbeginc.domain.entities.user.User
+import android.content.Context
+import com.dbeginc.data.ConstantHolder.REMOTE_FRIENDS_REQUEST_TABLE
+import com.dbeginc.data.ConstantHolder.REMOTE_IMAGES_TABLE
+import com.dbeginc.data.ConstantHolder.REMOTE_LISTS_TABLE
+import com.dbeginc.data.ConstantHolder.REMOTE_USERS_TABLE
+import com.dbeginc.data.CrashlyticsLogger
+import com.dbeginc.data.RxThreadProvider
+import com.dbeginc.data.implementations.datasources.local.LocalUserSource
+import com.dbeginc.data.implementations.datasources.local.user.LocalUserSourceImpl
+import com.dbeginc.data.implementations.datasources.local.user.room.LocalUserDatabase
+import com.dbeginc.data.implementations.datasources.remote.RemoteUserSource
+import com.dbeginc.data.implementations.datasources.remote.RemoteUserSourceImpl
+import com.dbeginc.data.proxies.local.user.LocalUserPendingRequest
+import com.dbeginc.domain.Logger
+import com.dbeginc.domain.ThreadProvider
+import com.dbeginc.domain.entities.request.*
+import com.dbeginc.domain.entities.user.FriendProfile
+import com.dbeginc.domain.entities.user.FriendRequest
+import com.dbeginc.domain.entities.user.UserProfile
 import com.dbeginc.domain.repositories.IUserRepo
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableCompletableObserver
+import io.reactivex.observers.DisposableSingleObserver
 
-class UserRepoImpl(private val firebaseAuth: FirebaseAuth, private val local: UserSource, private val remote: UserSource,
-                   private val schedulerProvider: ThreadProvider,
-                   private val localData: DataSource) : IUserRepo {
+class UserRepoImpl private constructor(
+        private val local: LocalUserSource,
+        private val remote: RemoteUserSource,
+        private val threads: ThreadProvider,
+        private val logger: Logger) : IUserRepo {
 
     private val subscriptions = CompositeDisposable()
-    /********************************** Create user methods **********************************/
 
-    override fun createNewUser(requestModel: AuthRequestModel<String>): Completable {
+    companion object {
+        @JvmStatic
+        fun create(appContext: Context) : IUserRepo {
+            var firstTime = false
 
-        return Single.create<FirebaseUser> { emitter -> firebaseAuth.createUserWithEmailAndPassword(requestModel.email, requestModel.password)
-                .addOnCompleteListener {
-                    task -> if (task.isSuccessful) emitter.onSuccess(task.result.user) else emitter.onError(task.exception!!)
+            val app : FirebaseApp = FirebaseApp.getInstance() ?: FirebaseApp.initializeApp(appContext)!!.also {
+                firstTime = true
+            }
+
+            val firebaseDatabase = FirebaseDatabase.getInstance(app)
+
+            if (firstTime) firebaseDatabase.setPersistenceEnabled(true)
+
+            val firebaseStorage = FirebaseStorage.getInstance(app)
+
+            firebaseStorage.maxUploadRetryTimeMillis = 300000
+
+            val remoteUserSource = RemoteUserSourceImpl(
+                    userTable = firebaseDatabase.reference.child(REMOTE_USERS_TABLE),
+                    cloudStorage = firebaseStorage.reference.child(REMOTE_IMAGES_TABLE),
+                    listsTable = firebaseDatabase.reference.child(REMOTE_LISTS_TABLE),
+                    friendRequestTable = firebaseDatabase.reference.child(REMOTE_FRIENDS_REQUEST_TABLE),
+                    firebaseAuth = FirebaseAuth.getInstance(app)
+            )
+
+            val localUserSource = LocalUserSourceImpl(LocalUserDatabase.create(appContext))
+
+            return UserRepoImpl(localUserSource, remoteUserSource, RxThreadProvider, CrashlyticsLogger)
+        }
+    }
+
+    override fun registerUser(requestModel: AuthRequestModel): Single<UserProfile> {
+        return remote.registerUser(requestModel)
+                .subscribeOn(threads.IO)
+                .doAfterSuccess {
+                    user -> local.defineCurrentUser(UserRequestModel(userId=user.uniqueId, arg=user))
+                        .subscribeOn(threads.CP)
+                        .subscribe(UpdateObserver())
                 }
-        }.flatMapCompletable {
-            user -> val encodedEmail = Base64.encodeToString(user.email?.toByteArray(), Base64.NO_WRAP)
-            val userToAdd = UserRequestModel(encodedEmail, User(encodedEmail, requestModel.arg, email = user.email!!))
-            val userAccount = UserRequestModel(encodedEmail, Account(encodedEmail, requestModel.arg, accountProviders = listOf(user.providers!![0])))
-
-            remote.createUser(userToAdd, userAccount).concatWith(local.createUser(userToAdd, userAccount))
-
-        }.subscribeOn(schedulerProvider.network).observeOn(schedulerProvider.ui)
     }
 
-    override fun createNewUserWithGoogle(requestModel: GoogleRequestModel<String>): Completable {
-        val credentials = GoogleAuthProvider.getCredential(requestModel.arg, null)
-
-        val login = Single.create<FirebaseUser> { emitter -> firebaseAuth.signInWithCredential(credentials)
-                .addOnCompleteListener {
-                    task -> if (task.isSuccessful) emitter.onSuccess(task.result.user) else emitter.onError(task.exception!!)
+    override fun registerUserWithGoogle(requestModel: GoogleRequestModel): Single<UserProfile> {
+        return remote.registerUserWithGoogle(requestModel)
+                .subscribeOn(threads.IO)
+                .doAfterSuccess {
+                    user -> local.defineCurrentUser(UserRequestModel(userId=user.uniqueId, arg=user))
+                        .subscribeOn(threads.CP)
+                        .subscribe(UpdateObserver())
                 }
-        }.subscribeOn(schedulerProvider.network)
-
-        return login.flatMapCompletable {
-            user -> val userToAdd = UserRequestModel(requestModel.userId, User(requestModel.userId, name = user.displayName ?: "", email = user.email ?: ""))
-            val userAccount = UserRequestModel(requestModel.userId, requestModel.userAccount)
-            remote.createUser(userToAdd, userAccount).concatWith(local.createUser(userToAdd, userAccount))
-        }.subscribeOn(schedulerProvider.network).observeOn(schedulerProvider.ui)
     }
 
-    /********************************** Login user methods **********************************/
-
-    override fun loginUser(requestModel: AuthRequestModel<Unit>): Completable {
-        return Completable.create { emitter -> firebaseAuth.signInWithEmailAndPassword(requestModel.email, requestModel.password)
-                .addOnCompleteListener {
-                    task -> if (task.isSuccessful) emitter.onComplete() else emitter.onError(task.exception!!)
+    override fun registerUserWithFacebook(requestModel: FacebookRequestModel): Single<UserProfile> {
+        return remote.registerUserWithFacebook(requestModel)
+                .subscribeOn(threads.IO)
+                .doAfterSuccess {
+                    user -> local.defineCurrentUser(UserRequestModel(userId=user.uniqueId, arg=user))
+                        .subscribeOn(threads.CP)
+                        .subscribe(UpdateObserver())
                 }
-        }.subscribeOn(schedulerProvider.network).observeOn(schedulerProvider.ui)
     }
 
-    override fun loginWithGoogle(requestModel: UserRequestModel<String>): Completable {
-        val credentials = GoogleAuthProvider.getCredential(requestModel.arg, null)
-
-        return Completable.create { emitter -> firebaseAuth.signInWithCredential(credentials)
-                .addOnCompleteListener {
-                    task -> if (task.isSuccessful) emitter.onComplete() else emitter.onError(task.exception!!)
+    override fun loginUser(requestModel: AuthRequestModel): Single<UserProfile> {
+        return remote.loginUser(requestModel)
+                .subscribeOn(threads.IO)
+                .doAfterSuccess {
+                    user -> local.defineCurrentUser(UserRequestModel(userId=user.uniqueId, arg=user))
+                        .subscribeOn(threads.CP)
+                        .subscribe(UpdateObserver())
                 }
-        }.subscribeOn(schedulerProvider.network).observeOn(schedulerProvider.ui)
     }
 
-    /********************************** User checking methods **********************************/
-
-    override fun doesUserExist(requestModel: UserRequestModel<Unit>): Single<Boolean> =
-            remote.checkIfUserExist(requestModel)
-                    .subscribeOn(schedulerProvider.network)
-                    .observeOn(schedulerProvider.ui)
-
-    override fun canUserLoginWithAccountProvider(requestModel: UserRequestModel<String>): Single<Boolean> =
-            remote.checkIfUserHasAccountProvider(requestModel)
-                    .subscribeOn(schedulerProvider.network)
-                    .observeOn(schedulerProvider.ui)
-
-    /********************************** User Interactions methods **********************************/
-
-    override fun getUser(requestModel: UserRequestModel<Unit>): Flowable<User> {
-        return remote.getUser(requestModel)
-                .subscribeOn(schedulerProvider.network)
-                .doOnNext { user -> subscriptions.addUser(user) }
-                .publish {
-                    remoteData -> Flowable.mergeDelayError(remoteData, local.getUser(requestModel).takeUntil(remoteData).subscribeOn(schedulerProvider.computation))
-                }.observeOn(schedulerProvider.ui)
+    override fun loginWithGoogle(requestModel: GoogleRequestModel): Single<UserProfile> {
+        return remote.loginWithGoogle(requestModel)
+                .subscribeOn(threads.IO)
+                .doAfterSuccess {
+                    user -> local.defineCurrentUser(UserRequestModel(userId=user.uniqueId, arg=user))
+                        .subscribeOn(threads.CP)
+                        .subscribe(UpdateObserver())
+                }
     }
 
-    override fun getUsers(requestModel: UserRequestModel<List<String>>): Flowable<List<User>> {
-        return remote.getUsers(requestModel)
-                .subscribeOn(schedulerProvider.network)
-                .doOnNext { users -> users.forEach { user -> subscriptions.addUser(user) } }
-                .publish {
-                    remoteData -> Flowable.mergeDelayError(remoteData, local.getUsers(requestModel).takeUntil(remoteData).subscribeOn(schedulerProvider.computation))
-                }.observeOn(schedulerProvider.ui)
+    override fun loginWithFacebook(requestModel: FacebookRequestModel): Single<UserProfile> {
+        return remote.loginWithFacebook(requestModel)
+                .subscribeOn(threads.IO)
+                .doAfterSuccess {
+                    user -> local.defineCurrentUser(UserRequestModel(userId=user.uniqueId, arg=user))
+                        .subscribeOn(threads.CP)
+                        .subscribe(UpdateObserver())
+                }
     }
 
-    override fun getAccount(requestModel: AccountRequestModel<Unit>): Flowable<Account> {
-        return remote.getAccount(requestModel)
-                .subscribeOn(schedulerProvider.network)
-                .doOnNext { account -> subscriptions.addAccount(account) }
-                .publish {
-                    remoteData -> Flowable.mergeDelayError(remoteData, local.getAccount(requestModel).takeUntil(remoteData).subscribeOn(schedulerProvider.computation))
-                }.observeOn(schedulerProvider.ui)
+    override fun canUserLoginWithAccountProvider(requestModel: AccountRequestModel): Single<Boolean> = remote.canUserLoginWithAccountProvider(requestModel).subscribeOn(threads.IO)
+
+    override fun canUserRegisterWithAccountProvider(requestModel: AccountRequestModel): Single<Boolean> = remote.canUserRegisterWithAccountProvider(requestModel).subscribeOn(threads.IO)
+
+    override fun verifyIfUserStillIn(): Single<Boolean> = remote.verifyIfUserStillIn().subscribeOn(threads.IO)
+
+    override fun logoutUser(requestModel: UserRequestModel<Unit>): Completable =
+            remote.logoutUser(requestModel).subscribeOn(threads.IO).andThen(local.deleteAll().subscribeOn(threads.CP))
+
+    override fun sendResetPasswordInstructions(requestModel: AccountRequestModel): Completable =
+            remote.sendResetPasswordInstructions(requestModel).subscribeOn(threads.IO)
+
+    override fun linkAccountWithFacebook(requestModel: FacebookRequestModel): Completable =
+            remote.linkAccountWithFacebook(requestModel).subscribeOn(threads.IO)
+
+    override fun linkAccountWithGoogle(requestModel: GoogleRequestModel): Completable =
+            remote.linkAccountWithGoogle(requestModel).subscribeOn(threads.IO)
+
+    override fun getUser(requestModel: UserRequestModel<Unit>): Flowable<UserProfile> {
+        return local.getCurrentUser(requestModel)
+                .subscribeOn(threads.CP)
+                .doOnSubscribe {
+                    remote.getUser(requestModel)
+                            .subscribeOn(threads.IO)
+                            .subscribeWith(UpdateUserObserver())
+                }
     }
 
-    override fun updateAccount(requestModel: AccountRequestModel<Account>): Completable {
-        return local.updateAccount(requestModel)
-                .subscribeOn(schedulerProvider.computation)
-                .andThen(remote.updateAccount(requestModel).subscribeOn(schedulerProvider.network))
-                .observeOn(schedulerProvider.ui)
+    override fun getFriend(requestModel: UserRequestModel<String>): Flowable<FriendProfile> {
+        return local.getFriend(requestModel)
+                .subscribeOn(threads.CP)
+                .doOnSubscribe {
+                    remote.getFriend(requestModel)
+                            .subscribeOn(threads.IO)
+                            .subscribeWith(UpdateFriendObserver())
+                }
     }
 
-    override fun updateUser(requestModel: UserRequestModel<User>): Completable {
+    override fun getUserHisFriends(requestModel: UserRequestModel<Unit>): Flowable<List<FriendProfile>> {
+        return local.getUserHisFriends(requestModel)
+                .subscribeOn(threads.CP)
+                .doOnSubscribe {
+                    remote.getUserHisFriends(requestModel)
+                            .subscribeOn(threads.IO)
+                            .subscribeWith(UpdateFriendsObserver())
+                }
+    }
+
+    override fun findFriends(requestModel: UserRequestModel<String>): Single<List<FriendProfile>> =
+            remote.findFriends(requestModel).subscribeOn(threads.IO)
+
+    override fun getFriendRequests(requestModel: UserRequestModel<Unit>) : Single<List<FriendRequest>> =
+            remote.getFriendRequests(requestModel).subscribeOn(threads.IO)
+
+    override fun sendFriendRequests(requestModel: List<FriendRequestModel>): Completable {
+        return Flowable.fromIterable(requestModel)
+                .subscribeOn(threads.IO)
+                .flatMapCompletable { friendRequest ->
+                    remote.sendFriendRequest(friendRequest)
+                            .subscribeOn(threads.IO)
+                }
+    }
+
+    override fun acceptFriendRequest(requestModel: FriendRequestModel): Completable =
+            remote.acceptFriendRequest(requestModel).subscribeOn(threads.IO)
+
+    override fun declineFriendRequest(requestModel: FriendRequestModel): Completable =
+            remote.declineFriendRequest(requestModel).subscribeOn(threads.IO)
+
+    override fun updateUserInfo(requestModel: UserRequestModel<UserProfile>): Completable {
+        val request = LocalUserPendingRequest(requestModel.userId)
+
         return local.updateUser(requestModel)
-                .subscribeOn(schedulerProvider.computation)
-                .andThen(remote.updateUser(requestModel).subscribeOn(schedulerProvider.network))
-                .observeOn(schedulerProvider.ui)
+                .subscribeOn(threads.CP)
+                .doOnSubscribe {
+                    local.addPendingRequest(request)
+                            .subscribeOn(threads.CP)
+                            .subscribe(UpdateObserver())
+                }
+                .doOnComplete {
+                    remote.updateUserAvatar(requestModel)
+                            .subscribeOn(threads.IO)
+                            .andThen(local.deletePendingRequest(request).subscribeOn(threads.CP))
+                            .subscribe(UpdateObserver())
+                }
     }
 
-    override fun deleteUser(requestModel: UserRequestModel<Unit>): Completable {
-        return remote.deleteUser(requestModel)
-                .subscribeOn(schedulerProvider.network)
-                .andThen(local.deleteUser(requestModel).subscribeOn(schedulerProvider.computation))
-                .observeOn(schedulerProvider.ui)
-    }
-
-    override fun logoutUser(requestModel: UserRequestModel<Unit>): Completable {
-        val logout = Completable.fromAction { firebaseAuth.signOut() }
-                .subscribeOn(schedulerProvider.network)
-
-        return localData.deleteAll(UserRequestModel(requestModel.userId, Unit))
-                .subscribeOn(schedulerProvider.computation)
-                .andThen(logout)
-                .observeOn(schedulerProvider.ui)
-    }
-
-    private fun CompositeDisposable.addUser(user: User) {
-        val requestModel = UserRequestModel(userId = user.uuid, arg = user)
-        add(local.updateUser(requestModel)
-                .subscribeOn(schedulerProvider.computation)
-                .subscribeWith(UpdateObserver())
-        )
-    }
-
-    private fun CompositeDisposable.addAccount(account: Account) {
-        val requestModel = AccountRequestModel(userId = account.userId, arg = account)
-        add(local.updateAccount(requestModel).subscribeOn(schedulerProvider.computation)
-                .subscribeWith(UpdateObserver())
-        )
-    }
-
-    private inner class UpdateObserver : DisposableCompletableObserver() {
-        override fun onComplete() {
-            Log.i(ConstantHolder.TAG, "Update of data done in ${UserRepoImpl::class.java.simpleName}")
-            dispose()
-        }
-        override fun onError(e: Throwable) {
-            Log.e(ConstantHolder.TAG, "Error in ${UserRepoImpl::class.java.simpleName}: ", e)
-        }
+    override fun publishPendingUserChanges(): Completable {
+        return local.getAllPendingRequest()
+                .subscribeOn(threads.IO)
+                .flatMapPublisher { pendingRequests -> Flowable.fromIterable(pendingRequests) }
+                .flatMapCompletable { pendingRequest ->
+                    local.getCurrentUser(UserRequestModel(userId=pendingRequest.userUniqueId, arg=Unit))
+                            .subscribeOn(threads.CP)
+                            .flatMapCompletable { user ->
+                                remote.updateUserAvatar(UserRequestModel(user.uniqueId, user))
+                                        .subscribeOn(threads.IO)
+                            }
+                }
     }
 
     override fun clean() = subscriptions.clear()
+
+    private fun CompositeDisposable.addUser(user: UserProfile) {
+        val requestModel = UserRequestModel(userId = user.uniqueId, arg = user)
+        add(local.updateUser(requestModel)
+                .subscribeOn(threads.CP)
+                .subscribeWith(UpdateObserver())
+        )
+    }
+
+    private fun CompositeDisposable.addFriend(friend: FriendProfile) {
+        val requestModel = UserRequestModel(userId = friend.uniqueId, arg = friend)
+        add(local.addFriend(requestModel)
+                .subscribeOn(threads.CP)
+                .subscribeWith(UpdateObserver())
+        )
+    }
+
+    private fun CompositeDisposable.addFriends(friends: List<FriendProfile>) {
+        val requestModel = UserRequestModel(userId = friends.first().uniqueId, arg = friends)
+        add(local.addFriends(requestModel)
+                .subscribeOn(threads.CP)
+                .subscribeWith(UpdateObserver())
+        )
+    }
+
+    private inner class UpdateUserObserver : DisposableSingleObserver<UserProfile>() {
+        override fun onSuccess(user: UserProfile) = subscriptions.addUser(user)
+        override fun onError(error: Throwable) = logger.logError(error)
+    }
+
+    private inner class UpdateFriendsObserver : DisposableSingleObserver<List<FriendProfile>>() {
+        override fun onSuccess(friends: List<FriendProfile>) {
+            if (friends.isNotEmpty()) subscriptions.addFriends(friends)
+        }
+        override fun onError(error: Throwable) = logger.logError(error)
+    }
+
+    private inner class UpdateFriendObserver : DisposableSingleObserver<FriendProfile>() {
+        override fun onSuccess(friend: FriendProfile) = subscriptions.addFriend(friend)
+        override fun onError(error: Throwable) = logger.logError(error)
+    }
+
+    private inner class UpdateObserver : DisposableCompletableObserver() {
+        override fun onComplete() = logger.logEvent("Update of data done in ${UserRepoImpl::class.java.simpleName}")
+        override fun onError(error: Throwable) = logger.logError(error)
+    }
 }

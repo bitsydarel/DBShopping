@@ -1,0 +1,22 @@
+<!--
+  ~ /*
+  ~  * Copyright (C) 2017 Darel Bitsy
+  ~  * Licensed under the Apache License, Version 2.0 (the "License");
+  ~  * you may not use this file except in compliance with the License.
+  ~  * You may obtain a copy of the License at
+  ~  *
+  ~  *     http://www.apache.org/licenses/LICENSE-2.0
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the License is distributed on an "AS IS" BASIS,
+  ~  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  * See the License for the specific language governing permissions and
+  ~  * limitations under the License
+  ~  */
+  -->
+
+<vector android:autoMirrored="true" android:height="24dp"
+    android:viewportHeight="497.25" android:viewportWidth="497.25"
+    android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="@android:color/holo_red_dark" android:pathData="M248.6,89.3V0l-127.5,127.5l127.5,127.5V140.3c84.2,0 153,68.8 153,153c0,84.2 -68.8,153 -153,153c-84.2,0 -153,-68.8 -153,-153h-51c0,112.2 91.8,204 204,204s204,-91.8 204,-204S360.8,89.3 248.6,89.3z"/>
+</vector>

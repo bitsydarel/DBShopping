@@ -17,55 +17,128 @@
 
 package com.dbeginc.data.proxies.remote.mapper
 
-import android.util.Log
-import com.dbeginc.data.ConstantHolder
-import com.dbeginc.data.proxies.local.LocalShoppingList
-import com.dbeginc.data.proxies.remote.*
-import com.dbeginc.domain.entities.data.ItemImage
+import com.dbeginc.data.proxies.remote.list.RemoteItemComment
+import com.dbeginc.data.proxies.remote.list.RemoteShoppingItem
+import com.dbeginc.data.proxies.remote.list.RemoteShoppingList
+import com.dbeginc.data.proxies.remote.list.RemoteShoppingUser
+import com.dbeginc.data.proxies.remote.user.RemoteUserProfile
+import com.dbeginc.domain.entities.data.ItemComment
 import com.dbeginc.domain.entities.data.ShoppingItem
 import com.dbeginc.domain.entities.data.ShoppingList
-import com.dbeginc.domain.entities.user.Account
-import com.dbeginc.domain.entities.user.User
-import com.google.firebase.database.ServerValue
-import java.text.ParseException
-import java.text.SimpleDateFormat
-import java.util.*
+import com.dbeginc.domain.entities.data.ShoppingUser
+import com.dbeginc.domain.entities.user.UserProfile
+import com.google.firebase.database.DataSnapshot
 
-fun ShoppingList.toProxy(): RemoteShoppingList {
-    val shoppingUserIds = mutableMapOf<String, Boolean>()
-    usersShopping.forEach { userId -> shoppingUserIds.put(userId, true)  }
+fun ShoppingList.toRemoteProxy(): RemoteShoppingList = RemoteShoppingList(
+        uniqueId = uniqueId,
+        name = name,
+        ownerId = ownerId,
+        ownerName = ownerName
+)
 
-    return RemoteShoppingList(uuid = uuid, name = name, ownerName = ownerName)
-}
+fun ShoppingUser.toRemoteProxy() : RemoteShoppingUser = RemoteShoppingUser(
+        uniqueId = uniqueId,
+        email = email,
+        nickname = nickname,
+        avatar = avatar,
+        isShopping = isShopping
+)
 
-fun ShoppingItem.toProxy() : RemoteShoppingItem {
-    return RemoteShoppingItem(uuid = uuid, name = name, itemOf = itemOf, itemOwner = itemOwner,
-            count = count, price = price, brought = bought, boughtBy = boughtBy, image = image.toProxy()
+fun ShoppingItem.toRemoteProxy() : RemoteShoppingItem = RemoteShoppingItem(
+        uniqueId = uniqueId,
+        name = name,
+        itemOf = itemOf,
+        itemOwner = itemOwner,
+        count = count,
+        price = price,
+        brought = bought,
+        boughtBy = boughtBy,
+        imageUrl = imageUrl
+)
+
+fun ItemComment.toRemoteProxy() : RemoteItemComment = RemoteItemComment(
+        uniqueId = uniqueId,
+        comment = comment,
+        commentType = commentType,
+        commentArg = commentArg,
+        itemId = itemId,
+        userId = userId,
+        userName = userName,
+        userAvatar = userAvatar
+)
+
+fun UserProfile.toRemoteProxy() : RemoteUserProfile {
+
+    return RemoteUserProfile(
+            uniqueId = uniqueId,
+            nickname = nickname,
+            email = email,
+            avatar = avatar,
+            creationDate = creationDate,
+            birthday = birthday
     )
 }
 
-fun ItemImage.toProxy() : RemoteItemImage = RemoteItemImage(uri = uri)
+fun RemoteShoppingList.toDomain(): ShoppingList = ShoppingList(
+        uniqueId = uniqueId,
+        name = name,
+        ownerId = ownerId,
+        ownerName = ownerName,
+        lastChange = lastChange as Long
+)
 
-fun User.toProxy() : RemoteUser {
+fun RemoteShoppingUser.toDomain(): ShoppingUser = ShoppingUser(
+        uniqueId = uniqueId,
+        email = email,
+        nickname = nickname,
+        avatar = avatar,
+        isShopping = isShopping
+)
 
-    var creationTime : Any = ServerValue.TIMESTAMP
+fun RemoteShoppingItem.toDomain(): ShoppingItem = ShoppingItem(
+        uniqueId = uniqueId,
+        name = name,
+        itemOf = itemOf,
+        itemOwner = itemOwner,
+        count = count,
+        price = price,
+        bought = brought,
+        boughtBy = boughtBy,
+        imageUrl = imageUrl
+)
 
-    if (joinedAt.isNotEmpty()) {
-        try {
-            creationTime = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-                    .parse(joinedAt)
-                    .time
+fun RemoteItemComment.toDomain() : ItemComment = ItemComment(
+        uniqueId = uniqueId,
+        publishTime = publishTime as Long,
+        comment = comment,
+        commentType = commentType,
+        commentArg = commentArg,
+        itemId = itemId,
+        userId = userId,
+        userName = userName,
+        userAvatar = userAvatar
+)
 
-        } catch (pe: ParseException) {
-            Log.e(ConstantHolder.TAG, "Error in ${LocalShoppingList::class.java.simpleName}: ${pe.localizedMessage}")
-        }
-    }
+fun RemoteUserProfile.toDomain() : UserProfile = UserProfile(
+        uniqueId = uniqueId,
+        nickname = nickname,
+        email = email,
+        avatar = avatar,
+        creationDate = creationDate as Long,
+        birthday = birthday
+)
 
-    return RemoteUser(uuid = uuid, name = name, email = email, joinedAt = creationTime)
+fun DataSnapshot.toItemComment() : ItemComment {
+    val proxy : RemoteItemComment = getValue(RemoteItemComment::class.java) as RemoteItemComment
+    return proxy.toDomain()
 }
 
-fun Account.toProxy() : RemoteAccount {
-    val providers = mutableMapOf<String, Boolean>()
-    accountProviders.forEach { provider -> providers.put(provider, true) }
-    return RemoteAccount(userId = userId, name = name, profileImage = profileImage, accountProviders = providers)
+fun DataSnapshot.toUser() : UserProfile {
+    val proxy : RemoteUserProfile = getValue(RemoteUserProfile::class.java) as RemoteUserProfile
+    return proxy.toDomain()
+}
+
+fun DataSnapshot.toShoppingUser() : ShoppingUser {
+    val proxy : RemoteShoppingUser = getValue(RemoteShoppingUser::class.java) as RemoteShoppingUser
+    return proxy.toDomain()
 }

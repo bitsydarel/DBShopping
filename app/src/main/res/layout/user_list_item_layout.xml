@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  * Copyright (C) 2017 Darel Bitsy
+  ~  * Licensed under the Apache License, Version 2.0 (the "License");
+  ~  * you may not use this file except in compliance with the License.
+  ~  * You may obtain a copy of the License at
+  ~  *
+  ~  *     http://www.apache.org/licenses/LICENSE-2.0
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the License is distributed on an "AS IS" BASIS,
+  ~  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  * See the License for the specific language governing permissions and
+  ~  * limitations under the License
+  ~  */
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="List"
+            type="com.dbeginc.lists.viewmodels.ListModel"/>
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/listItemLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        style="@style/CardView.Light"
+        app:cardElevation="4dp"
+        app:cardMaxElevation="8dp"
+        app:cardCornerRadius="16dp"
+        app:contentPaddingTop="8dp"
+        app:contentPaddingLeft="8dp"
+        app:contentPaddingRight="8dp"
+        app:contentPaddingBottom="8dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/listName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{List.name}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textAlignment="textStart"
+                android:singleLine="true"
+                tools:text="8 March woman day"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/listLastChange"/>
+
+            <TextView
+                android:id="@+id/listLastChange"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textAlignment="textEnd"
+                android:textColor="@color/colorCaption"
+                tools:text="Last change: 2m ago"
+                app:layout_constraintTop_toTopOf="@id/listName"
+                app:layout_constraintLeft_toRightOf="@id/listName"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/listName"/>
+
+            <TextView
+                android:id="@+id/listOwner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@{@string/listOwner(List.ownerName)}"
+                android:textColor="@color/colorCaption"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textAlignment="textStart"
+                android:singleLine="true"
+                tools:text="Created by Darel Bitsy"
+                app:layout_constraintTop_toBottomOf="@id/listName"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toLeftOf="@+id/listUsersShopping"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"/>
+
+            <TextView
+                android:id="@+id/listUsersShopping"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorCaption"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textAlignment="textEnd"
+                tools:text="Darel Bitsy and Alexandra Bitsy are shopping"
+                app:layout_constraintTop_toBottomOf="@id/listName"
+                app:layout_constraintLeft_toRightOf="@id/listOwner"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+</layout>

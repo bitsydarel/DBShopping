@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  * Copyright (C) 2017 Darel Bitsy
+  ~  * Licensed under the Apache License, Version 2.0 (the "License");
+  ~  * you may not use this file except in compliance with the License.
+  ~  * You may obtain a copy of the License at
+  ~  *
+  ~  *     http://www.apache.org/licenses/LICENSE-2.0
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the License is distributed on an "AS IS" BASIS,
+  ~  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  * See the License for the specific language governing permissions and
+  ~  * limitations under the License
+  ~  */
+  -->
+
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="FriendRequest"
+            type="com.dbeginc.domain.entities.user.FriendRequest"/>
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/friendRequestLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        style="@style/CardView.Light"
+        app:cardElevation="2dp"
+        app:cardMaxElevation="4dp"
+        app:contentPaddingRight="8dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.constraint.Guideline
+                android:id="@+id/imageLimit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.20" />
+
+            <ImageView
+                android:id="@+id/friendRequestAvatar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:contentDescription="@string/user_avatar"
+                android:src="@drawable/ic_avatar"
+                app:setUserImage="@{FriendRequest.requesterAvatar}"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="@id/imageLimit"
+                app:layout_constraintBottom_toBottomOf="parent" />
+
+            <TextView
+                android:id="@+id/friendRequestName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@{FriendRequest.requesterNickname}"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textAlignment="textStart"
+                android:singleLine="true"
+                tools:text="Darel Bitsy"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/imageLimit"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/friendRequestInvitation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@{@string/invite_message(FriendRequest.requesterListName)}"
+                android:textColor="@color/colorCaption"
+                android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                android:textAlignment="textStart"
+                android:singleLine="true"
+                tools:text="Invite you to be member of Christmas list"
+                app:layout_constraintTop_toBottomOf="@id/friendRequestName"
+                app:layout_constraintLeft_toRightOf="@id/imageLimit"
+                app:layout_constraintRight_toRightOf="parent"/>
+
+            <Button
+                android:id="@+id/acceptFriendRequest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:filterTouchesWhenObscured="true"
+                android:text="@string/accept"
+                android:layout_marginBottom="8dp"
+                style="@style/Widget.AppCompat.Button.Colored"
+                app:layout_constraintTop_toBottomOf="@id/friendRequestInvitation"
+                app:layout_constraintLeft_toRightOf="@id/imageLimit"
+                app:layout_constraintRight_toLeftOf="@+id/declineFriendRequest"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <Button
+                android:id="@+id/declineFriendRequest"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:filterTouchesWhenObscured="true"
+                android:text="@string/decline"
+                android:layout_marginBottom="8dp"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                app:layout_constraintTop_toBottomOf="@id/friendRequestInvitation"
+                app:layout_constraintLeft_toRightOf="@id/acceptFriendRequest"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+</layout>

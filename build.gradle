@@ -18,17 +18,17 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlin_version = '1.1.4-3'
-    ext.androidPluginVersion = '2.3.3'
+    ext.kotlin_version = '1.2.21'
+    apply from: "dependencies.gradle"
 
     repositories {
-        maven {
-            url "https://maven.google.com"
-        }
+        maven { url "https://maven.google.com" }
         jcenter()
+        google()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:$androidPluginVersion"
+        classpath googleLibs.androidGradlePlugin
+        classpath kotlinLibs.kotlinGradlePlugin
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -36,38 +36,12 @@ buildscript {
     }
 }
 
-ext {
-
-    /****************** Android Part *********************/
-    androidCompileSdkVersion = 26
-    androidBuildToolsVersion = "26.0.1"
-
-    androidMinSdkVersion = 21
-    androidTargetSdkVersion = 26
-
-    // Kotlin Version
-    kotlin_version = '1.1.4-2'
-
-    //Dagger Libraries
-    daggerVersion = '2.11'
-
-    // Support Libraries
-    supportLibraryVersion = '26.0.1'
-
-    // Google play services
-    googleServices = '11.0.4'
-
-    // Glide Version
-    glideVersion = '4.0.0-SNAPSHOT'
-
-    // RxJava
-    rxJava = '2.1.2'
-    rxAndroid = '2.0.2-SNAPSHOT'
-}
-
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
+        maven { url 'https://oss.jfrog.org/libs-snapshot' }
+        google()
     }
 }
 

@@ -1,0 +1,190 @@
+<!--
+  ~ /*
+  ~  * Copyright (C) 2017 Darel Bitsy
+  ~  * Licensed under the Apache License, Version 2.0 (the "License");
+  ~  * you may not use this file except in compliance with the License.
+  ~  * You may obtain a copy of the License at
+  ~  *
+  ~  *     http://www.apache.org/licenses/LICENSE-2.0
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the License is distributed on an "AS IS" BASIS,
+  ~  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  * See the License for the specific language governing permissions and
+  ~  * limitations under the License
+  ~  */
+  -->
+
+<resources>
+    <string name="app_version">Version %1$s</string>
+    <string name="share_message">Salut, consultez DBShopping sur : https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_with">Partager avec</string>
+    <string name="send_with">Envoyer avec</string>
+    <string name="you">Vous</string>
+    <string name="label_settings">Paramètres</string>
+    <string name="link_account_with_google_account">Lier votre compte avec un compte Google</string>
+    <string name="link_account_with_facebook_account">Lier votre compte avec un compte Facebook</string>
+    <string name="areYouSure">Êtes-vous sûr?</string>
+    <!-- #################################################### Application Action #################################################### -->
+    <string name="action_create">Créer</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_open_help">Aide</string>
+    <string name="action_send_comments">Envoyez votre commentaire</string>
+    <string name="action_recommend_us">Recommandez DBShopping</string>
+    <string name="action_logout_user">Se déconnecter</string>
+    <string name="action_open_drawer">Ouvrir Drawer</string>
+    <string name="action_close_drawer">Fermer Drawer</string>
+    <string name="action_confirm_action">Confirmer l\'action</string>
+    <string name="action_logout">Voulez-vous vraiment vous déconnecter?</string>
+    <string name="action_yes">Oui</string>
+    <string name="action_retry">Recommencez</string>
+    <string name="invalid_name">Nom invalide, le nom ne peut pas être vide</string>
+    <!-- ################################################# UserProfileUser #################################################### -->
+    <string name="profile">Profil</string>
+    <string name="userProfileImageContentDescription">Image du profil</string>
+    <!-- #################################################### List Data #################################################### -->
+    <string name="listOwner">Créé par %1$s</string>
+    <string name="enterListName">Entrez le nom de la liste</string>
+    <string name="noListMessage">Créez votre première liste\nCliquez sur le bouton avec le signe plus</string>
+    <string name="creatingListMessage">en train de créer la liste</string>
+    <string name="updatingDataMessageList">Mise à jour de la liste</string>
+    <string name="listEmpty">La liste est vide!</string>
+    <string name="youAreCurrentlyShoppingList">Vous etes en train d\'acheter cette liste</string>
+    <string name="nobodyIsShopping">Personne n\'est entrain de faire les courses</string>
+    <string name="youAreShopping">Vous etes entrain de faire les courses</string>
+    <string name="youAndAnotherUserAreShopping">Vous et %1$s font les courses</string>
+    <string name="userIsShopping">%1$s est entrain de faire les achats</string>
+    <string name="twoUsersAreShopping">%1$s et %2$s font les achats</string>
+    <string name="usersAreShopping">%1$d personnes font les achats</string>
+    <string name="youAndOtherUsersAreShopping">Vous et %1$d personnes font les achats</string>
+    <string name="couldNotFindUsersShopping">erreur lors de l\'obtention de la liste des utilisateurs qui font les achats!</string>
+    <string name="couldNotProcessYourRequest">N\'a pas pu traiter votre demande</string>
+    <string name="couldNotLoadLists">N\'a pas pu charger vos listes</string>
+    <string name="couldNotLoadListMembers">N\'a pas pu charger les membres de la liste</string>
+    <string name="couldNotLoadListDetail">N\'a pas pu charger le détail de la liste</string>
+    <string name="last_change_was_days_ago">Dernier changement: il y a %1$dd</string>
+    <string name="last_change_was_hours_ago">Dernier changement: il y a %1$dh</string>
+    <string name="last_change_was_minutes_ago">Dernier changement: il y a %1$dm</string>
+    <string name="last_change_was_seconds_ago">Dernier changement: il y a %1$ds</string>
+    <string name="action_sort_by_publish_time">Heure de publication</string>
+    <string name="action_sort_by_list_name">Nom de la liste</string>
+    <string name="action_sort_by_owner_name">Nom du propriétaire</string>
+    <string name="action_sort_lists">Trier les listes</string>
+    <string name="action_edit_list_name">Modifier le nom de la liste</string>
+    <string name="action_remove_list">Supprimer la liste</string>
+    <string name="action_remove_message_list">Êtes-vous sûr de vouloir supprimer cette liste?</string>
+    <string name="action_change">Modifier</string>
+    <string name="turnOnToggleShopping">Activez la bascule lorsque vous faites vos achats sur cette liste</string>
+    <string name="turnOffToggleShopping">Desactivez la bascule lorsque vous faites vos achats sur cette liste</string>
+    <string name="listMemberCount">%1$d membres</string>
+    <!-- #################################################### Item Data #################################################### -->
+    <string name="default_item_name">Sans nom</string>
+    <string name="itemImageDescription">Image de l\'article</string>
+    <string name="itemsCount">Nombre d\'articles: %1$d</string>
+    <string name="EnterName">Entrez le nom</string>
+    <string name="EnterPrice">Entrer le prix</string>
+    <string name="LabelItemCount">Nombre</string>
+    <string name="addShoppingItem">Ajouter un article d\'achat</string>
+    <string name="savingItemChanges">Mise à jour des éléments de la liste</string>
+    <string name="couldNotLoadItemDetail">N\'a pas pu charger le détail de l\'élément</string>
+    <string name="couldNotChangeItemPicture">N\'a pas pu changer l\'image</string>
+    <string name="action_remove_item">Supprimer l\'article</string>
+    <string name="action_remove_message_item">Êtes-vous sûr de vouloir supprimer cet article?</string>
+    <string name="action_open_item_comment">Commentaires de l\'article</string>
+    <string name="updatingDataMessageItem">Mise à jour de la liste</string>
+    <string name="itemBoughtBy">Acheté par %1$s</string>
+    <string name="itemOwnerIs">Propriétaire est %1$s</string>
+    <string name="itemTotalAmount">Total : %1$s</string>
+    <string name="listTotalAmount">Montant total: %1$s</string>
+    <string name="cant_edit_already_bought_item">Impossible de modifier un élément déjà acheté</string>
+    <!-- #################################################### Authentication screen #################################################### -->
+    <string name="NicknameHint">Surnom</string>
+    <string name="EmailHint">Adresse e-mail</string>
+    <string name="PasswordHint">Mot de passe</string>
+    <string name="alreadyHaveAccountToLogin">Vous avez déjà un compte ?</string>
+    <string name="needAccountToLogin">Besoin d\'un compte ?</string>
+    <string name="NicknameErrorMessage">longueur minimum 3 et pas d\'espaces blancs à la fin!</string>
+    <string name="emailErrorMessage">Email incorrect, veuillez le vérifier</string>
+    <string name="PasswordErrorMessage">Le mot de passe doit contenir au moins 5 caractères!</string>
+    <string name="errorWhileDuringRegistration">Une erreur s\'est produite lors de votre inscription</string>
+    <string name="errorWhileDuringAuthentication">Une erreur s\'est produite lors de votre authentification</string>
+    <string name="emailAlreadyTaken">Le compte existe déjà</string>
+    <string name="loginFailed">Échec de la connexion, email adresse ou mot de passe incorrects</string>
+    <!-- #################################################### Login #################################################### -->
+    <string name="loginLabel">Connectez-vous</string>
+    <string name="loginForgotPassword">Mot de passe oublié?</string>
+    <string name="loginWithGoogleDescription">Connectez-vous avec un compte Google</string>
+    <string name="loginWithFacebookDescription">Connectez-vous avec un compte Facebook</string>
+    <!-- #################################################### Register #################################################### -->
+    <string name="registerLabel">Inscription</string>
+    <string name="registerWithGoogleDescription">Inscription avec un compte Google</string>
+    <string name="registerWithFacebookDescription">Inscription avec un compte Facebook</string>
+    <!-- #################################################### Forgot Password #################################################### -->
+    <string name="forgotYourPassword">Mot de passe oublié?</string>
+    <!-- #################################################### Share List #################################################### -->
+    <string name="searchFriends">Rechercher un ami</string>
+    <string name="searchFriendsHint">Entrez le nom de l\'ami</string>
+    <string name="shareUserImageDescription">Image de l\'article</string>
+    <!-- #################################################### Settings #################################################### -->
+    <string name="settingIconDescription">Icône de réglage</string>
+    <string name="forgotPasswordInstructions">Entrez votre adresse e-mail ci-dessous pour recevoir vos instructions de réinitialisation du mot de passe</string>
+    <string name="reset_password">réinitialiser le mot de passe</string>
+    <string name="reset_password_instructions_sent">Les instructions ont été envoyées</string>
+    <string name="action_check_email">Vérifier la boîte de réception</string>
+    <string name="something_went_wrong">Quelque chose s\'est mal passé avec votre demande</string>
+
+    <string name="empty_user_data">Vous n\'avez pas de liste de courses, créez-en une en cliquant sur le bouton plus</string>
+    <string name="noOneYet">personne encore</string>
+    <string name="add_list_header">Créez une nouvelle liste de courses et commencez à faire vos achats maintenant</string>
+    <string name="error_while_creating_list">N\'a pas pu créer votre liste</string>
+    <string name="error_while_creating_item">N\'a pas pu créer votre article</string>
+    <string name="buy_item">Acheter</string>
+    <string name="user_cant_use_feature_unless_accept_permission">Veuillez accepter la permission pour utiliser cette fonctionnalité</string>
+    <string name="confirm_changes">Confirmer les modifications</string>
+    <string name="apple_item">Pomme item</string>
+    <string name="cheese_item">Fromage item</string>
+    <string name="milk_item">Lait item</string>
+    <string name="water_item">Eau item</string>
+    <string name="add_item_header">Ajouter un nouvel article d\'achat</string>
+    <string name="EnterCount">Entrer le nombre</string>
+    <string name="invalid_price">Le prix ne peut pas être inférieur à 0</string>
+    <string name="invalid_count">Le nombre ne peut pas être inférieur ou égal à 0</string>
+    <string name="lists">Listes</string>
+    <string name="user_avatar">Avatar de l\'utilisateur</string>
+    <string name="could_not_update_user_info">N\'a pas pu mettre à jour vos informations utilisateur</string>
+    <string name="search_list">Rechercher une liste</string>
+    <string name="list_deleted">La liste a été supprimée</string>
+    <string name="youAreNotCurrentlyShoppingList">Vous n\'êtes pas en train d\'acheter cette liste</string>
+    <string name="list_already_exist">La liste existe déjà</string>
+    <string name="share_list">Partager la liste</string>
+    <string name="share_with_friends">Partage avec tes amis</string>
+    <string name="sent_friend_request">Envoyé vos demandes avec succès, rediriger vers la liste…</string>
+    <string name="error_while_sharing_your_share_lists">N\'a pas pu partager la liste</string>
+    <string name="notifications">Notifications</string>
+    <string name="item_deleted">L\'article a été supprimé</string>
+    <string name="accept">Acceptez</string>
+    <string name="decline">Décliner</string>
+    <string name="invite_message">Vous invite à être membre de la liste %1$s</string>
+    <string name="could_not_sent_response">N\'a pas pu envoyer ta réponse</string>
+    <string name="could_not_load_requests">N\'a pas pu charger votre liste de demande d\'amis</string>
+
+    <string name="voice_message">Message vocal</string>
+    <string name="send_message">Envoyer le message</string>
+    <string name="enter_comment">Entrez un commentaire…</string>
+    <string name="comment_delivery_status">état de la livraison des commentaires</string>
+    <string name="image_message">message image</string>
+    <string name="sound_message">Message sonore</string>
+    <string name="send_gps_location">envoyer un emplacement GPS</string>
+    <string name="cancel_recording">Annuler l\'enregistrement</string>
+    <string name="delete_comment">Supprimer le commentaire</string>
+    <string name="comment_could_not_be_sent">Le commentaire n\'a pas pu être envoyé, veuillez réessayer.</string>
+    <string name="change_profile_picture">Modifier la photo de profil</string>
+    <string name="cant_find_google_play_app">impossible de trouver l\'application sur le marché</string>
+    <string name="confirm">Confirmer</string>
+    <string name="request_features">Demander des fonctionnalités</string>
+    <string name="error_while_doing_settings">Erreur lors de l\'exécution de votre requête</string>
+    <string name="delete_all_your_lists">Supprimer toutes vos listes</string>
+
+    <string name="list_members">Membres de la liste</string>
+    <!-- #####################################################################################################################-->
+</resources>

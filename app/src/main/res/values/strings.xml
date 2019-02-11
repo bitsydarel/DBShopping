@@ -16,49 +16,60 @@
   -->
 
 <resources>
-    <string name="app_name">DBShopping</string>
+    <string name="app_name" translatable="false">DBShopping</string>
+    <string name="app_version">Version %1$s</string>
+    <string name="share_message">Hey check out DBShopping at: https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_with">Share with</string>
+    <string name="send_with">Send with</string>
     <string name="you">You</string>
+    <string name="label_settings">Settings</string>
+    <string name="facebook_app_id" translatable="false">428151134288521</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb428151134288521</string>
+    <string name="link_account_with_google_account">Link account with google account</string>
+    <string name="link_account_with_facebook_account">Link account with facebook account</string>
+    <string name="my_email" translatable="false">bitsydarel@gmail.com</string>
+    <string name="areYouSure">Are you sure?</string>
     <!-- #################################################### Application Action #################################################### -->
     <string name="action_create">Create</string>
-    <string name="action_open_settings">Settings</string>
+    <string name="action_settings">Settings</string>
     <string name="action_open_help">Help</string>
     <string name="action_send_comments">Send your comment</string>
-    <string name="action_recommend_us">Recommend us</string>
+    <string name="action_recommend_us">Recommend DBShopping</string>
     <string name="action_logout_user">Logout</string>
     <string name="action_open_drawer">Open Drawer</string>
     <string name="action_close_drawer">Close Drawer</string>
     <string name="action_confirm_action">Confirm Action</string>
     <string name="action_logout">Do you really want to logout?</string>
     <string name="action_yes">Yes</string>
-    <!-- #################################################### Application Error #################################################### -->
-    <string name="retryLimitError">Issue while uploading, please check network connection</string>
-    <string name="errorNotAuthenticated">Please authenticate before uploading!</string>
-    <string name="errorNotAuthorized">You don\'t have permission to upload here!</string>
-    <!-- #################################################### User #################################################### -->
-    <string name="userProfileTitle">Your profile</string>
+    <string name="action_retry">Retry</string>
+    <string name="invalid_name">Invalid name, name can\'t be empty</string>
+    <!-- ################################################# UserProfileUser #################################################### -->
+    <string name="profile">Profile</string>
     <string name="userProfileImageContentDescription">Profile Image</string>
     <!-- #################################################### List Data #################################################### -->
     <string name="listOwner">Created by %1$s</string>
-    <string name="listName">List Name</string>
+    <string name="enterListName">Enter list name</string>
     <string name="noListMessage">Create your first list\nClick on the button with the plus sign</string>
-    <string name="nameIncorrect">Name Incorrect, can\'t be empty!</string>
     <string name="creatingListMessage">Creating list</string>
     <string name="updatingDataMessageList">Updating list</string>
     <string name="listEmpty">List is empty!</string>
-    <string name="currentlyShoppingList">I\'m currently shopping this list</string>
-    <string name="shoppingModeEnable">Shopping mode is on!</string>
-    <string name="shoppingModeDisable">Shopping mode is off!</string>
-    <string name="shoppingModeNotEnabled">Shopping mode not enabled!</string>
+    <string name="youAreCurrentlyShoppingList">You are currently shopping this list</string>
     <string name="nobodyIsShopping">Nobody is shopping</string>
     <string name="youAreShopping">You are shopping</string>
-    <string name="youAndUsersAreShopping">You and %1$d others are shopping</string>
-    <string name="youAndUserAreShopping">You and %1$s are shopping</string>
+    <string name="youAndAnotherUserAreShopping">You and %1$s are shopping</string>
     <string name="userIsShopping">%1$s is shopping</string>
     <string name="twoUsersAreShopping">%1$s and %2$s are shopping</string>
-    <string name="usersAreShopping">%1$d users are shopping</string>
+    <string name="usersAreShopping">%1$d people are shopping</string>
+    <string name="youAndOtherUsersAreShopping">You and %1$d people are shopping</string>
     <string name="couldNotFindUsersShopping">error while getting list of users shopping!</string>
-    <string name="aPersonIsShopping">%1$d person is shopping</string>
-    <string name="peopleAreShopping">%1$d people shopping</string>
+    <string name="couldNotProcessYourRequest">Could not process your request</string>
+    <string name="couldNotLoadLists">Could not load your lists</string>
+    <string name="couldNotLoadListMembers">Could not load list members</string>
+    <string name="couldNotLoadListDetail">Could not load list detail</string>
+    <string name="last_change_was_days_ago">Last change: %1$dd ago</string>
+    <string name="last_change_was_hours_ago">Last change: %1$dh ago</string>
+    <string name="last_change_was_minutes_ago">Last change: %1$dm ago</string>
+    <string name="last_change_was_seconds_ago">Last change: %1$ds ago</string>
     <string name="action_sort_by_publish_time">Publish Time</string>
     <string name="action_sort_by_list_name">List Name</string>
     <string name="action_sort_by_owner_name">Owner Name</string>
@@ -66,60 +77,118 @@
     <string name="action_edit_list_name">Edit list name</string>
     <string name="action_remove_list">Delete list</string>
     <string name="action_remove_message_list">Are you sure you want to remove this list ?</string>
-    <string name="action_change_list_name">Change list name</string>
+    <string name="action_change">Change</string>
+    <string name="turnOnToggleShopping">Turn on the toggle while you\'re shopping this list</string>
+    <string name="turnOffToggleShopping">Turn off the toggle while you\'re not shopping this list</string>
+    <string name="listMemberCount">%1$d members</string>
     <!-- #################################################### Item Data #################################################### -->
     <string name="default_item_name">No name</string>
     <string name="itemImageDescription">Shopping Item Image</string>
     <string name="itemsCount">Items count: %1$d</string>
-    <string name="ItemWasBought">Has been bought</string>
-    <string name="ItemWasNotBought">Has not been brought</string>
-    <string name="LabelItemName">Item Name</string>
+    <string name="EnterName">Enter name</string>
+    <string name="EnterPrice">Enter price</string>
     <string name="LabelItemCount">Count</string>
-    <string name="LabelItemPrice">Price</string>
     <string name="addShoppingItem">Add shopping Item</string>
     <string name="savingItemChanges">Updating list items</string>
+    <string name="couldNotLoadItemDetail">Could not load item detail</string>
+    <string name="couldNotChangeItemPicture">Could not change picture</string>
     <string name="action_remove_item">Delete Item</string>
-    <string name="action_remove_message_item">Are you sure you want to remove this list ?</string>
+    <string name="action_remove_message_item">Are you sure you want to remove this item ?</string>
     <string name="action_open_item_comment">Item Comments</string>
     <string name="updatingDataMessageItem">Updating list</string>
     <string name="itemBoughtBy">Bought by %1$s</string>
+    <string name="itemOwnerIs">Owner is %1$s</string>
+    <string name="itemTotalAmount">Total : %1$s</string>
+    <string name="listTotalAmount">Total amount: %1$s</string>
+    <string name="cant_edit_already_bought_item">Can\'t edit an already bought item</string>
     <!-- #################################################### Authentication screen #################################################### -->
     <string name="NicknameHint">Nickname</string>
-    <string name="EmailHint">Email</string>
+    <string name="EmailHint">Email Address</string>
     <string name="PasswordHint">Password</string>
     <string name="alreadyHaveAccountToLogin">Already have an account ?</string>
     <string name="needAccountToLogin">Need an account ?</string>
-    <string name="loggingUserProgress">Logging user</string>
-    <string name="nicknameErrorMessage">minimum length 3 and no white spaces at the end!</string>
-    <string name="creatingUserProgress">Creating user Account</string>
-    <string name="EmailErrorMessage">Email incorrect, please verify it!</string>
+    <string name="NicknameErrorMessage">minimum length 3 and no white spaces at the end!</string>
+    <string name="emailErrorMessage">Email incorrect, please verify it</string>
     <string name="PasswordErrorMessage">Password should be at least 5 characters!</string>
-    <string name="errorWhileLoginWithGoogle">Error while trying to login with google!</string>
-    <string name="emailAlreadyTaken">There\'s already an account with the given email</string>
-    <string name="passwordWeak">Password is not strong enough, should be at least 5 length</string>
-    <string name="userDoesNotExist">The user does not exist</string>
-    <string name="passwordInvalid">The password is invalid</string>
-    <string name="userAlreadyExistGoToLogin">There\'s already an user with this email address</string>
-    <string name="userExistButWithDifferentAccount">We found an user with this email address but with an different login type!\nPlease use the correct login type.</string>
-    <string name="incorrectLoginType">Incorrect Login Type</string>
-    <!-- #####################################################################################################################-->
+    <string name="errorWhileDuringRegistration">Something went wrong during your registration</string>
+    <string name="errorWhileDuringAuthentication">Something went wrong during your authentication</string>
+    <string name="emailAlreadyTaken">account already exists</string>
+    <string name="loginFailed">Login failed, invalid email or password</string>
     <!-- #################################################### Login #################################################### -->
     <string name="loginLabel">Login</string>
     <string name="loginForgotPassword">Forgot password?</string>
     <string name="loginWithGoogleDescription">Login with Google account</string>
     <string name="loginWithFacebookDescription">Login with Facebook account</string>
-    <string name="or">Or</string>
-    <!-- #####################################################################################################################-->
-    <!-- #################################################### Sign Up #################################################### -->
-    <string name="signUpLabel">Sign up</string>
-    <string name="signUpWithGoogleDescription">Sign up with Google account</string>
-    <string name="signUpWithFacebookDescription">Sign up with Facebook account</string>
-    <!-- #####################################################################################################################-->
+    <!-- #################################################### Register #################################################### -->
+    <string name="registerLabel">Register</string>
+    <string name="registerWithGoogleDescription">Register with Google account</string>
+    <string name="registerWithFacebookDescription">Register with Facebook account</string>
+    <!-- #################################################### Forgot Password #################################################### -->
+    <string name="forgotYourPassword">Forgot your password?</string>
     <!-- #################################################### Share List #################################################### -->
+    <string name="searchFriends">Search friend</string>
     <string name="searchFriendsHint">Enter friend name</string>
     <string name="shareUserImageDescription">Shopping Item Image</string>
-    <!-- #####################################################################################################################-->
     <!-- #################################################### Settings #################################################### -->
     <string name="settingIconDescription">Setting Icon</string>
+    <string name="forgotPasswordInstructions">Enter your e-mail address below to receive your password reset instructions</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="reset_password_instructions_sent">Instructions were sent</string>
+    <string name="action_check_email">Check Inbox</string>
+    <string name="something_went_wrong">Something went wrong with your request</string>
+
+    <string name="empty_user_data">You don\'t have any shopping list, create one by clicking on the plus button</string>
+    <string name="noOneYet">no one yet</string>
+    <string name="add_list_header">Create a new shopping list and start shopping now</string>
+    <string name="error_while_creating_list">Could not create your list</string>
+    <string name="error_while_creating_item">Could not create your item</string>
+    <string name="buy_item">Buy</string>
+    <string name="user_cant_use_feature_unless_accept_permission">Please accept permission to use this feature</string>
+    <string name="confirm_changes">Confirm changes</string>
+    <string name="apple_item">Apple item</string>
+    <string name="cheese_item">Cheese item</string>
+    <string name="milk_item">Milk item</string>
+    <string name="water_item">Water item</string>
+    <string name="add_item_header">Add a new shopping item</string>
+    <string name="EnterCount">Enter count</string>
+    <string name="invalid_price">Price can\'t be lower to 0</string>
+    <string name="invalid_count">Count can\'t be lower or equals to 0</string>
+    <string name="lists">Lists</string>
+    <string name="user_avatar">User avatar</string>
+    <string name="could_not_update_user_info">Could not update your user information</string>
+    <string name="search_list">Search list</string>
+    <string name="list_deleted">List has been deleted</string>
+    <string name="youAreNotCurrentlyShoppingList">You\'re not currently shopping this list</string>
+    <string name="list_already_exist">List already exist</string>
+    <string name="share_list">Share list</string>
+    <string name="share_with_friends">Share with your friends</string>
+    <string name="sent_friend_request">Successfully sent your requests, redirecting to list…</string>
+    <string name="error_while_sharing_your_share_lists">could not share your list</string>
+    <string name="notifications">Notifications</string>
+    <string name="item_deleted">Item has been deleted</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="invite_message">Invite you to be member of %1$s list</string>
+    <string name="could_not_sent_response">Could not send your response</string>
+    <string name="could_not_load_requests">Could not load your friend requests</string>
+
+    <string name="voice_message">Voice message</string>
+    <string name="send_message">Send Message</string>
+    <string name="enter_comment">Enter comment…</string>
+    <string name="comment_delivery_status">comment delivery status</string>
+    <string name="image_message">image message</string>
+    <string name="sound_message">Sound message</string>
+    <string name="send_gps_location">send gps location</string>
+    <string name="cancel_recording">Cancel recording</string>
+    <string name="delete_comment">Delete comment</string>
+    <string name="comment_could_not_be_sent">Comment could not be sent, please retry</string>
+    <string name="change_profile_picture">Change profile photo</string>
+    <string name="cant_find_google_play_app">unable to find market app</string>
+    <string name="confirm">Confirm</string>
+    <string name="request_features">Request features</string>
+    <string name="error_while_doing_settings">Error while executing your request</string>
+    <string name="delete_all_your_lists">Delete all your lists</string>
+
+    <string name="list_members">List members</string>
     <!-- #####################################################################################################################-->
 </resources>

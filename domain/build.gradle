@@ -15,39 +15,15 @@
  *
  */
 
-apply plugin: 'java'
+apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api kotlinLibs.jdk7_stdlib
 
-    /*************************************** RxJava ***************************************/
-    compile "io.reactivex.rxjava2:rxjava:$rxJava"
-}
-
-buildscript {
-    ext.kotlin_version = '1.1.4-3'
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
+    api reactiveStreamLibs.rxJava
 }
 
-repositories {
-    mavenCentral()
-    maven { url 'https://oss.jfrog.org/libs-snapshot' }
-}
-
-compileKotlin {
-    kotlinOptions {
-        jvmTarget = "1.6"
-    }
-}
-compileTestKotlin {
-    kotlinOptions {
-        jvmTarget = "1.6"
-    }
-}
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"

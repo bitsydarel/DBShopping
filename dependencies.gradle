@@ -1,0 +1,120 @@
+/*
+ *
+ *  * Copyright (C) 2017 Darel Bitsy
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License
+ *
+ */
+
+ext.versions = [
+        minSdk               : 21,
+        targetSdk            : 27,
+        compileSdk           : 27,
+        buildTools           : "27.0.3",
+        androidPluginVersion : "3.0.1",
+        versionCode          : 2,
+        versionName          : "1.2",
+        kotlinVersion        : "1.2.30",
+        supportLibraryVersion: "27.1.0",
+        googleServices       : "11.8.0",
+        archComponent        : "1.1.0",
+        room                 : "1.0.0",
+		paging               : "1.0.0-alpha6",
+        glide                : "4.6.1",
+        dagger               : "2.15",
+        leakCanary           : "1.5.4",
+        junit                : "4.12",
+        gson                 : "2.8.2",
+		exoplayer 			 : "2.7.0",
+		crashlytics			 : "2.9.1@aar"
+]
+
+ext.supportLibs = [
+        design : "com.android.support:design:$versions.supportLibraryVersion",
+        appcompatV7 : "com.android.support:appcompat-v7:$versions.supportLibraryVersion",
+        cardviewV7 : "com.android.support:cardview-v7:$versions.supportLibraryVersion",
+        annotations : "com.android.support:support-annotations:$versions.supportLibraryVersion",
+		emoji_appcompat : "com.android.support:support-emoji-appcompat:$versions.supportLibraryVersion",
+        constraintLayout :'com.android.support.constraint:constraint-layout:1.1.0-beta5'
+]
+
+ext.googleLibs = [
+        playServicesAuth : "com.google.android.gms:play-services-auth:$versions.googleServices",
+        playServicesPlaces : "com.google.android.gms:play-services-places:$versions.googleServices",
+		playServicesVision : "com.google.android.gms:play-services-vision:$versions.googleServices",
+        firebaseDatabase : "com.google.firebase:firebase-database:$versions.googleServices",
+        firebaseStorage : "com.google.firebase:firebase-storage:$versions.googleServices",
+        firebaseAuth   : "com.google.firebase:firebase-auth:$versions.googleServices",
+        databinding    : "com.android.databinding:compiler:$versions.androidPluginVersion",
+        androidGradlePlugin  : "com.android.tools.build:gradle:$versions.androidPluginVersion",
+        exoplayer : "com.google.android.exoplayer:exoplayer:$versions.exoplayer",
+        exoplayer_core : "com.google.android.exoplayer:exoplayer-core:$versions.exoplayer",
+        exoplayer_dash : "com.google.android.exoplayer:exoplayer-dash:$versions.exoplayer",
+        exoplayer_ui : "com.google.android.exoplayer:exoplayer-ui:$versions.exoplayer",
+        exoplayer_okhttp : "com.google.android.exoplayer:extension-okhttp:$versions.exoplayer",
+        crashlytics : "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics"
+]
+
+ext.designLibs = [
+	lottie : 'com.airbnb.android:lottie:2.5.0'
+]
+
+ext.archComponentLibs = [
+        liveAndViewModel: "android.arch.lifecycle:extensions:$versions.archComponent",
+        paging: "android.arch.paging:runtime:$versions.paging",
+        roomRuntime: "android.arch.persistence.room:runtime:$versions.room",
+        roomCompiler: "android.arch.persistence.room:compiler:$versions.room",
+        roomRxJava: "android.arch.persistence.room:rxjava2:$versions.room",
+        roomTesting: "android.arch.persistence.room:testing:$versions.room"
+]
+
+ext.kotlinLibs = [
+        jdk7_stdlib : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlinVersion",
+        stdlib : "org.jetbrains.kotlin:kotlin-stdlib:$versions.kotlinVersion",
+        reflect : "org.jetbrains.kotlin:kotlin-reflect:$versions.kotlinVersion",
+        kotlin_test_junit : "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlinVersion",
+        kotlinGradlePlugin: "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlinVersion"
+]
+
+ext.reactiveStreamLibs = [
+        rxJava : "io.reactivex.rxjava2:rxjava:2.1.9",
+        rxRelay : "com.jakewharton.rxrelay2:rxrelay:2.0.0",
+        rxAndroid : "io.reactivex.rxjava2:rxandroid:2.0.2"
+]
+
+ext.glideLibs = [
+        glide : "com.github.bumptech.glide:glide:$versions.glide",
+        compiler : "com.github.bumptech.glide:compiler:$versions.glide",
+		glide_okhttp : "com.github.bumptech.glide:okhttp3-integration:$versions.glide"
+]
+
+ext.daggerLibs = [
+        dagger: "com.google.dagger:dagger:$versions.dagger",
+        android: "com.google.dagger:dagger-android:$versions.dagger",
+        androidSupport: "com.google.dagger:dagger-android-support:$versions.dagger",
+        compiler: "com.google.dagger:dagger-compiler:$versions.dagger",
+        androidProcessor: "com.google.dagger:dagger-android-processor:$versions.dagger"
+]
+
+ext.leakCanaryLibs = [
+        android:  "com.squareup.leakcanary:leakcanary-android:$versions.leakCanary",
+        androidNoOp: "com.squareup.leakcanary:leakcanary-android-no-op:$versions.leakCanary"
+]
+
+ext.networkLibs = [
+        gson: "com.google.code.gson:gson:$versions.gson"
+]
+
+ext.testingLibs = [
+        junit: "junit:junit:$versions.junit",
+        espressoCore: 'com.android.support.test.espresso:espresso-core:3.0.1'
+]

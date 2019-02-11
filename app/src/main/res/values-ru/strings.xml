@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ /*
+  ~  * Copyright (C) 2017 Darel Bitsy
+  ~  * Licensed under the Apache License, Version 2.0 (the "License");
+  ~  * you may not use this file except in compliance with the License.
+  ~  * You may obtain a copy of the License at
+  ~  *
+  ~  *     http://www.apache.org/licenses/LICENSE-2.0
+  ~  *
+  ~  * Unless required by applicable law or agreed to in writing, software
+  ~  * distributed under the License is distributed on an "AS IS" BASIS,
+  ~  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~  * See the License for the specific language governing permissions and
+  ~  * limitations under the License
+  ~  */
+  -->
+
+<resources>
+    <string name="app_version">Версия %1$s</string>
+    <string name="share_message">Привет, скачивайте DBShopping at: https://play.google.com/store/apps/details?id=%1$s</string>
+    <string name="share_with">Делитесь з</string>
+    <string name="send_with">Отправляйте з</string>
+    <string name="you">Ты</string>
+    <string name="label_settings">Настройки</string>
+    <string name="link_account_with_google_account">Связать учетную запись с учетной записью Google</string>
+    <string name="link_account_with_facebook_account">Связать учетную запись с учетной записью Facebook</string>
+    <string name="areYouSure">Вы уверены?</string>
+    <!-- #################################################### Application Action #################################################### -->
+    <string name="action_create">Создавайте</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_open_help">Помощь</string>
+    <string name="action_send_comments">Отправляйте ваши коментарии</string>
+    <string name="action_recommend_us">Рекомендуйте DBShopping</string>
+    <string name="action_logout_user">Выйти</string>
+    <string name="action_open_drawer">Откройте Drawer</string>
+    <string name="action_close_drawer">Закройте Drawer</string>
+    <string name="action_confirm_action">Подтвердить действие</string>
+    <string name="action_logout">Вы действительно хотите выйти?</string>
+    <string name="action_yes">Да</string>
+    <string name="action_retry">Повторить</string>
+    <string name="invalid_name">Неверное имя, имя не может быть пустым</string>
+    <!-- ################################################# UserProfileUser #################################################### -->
+    <string name="profile">Профиль</string>
+    <string name="userProfileImageContentDescription">Фото профиля</string>
+    <!-- #################################################### List Data #################################################### -->
+    <string name="listOwner">Создатель %1$s</string>
+    <string name="enterListName">Введи имя список</string>
+    <string name="noListMessage">Создай твой первый список\nнажимай на кнопку с знаком плюс</string>
+    <string name="creatingListMessage">Создание списка</string>
+    <string name="updatingDataMessageList">Обновление списка</string>
+    <string name="listEmpty">Список пуст!</string>
+    <string name="youAreCurrentlyShoppingList">Вы сейчас делаете покупки в этом списке</string>
+    <string name="nobodyIsShopping">Никто не покупает</string>
+    <string name="youAreShopping">Вы делаете покупки</string>
+    <string name="youAndAnotherUserAreShopping">Вы и %1$s покупаете</string>
+    <string name="userIsShopping">%1$s делает покупки</string>
+    <string name="twoUsersAreShopping">%1$s и %2$s покупают</string>
+    <string name="usersAreShopping">%1$d людей делают покупки</string>
+    <string name="youAndOtherUsersAreShopping">Вы и %1$d людей делают покупки</string>
+    <string name="couldNotFindUsersShopping">Ошибка при получении списка пользователей!</string>
+    <string name="couldNotProcessYourRequest">Не удалось обработать ваш запрос</string>
+    <string name="couldNotLoadLists">Не удалось загрузить ваши списки</string>
+    <string name="couldNotLoadListDetail">Не удалось загрузить детали списка</string>
+    <string name="last_change_was_days_ago">Последние изменения : %1$dd назад</string>
+    <string name="last_change_was_hours_ago">Последние изменения : %1$dh назад</string>
+    <string name="last_change_was_minutes_ago">Последние изменения : %1$dm назад</string>
+    <string name="last_change_was_seconds_ago">>Последние изменения : %1$ds назад</string>
+    <string name="action_sort_by_publish_time">Время публикации</string>
+    <string name="action_sort_by_list_name">Имя списка</string>
+    <string name="action_sort_by_owner_name">Имя владельца</string>
+    <string name="action_sort_lists">Список сортировки</string>
+    <string name="action_edit_list_name">Изменить название списка</string>
+    <string name="action_remove_list">Удалить список</string>
+    <string name="action_remove_message_list">Вы действительно хотите удалить этот список?</string>
+    <string name="action_change">Изменить</string>
+    <string name="turnOnToggleShopping">Включите переключатель, когда вы делаете покупки в этом списке</string>
+    <string name="turnOffToggleShopping">Отключите переключатель, когда вы не делаете покупки в этом списке</string>
+    <!-- #################################################### Item Data #################################################### -->
+    <string name="default_item_name">Нет имени</string>
+    <string name="itemImageDescription">Изображение товара</string>
+    <string name="itemsCount">Количество элементов: %1$d</string>
+    <string name="EnterName">Введите имя</string>
+    <string name="EnterPrice">Введите цену</string>
+    <string name="LabelItemCount">Количество</string>
+    <string name="addShoppingItem">Добавить торговый объект</string>
+    <string name="savingItemChanges">Обновление элемента списка</string>
+    <string name="couldNotLoadItemDetail">Не удалось загрузить деталь элементов</string>
+    <string name="couldNotChangeItemPicture">Не удалось изменить изображение</string>
+    <string name="action_remove_item">Удалить элемент</string>
+    <string name="action_remove_message_item">Вы уверены, что хотите удалить этот элемент ?</string>
+    <string name="action_open_item_comment">Коментарии к элемент</string>
+    <string name="updatingDataMessageItem">Обновлениеи списка</string>
+    <string name="itemBoughtBy">Оплатил %1$s</string>
+    <string name="itemOwnerIs">Владелец %1$s</string>
+    <string name="itemTotalAmount">Всего: %1$s</string>
+    <string name="listTotalAmount">Всего к оплате: %1$s</string>
+    <string name="cant_edit_already_bought_item">Не удается отредактировать уже купленный предмет</string>
+    <!-- #################################################### Authentication screen #################################################### -->
+    <string name="NicknameHint">Никнейм</string>
+    <string name="EmailHint">Адрес электронной почты</string>
+    <string name="PasswordHint">Пароль</string>
+    <string name="alreadyHaveAccountToLogin">Аккаунт уже создан ?</string>
+    <string name="needAccountToLogin">Нужен аккаунт ?</string>
+    <string name="NicknameErrorMessage">Минимальная длина 3 символа и без пробелов в конце!</string>
+    <string name="emailErrorMessage">Неправильный адрес электронной почты, пожалуйста, проверьте его</string>
+    <string name="PasswordErrorMessage">Пароль должен быть не менее 5 символов!</string>
+    <string name="errorWhileDuringRegistration">Что-то пошло не так во время регистрации</string>
+    <string name="errorWhileDuringAuthentication">во время  аутентификации</string>
+    <string name="emailAlreadyTaken">Аккаунт уже существует</string>
+    <string name="loginFailed">Ошибка входа,неверный адрес электронной почты или пароль</string>
+    <!-- #################################################### Login #################################################### -->
+    <string name="loginLabel">Логин</string>
+    <string name="loginForgotPassword">Забыли пароль?</string>
+    <string name="loginWithGoogleDescription">Войти через аккаунт Google</string>
+    <string name="loginWithFacebookDescription">Войти через аккаунт Facebook</string>
+    <!-- #################################################### Register #################################################### -->
+    <string name="registerLabel">Регистрация</string>
+    <string name="registerWithGoogleDescription">Регистрация через аккаунт Google</string>
+    <string name="registerWithFacebookDescription">Регистрация через аккаунт Facebook</string>
+    <!-- #################################################### Forgot Password #################################################### -->
+    <string name="forgotYourPassword">Забыли пароль?</string>
+    <!-- #################################################### Share List #################################################### -->
+    <string name="searchFriends">Поиск друзей</string>
+    <string name="searchFriendsHint">Ввести имя друга</string>
+    <string name="shareUserImageDescription">Изображение товара</string>
+    <!-- #################################################### Settings #################################################### -->
+    <string name="settingIconDescription">Значок настройки</string>
+    <string name="forgotPasswordInstructions">Введите свой адрес электронной почты ниже, чтобы получить инструкции по сбросу пароля.</string>
+    <string name="reset_password">Сброс пароляReset Password</string>
+    <string name="reset_password_instructions_sent">Инструкции были отправлены</string>
+    <string name="action_check_email">Проверьте почту</string>
+    <string name="something_went_wrong">Что-то пошло не так, с вашим запросом</string>
+    <string name="empty_user_data">У вас нет списка покупок, создайте его, нажав кнопку плюс</string>
+    <string name="noOneYet">Еще никто</string>
+    <string name="add_list_header">Создайте новый список покупок и начните делать покупки сейчас</string>
+    <string name="error_while_creating_list">Не удалось создать список</string>
+    <string name="error_while_creating_item">Не удалось создать элемент</string>
+    <string name="buy_item">Купить</string>
+    <string name="user_cant_use_feature_unless_accept_permission">Примите разрешение на использование этой функции</string>
+    <string name="confirm_changes">Подтвердить изменения</string>
+    <string name="apple_item">Яблоко</string>
+    <string name="cheese_item">Сыр</string>
+    <string name="milk_item">Молоко</string>
+    <string name="water_item">Вода</string>
+    <string name="add_item_header">Добавить новый товар для покупок</string>
+    <string name="EnterCount">Введите количество</string>
+    <string name="invalid_price">Цена не может быть ниже 0</string>
+    <string name="invalid_count">Количество не может быть ниже 0</string>
+    <string name="lists">Списки</string>
+    <string name="user_avatar">Аватар пользователяUser avatar</string>
+    <string name="could_not_update_user_info">Не удалось обновить информацию о пользователе</string>
+    <string name="search_list">Поиск списка</string>
+    <string name="list_deleted">Список удален</string>
+    <string name="youAreNotCurrentlyShoppingList">Вы не делаете покупки в этом списке</string>
+    <string name="list_already_exist">Список уже существует</string>
+    <string name="share_list">Поделится списком</string>
+    <string name="share_with_friends">Поделись с друзьями</string>
+    <string name="sent_friend_request">Ваши запросы успешно отправлены, возвращаем вас в список…</string>
+    <string name="error_while_sharing_your_share_lists">Не удалось поделиться списком</string>
+    <string name="notifications">Уведомления</string>
+    <string name="item_deleted">Элемент удален</string>
+    <string name="accept">Принять</string>
+    <string name="decline">Отклонить</string>
+    <string name="invite_message">Пригласить вас стать участником списка %1$s</string>
+    <string name="could_not_sent_response">Не удалось отправить ответ</string>
+    <string name="could_not_load_requests">Не удалось загрузить запросы друзей</string>
+
+    <string name="voice_message">Голосовое сообщение</string>
+    <string name="send_message">Отправить сообщение</string>
+    <string name="enter_comment">Введите коментарии…</string>
+    <string name="comment_delivery_status">Статус доставки коментария</string>
+    <string name="image_message">Изображение</string>
+    <string name="sound_message">Звуковое сообщение</string>
+    <string name="send_gps_location">Отправить местоположение</string>
+    <string name="cancel_recording">Отменить записьCancel recording</string>
+    <string name="delete_comment">Удалить коментарии</string>
+    <string name="comment_could_not_be_sent">Коментарий не может быть отправлен, повторите попытку</string>
+    <string name="change_profile_picture">Изменить фото профиля</string>
+    <string name="cant_find_google_play_app">Не удалось найти приложение Google Play</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="request_features">Функциональный запрос</string>
+    <string name="error_while_doing_settings">Ошибка при выполнении запроса</string>
+    <string name="delete_all_your_lists">Удалить все ваши списки</string>
+    <string name="couldNotLoadListMembers">Не удалось загрузить список участников</string>
+    <string name="listMemberCount">%1$d участников</string>
+    <string name="list_members">список участников</string>
+</resources>

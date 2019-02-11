@@ -17,12 +17,10 @@
 
 package com.dbeginc.domain.repositories
 
-import com.dbeginc.domain.entities.requestmodel.AccountRequestModel
-import com.dbeginc.domain.entities.requestmodel.AuthRequestModel
-import com.dbeginc.domain.entities.requestmodel.GoogleRequestModel
-import com.dbeginc.domain.entities.requestmodel.UserRequestModel
-import com.dbeginc.domain.entities.user.Account
-import com.dbeginc.domain.entities.user.User
+import com.dbeginc.domain.entities.request.*
+import com.dbeginc.domain.entities.user.FriendProfile
+import com.dbeginc.domain.entities.user.FriendRequest
+import com.dbeginc.domain.entities.user.UserProfile
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import io.reactivex.Single
@@ -30,33 +28,113 @@ import io.reactivex.Single
 interface IUserRepo : Cleanable {
 
     /**
-     * Create New User
-     * @param requestModel [AuthRequestModel] to be added
+     * Create New UserProfile
+     * @param requestModel [AuthRequestModel] containing information required
+     * to register a new user using email address
      * @return [Completable] that notify about the task completion
      */
-    fun createNewUser(requestModel: AuthRequestModel<String>) : Completable
+    fun registerUser(requestModel: AuthRequestModel) : Single<UserProfile>
 
-    fun createNewUserWithGoogle(requestModel: GoogleRequestModel<String>) : Completable
+    /**
+     * Register New UserProfile With a Google Account
+     * @param requestModel [GoogleRequestModel] containing information required
+     * to register a new user using google account
+     * @return [Single] that provide a [UserProfile] or an error
+     */
+    fun registerUserWithGoogle(requestModel: GoogleRequestModel) : Single<UserProfile>
 
-    fun loginUser(requestModel: AuthRequestModel<Unit>) : Completable
+    /**
+     * Register New UserProfile With a Google Account
+     * @param requestModel [FacebookRequestModel] containing information required
+     * to register a new user using google account
+     * @return [Single] that provide a [UserProfile] or an error
+     */
+    fun registerUserWithFacebook(requestModel: FacebookRequestModel) : Single<UserProfile>
 
-    fun loginWithGoogle(requestModel: UserRequestModel<String>) : Completable
+    /**
+     * Login UserProfile
+     * @param requestModel [AuthRequestModel] containing information required
+     * to login an user
+     * @return [Single] that provide a [UserProfile] or an error
+     */
+    fun loginUser(requestModel: AuthRequestModel) : Single<UserProfile>
 
-    fun doesUserExist(requestModel: UserRequestModel<Unit>) : Single<Boolean>
+    /**
+     * Login UserProfile With Google
+     * @param requestModel [UserRequestModel] containing information required
+     * to login an user with google account
+     * @return [Single] that provide a [UserProfile] or an error
+     */
+    fun loginWithGoogle(requestModel: GoogleRequestModel) : Single<UserProfile>
 
-    fun canUserLoginWithAccountProvider(requestModel: UserRequestModel<String>) : Single<Boolean>
+    /**
+     * Login UserProfile With Google
+     * @param requestModel [FacebookRequestModel] containing information required
+     * to login an user with google account
+     * @return [Single] that provide a [UserProfile] or an error
+     */
+    fun loginWithFacebook(requestModel: FacebookRequestModel) : Single<UserProfile>
 
-    fun getUser(requestModel: UserRequestModel<Unit>) : Flowable<User>
+    /**
+     * Verify if user already exist
+     * @param requestModel [UserRequestModel] containing information required
+     * to check if specified user id exist
+     * @return [Single] that provide a [Boolean] or an error
+     */
+    fun canUserLoginWithAccountProvider(requestModel: AccountRequestModel) : Single<Boolean>
 
-    fun getUsers(requestModel: UserRequestModel<List<String>>) : Flowable<List<User>>
-
-    fun getAccount(requestModel: AccountRequestModel<Unit>) : Flowable<Account>
-
-    fun updateAccount(requestModel: AccountRequestModel<Account>) : Completable
-
-    fun updateUser(requestModel: UserRequestModel<User>) : Completable
-
-    fun deleteUser(requestModel: UserRequestModel<Unit>) : Completable
-
+    /**
+     * Logout user
+     * @param requestModel [UserRequestModel] containing information required
+     * to check if specified user id exist
+     * @return [Completable] that notify about the task completion
+     */
     fun logoutUser(requestModel: UserRequestModel<Unit>): Completable
+
+    /**
+     * Verify if user can login with the specified authentication type
+     * @param requestModel [UserRequestModel] that the user is trying to login with
+     * @return [Single] that provide a [Boolean] or an error
+     */
+    fun canUserRegisterWithAccountProvider(requestModel: AccountRequestModel) : Single<Boolean>
+
+    fun sendResetPasswordInstructions(requestModel: AccountRequestModel) : Completable
+
+    fun linkAccountWithGoogle(requestModel: GoogleRequestModel) : Completable
+
+    fun linkAccountWithFacebook(requestModel: FacebookRequestModel) : Completable
+
+    fun verifyIfUserStillIn() : Single<Boolean>
+
+    /**
+     * Get UserProfile
+     * @param requestModel [UserRequestModel] containing information required
+     * to retrieve an user
+     * @return [Single] that provide a [UserProfile] or an error
+     */
+    fun getUser(requestModel: UserRequestModel<Unit>) : Flowable<UserProfile>
+
+    /**
+     * Get FriendProfile
+     * @param requestModel [UserRequestModel] containing information required
+     * to retrieve an user's friend
+     * @return [Flowable] that provide a [FriendProfile] provide stream of changes
+     */
+    fun getFriend(requestModel: UserRequestModel<String>) : Flowable<FriendProfile>
+
+    fun getUserHisFriends(requestModel: UserRequestModel<Unit>) : Flowable<List<FriendProfile>>
+
+    fun findFriends(requestModel: UserRequestModel<String>) : Single<List<FriendProfile>>
+
+    fun getFriendRequests(requestModel: UserRequestModel<Unit>) : Single<List<FriendRequest>>
+
+    fun sendFriendRequests(requestModel: List<FriendRequestModel>): Completable
+
+    fun acceptFriendRequest(requestModel: FriendRequestModel): Completable
+
+    fun declineFriendRequest(requestModel: FriendRequestModel): Completable
+
+    fun updateUserInfo(requestModel: UserRequestModel<UserProfile>) : Completable
+
+    fun publishPendingUserChanges() : Completable
 }
