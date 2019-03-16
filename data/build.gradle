@@ -59,24 +59,24 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':domain-old')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':domain-old')
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile "com.android.support:appcompat-v7:$supportLibraryVersion"
-    compile "io.reactivex.rxjava2:rxjava:$rxJava"
-    compile "io.reactivex.rxjava2:rxandroid:$rxAndroid"
+    implementation "com.android.support:appcompat-v7:$supportLibraryVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJava"
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroid"
 
     /******************** Provided dependencies ********************/
-    provided "com.google.firebase:firebase-database:$googleServices"
-    provided "com.google.firebase:firebase-storage:$googleServices"
-    provided "com.google.firebase:firebase-auth:$googleServices"
+    compileOnly "com.google.firebase:firebase-database:$googleServices"
+    compileOnly "com.google.firebase:firebase-storage:$googleServices"
+    compileOnly "com.google.firebase:firebase-auth:$googleServices"
 
-    testCompile 'junit:junit:4.12'
-    compile KotlinLibraries.stdlibJdk7
+    testImplementation 'junit:junit:4.12'
+    implementation KotlinLibraries.stdlibJdk7
 }
 repositories {
     mavenCentral()

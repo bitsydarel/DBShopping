@@ -32,7 +32,7 @@ object Configurations {
     /**
      * Android gradle plugin version.
      */
-    const val androidGradlePluginVersion: String = "3.3.0"
+    const val androidGradlePluginVersion: String = "3.3.1"
 
     /**
      * Java default version.
@@ -52,7 +52,7 @@ object Configurations {
     /**
      * Clean architecture core version.
      */
-    const val cleanArchCoreVersion: String = "0.2"
+    const val cleanArchCoreVersion: String = "0.3"
 
     /**
      * Bitsy darel maven repository.
