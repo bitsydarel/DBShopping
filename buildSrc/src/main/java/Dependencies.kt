@@ -36,7 +36,7 @@ object KotlinLibraries {
     const val testJvm: String = "'org.jetbrains.kotlin:kotlin-test'"
     const val testJunitJvm: String = "org.jetbrains.kotlin:kotlin-test-junit"
     const val stdlibJdk8: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    const val stdlibJdk7: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    const val stdlibJdk7: String = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinLanguageVersion"
     const val reflection: String = "org.jetbrains.kotlin:kotlin-reflect"
     /*************************** Kotlin Javascript libraries *********************************/
     const val stdlibJs: String = "org.jetbrains.kotlin:kotlin-stdlib-js"

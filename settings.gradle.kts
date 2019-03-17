@@ -31,8 +31,34 @@ pluginManagement {
     }
 }
 
-enableFeaturePreview('GRADLE_METADATA')
+enableFeaturePreview("GRADLE_METADATA")
 
-rootProject.name = 'DBShopping'
+rootProject.name = "DBShopping"
 
-include ':app', ':domain-old', ':data', ':domain'
+include(":app")
+include(":domain-old")
+include(":data")
+include(":domain")
+include("shoppinglists")
+
+/**
+ * List of flutter plugins to include in the main project.
+ */
+val flutterPlugins: List<String> = listOf(
+        "shoppinglists"
+)
+
+for (project in rootProject.children) {
+    val projectName = project.name
+    if (projectName in flutterPlugins) {
+        project.projectDir = file(projectName.plus("/android"))
+        project.buildFileName = "build.gradle"
+    }
+    if (!project.projectDir.isDirectory) {
+        throw IllegalArgumentException("Project directory ${project.projectDir} for project ${project.name} does not exist.")
+    }
+    if (!project.buildFile.isFile) {
+        throw IllegalArgumentException("Build file ${project.buildFile} for project ${project.name} does not exist.")
+    }
+}
+

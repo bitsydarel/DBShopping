@@ -22,7 +22,7 @@ object Configurations {
     /**
      * Kotlin language version.
      */
-    const val kotlinLanguageVersion: String = "1.3.20"
+    const val kotlinLanguageVersion: String = "1.3.21"
 
     /**
      * Spring boot framework version.
@@ -32,7 +32,7 @@ object Configurations {
     /**
      * Android gradle plugin version.
      */
-    const val androidGradlePluginVersion: String = "3.3.1"
+    const val androidGradlePluginVersion: String = "3.3.2"
 
     /**
      * Java default version.
